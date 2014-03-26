@@ -1,0 +1,12 @@
+%html
+  %head
+    = bootstrap_assets
+    %link{:href => 'http://fonts.googleapis.com/css?family=Roboto+Condensed:300italic,400italic,700italic,400,700&subset=latin,cyrillic-ext', :rel => 'stylesheet', :type => 'text/css'}
+    %link{:rel => 'stylesheet', :href => 'stylesheets/application.css', :type => 'text/css', :media => 'screen, projection'}
+  %body
+    - container :fluid do
+      - row do
+        - span3 do
+          = yield
+        - span5 :offset => 4 do
+          %p Statistics
