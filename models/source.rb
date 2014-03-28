@@ -5,11 +5,11 @@ class Source
   include Mongoid::Timestamps
 
   has_many :tenders
+  has_many :selectors
 
-  # Source info and selectors
+  # Source info
   field :name, type: String
   field :links, type: Hash
-  field :selectors, type: Hash
 
   # Service parametres
   field :tenders_update_frequency, type: Time

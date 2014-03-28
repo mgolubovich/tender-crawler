@@ -4,7 +4,7 @@ class Tender
   include Mongoid::Document
   include Mongoid::Timestamps
 
-  has_one :source
+  belongs_to :source
   
   #Timestamps, created_at and updated_at included via mongoid
   field :start_at, type: DateTime

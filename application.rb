@@ -9,6 +9,7 @@ require 'routes'
 
 require 'source'
 require 'tender'
+require 'selector'
 
 class Crawler < Sinatra::Base
   register Sinatra::Twitter::Bootstrap::Assets
