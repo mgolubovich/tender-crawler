@@ -1,4 +1,4 @@
-require './config/crawler_config'
+require 'mongoid'
 
 class Tender
   include Mongoid::Document

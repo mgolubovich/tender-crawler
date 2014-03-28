@@ -3,3 +3,8 @@
 body {
   font: normal 16px "Roboto Condensed", arial, sans-serif;
 }
+
+.base-content {
+  padding: 40px 15px;
+  text-align: center;
+}

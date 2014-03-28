@@ -10,7 +10,6 @@ gem 'redis'
 gem 'resque-scheduler'
 
 gem 'haml'
-gem 'sinatra-twitter-bootstrap', :require => 'sinatra/twitter-bootstrap'
 
 group :development do
   gem 'shotgun'

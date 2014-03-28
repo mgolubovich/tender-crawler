@@ -1,7 +1,9 @@
 require 'sinatra/base'
-require 'mongoid'
+require 'bundler/setup'
 
-class CrawlerConfig < Sinatra::Base
+class ApplicationController < Sinatra::Base
+  enable :sessions, :method_override
+  set :views, File.expand_path('../../views', __FILE__)
 
   configure :development do
     Bundler.setup(:default, :assets, :development)
