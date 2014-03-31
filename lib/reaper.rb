@@ -1,6 +1,8 @@
 class Reaper
 
-  def initialize
+  def initialize(source, limit=0)
+    @source = source
+    
   end
 
 end

@@ -1,7 +1,7 @@
 class SourcesController < ApplicationController
 
   get '/overview' do
-    haml :index
+    haml :sources
   end
 
 end

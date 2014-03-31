@@ -10,6 +10,8 @@ gem 'redis'
 gem 'resque-scheduler'
 
 gem 'haml'
+gem 'capybara'
+gem 'capybara-webkit'
 
 group :development do
   gem 'shotgun'
@@ -17,6 +19,5 @@ group :development do
 end
 
 group :test do
-  gem 'capybara'
   gem 'rspec'
 end

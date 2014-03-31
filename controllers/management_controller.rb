@@ -1,5 +1,5 @@
 class ManagementController < ApplicationController
-  get '/controls' do
+  get '' do
     haml :controls
   end
 end
