@@ -6,10 +6,9 @@ class Source
 
   has_many :tenders
   has_many :selectors
-  
+
   # Source info
   field :name, type: String
-  field :links, type: Hash
 
   # Service parametres
   field :tenders_update_frequency, type: Time
