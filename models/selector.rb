@@ -33,4 +33,8 @@ class Selector
   # Service field, used for sources with different setups of target data. Zakupki, for a example.
   field :group, type: Symbol
 
+  field :is_active, type: Boolean
+
+  scope :ids_set, where(:value_type => :ids_set)
+
 end

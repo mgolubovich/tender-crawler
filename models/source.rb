@@ -13,6 +13,7 @@ class Source
   # Service parametres
   field :tenders_update_frequency, type: Time
   field :is_active, type: Boolean
+  field :last_imported_at, type: DateTime
 
   # Example of proxy_update_frequency field value
   # This {"type":"hits","value":"100"} means what every 100 hits we must change proxy server
