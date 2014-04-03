@@ -12,8 +12,11 @@ class Selector
   # Link where this selector must do it's work. Example: http://test.com/view?id=
   field :link_template, type: String
 
-  # Xpath for nokogiri, location for target data
+  # Xpath for capybara, location for target data
   field :xpath, type: String
+
+  # Css selector path, location for target data
+  field :css, type: String
   
   # Need to be set if target data contains in attribute of selected tag instead of content. Can be empty.
   field :attr, type: Symbol
@@ -36,5 +39,6 @@ class Selector
   field :is_active, type: Boolean
 
   scope :ids_set, where(:value_type => :ids_set)
-
+  scope :data_fields, where(:value_type.ne => :ids_set)
+  scope :active, where(:is_active => true)
 end

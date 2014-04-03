@@ -12,7 +12,9 @@ class Tender
 
   # Source info
   field :code_by_source, type: String
+  field :id_by_source, type: String
   field :source_link, type: String
+  field :group, type: Symbol
 
   # Actual tender info
   field :title, type: String

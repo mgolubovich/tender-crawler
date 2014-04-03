@@ -21,6 +21,7 @@ class Source
   field :proxy_update_frequency, type: Hash
 
   field :external_site_id, type: Integer
+  field :external_link_templates, type: Hash
 
   scope :active, where(:is_active => true)
 

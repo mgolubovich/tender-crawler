@@ -16,6 +16,7 @@ gem 'capybara-webkit'
 group :development do
   gem 'shotgun'
   gem 'tux'
+  gem 'debugger'
 end
 
 group :test do
