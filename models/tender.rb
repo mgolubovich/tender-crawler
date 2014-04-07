@@ -32,7 +32,9 @@ class Tender
   field :external_region_id, type: Integer
   field :external_db_id, type: Integer
 
-  # Fields for syncronization based on md5(code_by_source + source_id). 
+  # Fields for syncronization based on code_by_source + source_id).
   # Used for determing of existing tender in mongo
-  field :internal_code, type: String
+  field :status, type: Hash
+
+  index ({ source_id: 1, code_by_source: 1 }, { unique: true })
 end
