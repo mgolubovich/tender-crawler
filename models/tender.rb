@@ -36,5 +36,5 @@ class Tender
   # Used for determing of existing tender in mongo
   field :status, type: Hash
 
-  index ({ source_id: 1, code_by_source: 1 }, { unique: true })
+  index({ source_id: 1, code_by_source: 1 }, { unique: true })
 end

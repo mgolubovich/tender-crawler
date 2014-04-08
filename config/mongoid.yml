@@ -3,6 +3,6 @@ development:
     default:
       database: crawler
       hosts:
-        - localhost:27017
+        - 10.211.55.7:27017
       options:
         consistency: strong
