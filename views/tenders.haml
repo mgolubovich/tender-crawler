@@ -1,0 +1,19 @@
+- @title = 'Tenders list'
+%h1 Tenders list
+.container-fluid
+  %table.table.table-striped.table-condensed
+    %thead
+      %tr
+        %td Source
+        %td Code by source
+        %td Tender title
+        %td Link
+    %tbody
+      - @tenders.each do |tender|
+        %tr
+          %td= tender.source.name
+          %td= tender.code_by_source
+          %td= tender.title
+          %td
+            %a{ href: tender.source_link, target: :blank}= tender.source_link
+

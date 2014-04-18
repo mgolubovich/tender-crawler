@@ -13,6 +13,8 @@ gem 'haml'
 gem 'capybara'
 gem 'capybara-webkit'
 
+gem 'capistrano'
+
 group :development do
   gem 'shotgun'
   gem 'tux'

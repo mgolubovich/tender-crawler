@@ -36,7 +36,11 @@ class Selector
   # Service field, used for sources with different setups of target data. Zakupki, for a example.
   field :group, type: Symbol
 
+  # Service field, used as activity flag of selector 
   field :is_active, type: Boolean
+
+  # Service field, used as parameter for grappling method, shows which mode must be used. Can be :single or :multiple
+  field :grapple_mode, type: Symbol, default: :single
 
   scope :ids_set, where(:value_type => :ids_set)
   scope :data_fields, where(:value_type.ne => :ids_set)
