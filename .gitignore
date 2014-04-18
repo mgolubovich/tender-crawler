@@ -4,3 +4,4 @@
 .idea
 config/unicorn.rb
 tmp/*
+log/*
