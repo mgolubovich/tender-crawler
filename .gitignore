@@ -2,3 +2,5 @@
 *.sublime-workspace
 .idea/*
 .idea
+config/unicorn.rb
+tmp/*
