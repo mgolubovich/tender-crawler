@@ -13,13 +13,13 @@ gem 'haml'
 gem 'capybara'
 gem 'capybara-webkit'
 
-gem 'capistrano'
 gem 'unicorn'
 
 group :development do
   gem 'shotgun'
   gem 'tux'
   gem 'debugger'
+  gem 'capistrano'
 end
 
 group :test do

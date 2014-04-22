@@ -22,7 +22,9 @@ class Reaper
         #tender = @source.tenders.find_or_create_by(code_by_source: code)
         tender = Hash.new
         selectors.each do |selector|
-          tender[selector.value_type.to_sym] = @hook.charge(selector, entity_id).grapple
+          value = @hook.charge(selector, entity_id).grapple
+          puts selector.value_type, value
+          tender[selector.value_type.to_sym] = value
         end
 
         tender[:id_by_source] = entity_id
