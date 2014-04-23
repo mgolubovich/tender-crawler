@@ -2,7 +2,7 @@
 lock '3.2.0'
 
 set :application, 'tender-crawler'
-set :repo_url, 'git@github.com:saviorisdead/tender-crawler.git'
+set :repo_url, 'git@github.com:mgolubovich/tender-crawler.git'
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
