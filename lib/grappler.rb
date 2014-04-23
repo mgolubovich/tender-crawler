@@ -2,7 +2,7 @@ require 'capybara'
 require 'capybara/dsl'
 require 'capybara/webkit'
 require 'date'
-#require 'debugger'
+require 'debugger'
 
 class Grappler
 
@@ -10,9 +10,7 @@ class Grappler
   Capybara.default_driver = :webkit
   Capybara.run_server = false
 
-  def initialize;end
-
-  def charge(selector, entity_id='')
+  def initialize(selector, entity_id='')
     @link = selector.link_template.gsub('$entity_id', entity_id)
     @xpath = selector.xpath
     @css = selector.css
@@ -21,7 +19,6 @@ class Grappler
     @regexp = selector.regexp unless selector.regexp.nil?
     @date_format = selector.date_format unless selector.date_format.nil?
     @js_code = selector.js_code unless selector.js_code.nil?
-    self
   end
 
   def grapple(mode = :single)
@@ -30,7 +27,7 @@ class Grappler
 
     visit @link
     execute_script(@js_code) unless @js_code.nil?
-    
+
     slice = @css.nil? ? all(:xpath, @xpath) : all(:css, @css)
     slice.each do |item|
       data = @attr.nil? ? item.text.to_s.strip : item[@attr.to_sym].to_s.strip

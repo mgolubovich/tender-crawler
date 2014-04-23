@@ -8,6 +8,8 @@
         %td Code by source
         %td Tender title
         %td Link
+        %td Created At
+        %td Updated At
     %tbody
       - @tenders.each do |tender|
         %tr
@@ -16,4 +18,6 @@
           %td= tender.title
           %td
             %a{ href: tender.source_link, target: :blank}= tender.source_link
+          %td= tender.created_at
+          %td= tender.updated_at
 

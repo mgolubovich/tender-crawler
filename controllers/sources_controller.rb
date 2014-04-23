@@ -5,4 +5,8 @@ class SourcesController < ApplicationController
     haml :sources
   end
 
+  get '/new' do 
+    haml :'sources/new'
+  end
+
 end
