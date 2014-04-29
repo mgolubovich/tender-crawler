@@ -2,7 +2,7 @@ source "https://rubygems.org/"
 
 gem 'sinatra'
 
-gem 'mongoid'
+gem 'mongoid', '3.0.23'
 gem 'bson_ext'
 
 gem 'resque'
@@ -10,10 +10,19 @@ gem 'redis'
 gem 'resque-scheduler'
 
 gem 'haml'
-gem 'capybara'
-gem 'capybara-webkit'
+gem 'capybara', '2.2.1'
+gem 'capybara-webkit', '1.1.0'
+gem 'activesupport', '3.2.17'
 
-gem 'unicorn'
+
+platforms :ruby do # linux
+  gem 'unicorn'
+end
+
+platforms :mswin, :mingw do #win
+  gem 'rackup'
+
+end
 
 group :development do
   gem 'shotgun'
@@ -21,6 +30,8 @@ group :development do
   gem 'debugger'
   gem 'capistrano'
 end
+
+
 
 group :test do
   gem 'rspec'
