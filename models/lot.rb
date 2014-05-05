@@ -1,11 +1,11 @@
 require 'mongoid'
 
-class Contractor
+class Lot
   include Mongoid::Document
   include Mongoid::Timestamps
-  
-  has_many :protocols
+
+  belongs_to :tender
 
   field :name, type: String
-  field :inn, type: String
+  field :price, type: Float
 end
