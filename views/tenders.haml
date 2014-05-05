@@ -4,8 +4,8 @@
   %table.table.table-striped.table-condensed
     %thead
       %tr
-        %td Source
         %td Code by source
+        %td Source
         %td Tender title
         %td Link
         %td Created At
@@ -13,8 +13,9 @@
     %tbody
       - @tenders.each do |tender|
         %tr
+          %td
+            %a{ href: "/tenders/show/#{tender.id}"}= tender.code_by_source
           %td= tender.source.name
-          %td= tender.code_by_source
           %td= tender.title
           %td
             %a{ href: tender.source_link, target: :blank}= tender.source_link

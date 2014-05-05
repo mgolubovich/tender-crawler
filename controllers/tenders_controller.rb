@@ -5,4 +5,13 @@ class TendersController < ApplicationController
     haml :tenders
   end
 
+  get '/new' do
+    haml :'tenders/new'
+  end
+
+  get '/show/:id' do
+    @tenders = Tender.find params[:id]
+    haml :'tenders/show'
+  end
+
 end

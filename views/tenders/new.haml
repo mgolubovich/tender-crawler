@@ -1,0 +1,33 @@
+- @title = 'New tender'
+%h1 Новый тендер
+.container-fluid
+  %form.form-horizontal{:action => "/tenders/new", :method => "post"}
+    %fieldset
+      .form-group
+        %label.col-md-4.control-label{:for => "tender_name"} Название тендера
+        .col-md-5
+          %input.form-control.input-md{:id => "tender_name", :name => "tender_name", :type => "text", :required => "", :size => 20}
+
+      .form-group
+        %label.col-md-4.control-label{:for => "tender_form"} Форма тендера
+        .col-md-5
+          %input.form-control.input-md{:id => "tender_form", :name => "tender_form", :type => "text", :required => "", :size => 20}
+
+      .form-group
+        %label.col-md-4.control-label{:for=> "tender_work_type"} Вид работ
+        .col-md-5
+          %select.form-control{ :id => "tender_work_type", :name => "tender_work_type"}
+            %option{:value => "1"} Строительные
+            %option{:value => "2"} Проектные
+            %option{:value => "3"} Изыскательные
+            %option{:value => "4"} Поставка
+            %option{:value => "5"} Сервис и ТО
+
+      .form-group
+        %label.col-md-4.control-label{:for => "source_external_site_id"} ID во внешней базе
+        .col-md-5
+          %input.form-control.input-md{:id => "source_external_site_id", :name => "source_external_site_id", :type => "text", :placeholder => "", :size => 20}
+
+      .form-group
+        .col-md-5
+          %input.btn{:name => "submint", :type => "submit", :value => "Добавить"}
