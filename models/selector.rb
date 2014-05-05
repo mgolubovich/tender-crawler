@@ -5,6 +5,8 @@ class Selector
   belongs_to :source
 
   # Type of field what this selector must extract. Example: title, start_price etc
+  # Also, this field used as mark for determing entity type of return value
+  # Example - :ids_set, :protocol, :contractor
   field :value_type, type: Symbol
   
   # Link where this selector must do it's work. Example: http://test.com/view?id=
