@@ -1,5 +1,3 @@
-require 'mongoid'
-
 class Lot
   include Mongoid::Document
   include Mongoid::Timestamps

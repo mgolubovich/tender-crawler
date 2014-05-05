@@ -1,4 +1,3 @@
-require 'debugger'
 class Reaper
 
   attr_reader :result

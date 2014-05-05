@@ -1,5 +1,3 @@
-require 'mongoid'
-
 class Tender
   include Mongoid::Document
   include Mongoid::Timestamps

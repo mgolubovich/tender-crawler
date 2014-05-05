@@ -1,5 +1,3 @@
-require 'mongoid'
-
 class Contractor
   include Mongoid::Document
   include Mongoid::Timestamps

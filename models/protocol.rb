@@ -1,5 +1,3 @@
-require 'mongoid'
-
 class Protocol
   include Mongoid::Document
   include Mongoid::Timestamps

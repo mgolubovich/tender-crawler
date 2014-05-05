@@ -1,5 +1,3 @@
-require 'mongoid'
-
 class Selector
   include Mongoid::Document
   include Mongoid::Timestamps
