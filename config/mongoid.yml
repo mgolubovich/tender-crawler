@@ -6,12 +6,3 @@ development:
         - 10.0.105.15:27017
       options:
         consistency: strong
-
-production:
-  sessions:
-    default:
-      database: crawler
-      hosts:
-        - 10.0.105.15:27017
-      options:
-        consistency: strong
