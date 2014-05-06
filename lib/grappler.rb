@@ -26,6 +26,8 @@ class Grappler
     target_data = []
 
     visit @link
+    ParserLog.logger.info("Visit - #{@link}")
+    
     execute_script(@js_code) unless @js_code.nil?
 
     slice = @css.nil? ? all(:xpath, @xpath) : all(:css, @css)

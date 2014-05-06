@@ -5,7 +5,7 @@ class ParserLog
 
   # Start logging in given file, keeping 10 old logfiles, rotating if size og log file exceeds 1Gb
   @logger = Logger.new(LOG_FILEPATH, 10, 100 * 1024 * 1024 * 1024)
-  @logger.level = Logger::WARN
+  @logger.level = Logger::INFO
 
   def self.logger
     @logger

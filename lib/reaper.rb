@@ -5,6 +5,8 @@ class Reaper
   def initialize(source, limit=0)
     @source = source
     @limit = limit
+
+    ParserLog.logger.info("Starting parsing of #{@source.name}")
   end
 
   def reap
