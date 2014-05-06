@@ -1,0 +1,52 @@
+- @title = 'View tender'
+%h1 Просмотр тендера
+.container-fluid
+  %table.table.table-hover.table-condensed.table-bordered
+    %tbody
+      %tr
+        %td Предмет контракта
+        %td= @tenders.title
+      %tr
+        %td Код аукциона
+        %td= @tenders.code_by_source
+      %tr
+        %td Начальная цена
+        %td= @tenders.start_price
+      %tr
+        %td Форма тендера
+        %td= @tenders.tender_form
+      %tr
+        %td Заказчик
+        %td
+          #{@tenders.customer_inn}
+          %br
+          #{@tenders.customer_name}
+          %br
+          #{@tenders.customer_adress}
+      %tr
+        %td ОКДПС
+        %td= @tenders.okdps
+      %tr
+        %td URL извещения
+        %td
+          %a{ href: "#{@tenders.source_link}"}= @tenders.source_link
+      %tr
+        %td created_at
+        %td= @tenders.created_at
+      %tr
+        %td start_at
+        %td= @tenders.start_at
+      %tr
+        %td published_at
+        %td= @tenders.published_at
+      %tr
+        %td updated_at
+        %td= @tenders.updated_at
+      %tr
+        %td documents
+        %td= @tenders.documents
+
+.container-fluid
+  %p
+    %a{ href: "/tenders/overview"} Назад
+

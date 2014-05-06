@@ -8,6 +8,9 @@
         %td Tenders count
         %td Selectors count
         %td Update frequency
+        %td Edit
+        %td Delete
+        %td Activity?
     %tbody
       - @sources.each do |source|
         %tr
@@ -15,3 +18,12 @@
           %td= source.tenders.count
           %td= source.selectors.count
           %td= source.tenders_update_frequency
+          %td
+            %a{ href: "/sources/edit/#{source.id}"} Edit
+          %td
+            %a{ href: "/sources/destroy/#{source.id}"} Delete
+          %td= source.is_active
+
+.container-fluid
+  %p
+    %a{ href: "/sources/new"} Add new source
