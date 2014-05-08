@@ -35,6 +35,9 @@ class Reaper
         tender.source_link = @source.external_link_templates[group.to_s].gsub('$entity_id', entity_id)
         tender.group = group
 
+        # TODO:
+        # => implementation of rules
+        
         tender.save
         log_tender_saved(tender[:_id])
       end
