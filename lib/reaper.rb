@@ -8,27 +8,38 @@ class Reaper
   end
 
   def reap
+    log_started_parsing(source.name)
+
     selector_groups = @source.selectors.distinct(:group)
     @result = []
 
     selector_groups.each do |group|
       ids_set = Grappler.new(@source.selectors.active.ids_set.where(:group => group).first).grapple_all.uniq
+      log_got_ids_set(ids_set.count)
+
       selectors = @source.selectors.active.data_fields.where(:group => group)
 
       ids_set.each do |entity_id|
         code = Grappler.new(selectors.active.where(:value_type => :code_by_source).first, entity_id).grapple
+        log_got_code(code)
+
         tender = @source.tenders.find_or_create_by(code_by_source: code)
 
         selectors.each do |selector|
           value = Grappler.new(selector, entity_id).grapple
           tender[selector.value_type.to_sym] = value
+          log_got_value(selector.value_type, value)
         end
 
         tender.id_by_source = entity_id
         tender.source_link = @source.external_link_templates[group.to_s].gsub('$entity_id', entity_id)
         tender.group = group
 
+        # TODO:
+        # => implementation of rules
+        
         tender.save
+        log_tender_saved(tender[:_id])
       end
     end
   end
