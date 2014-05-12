@@ -39,7 +39,7 @@ class SourcesController < ApplicationController
     haml :'selectors/new'
   end
 
-  post '/edit/add_s' do
+  post '/edit/:source_id/add_s' do
    selector = Source.find(params[:source_id]).selectors.new
  #  selector.source_id = params[:selector_source_id]
    selector.value_type = params[:selector_value]
@@ -53,7 +53,7 @@ class SourcesController < ApplicationController
    selector.js_code = params[:selector_js_code]
    selector.is_active = params[:selector_activity] == 'active' ? true : false
    selector.save
-   redirect '/selectors/edit/#{selector.source_id}'
+   redirect "/sources/edit/#{selector.source_id}"
  end
 
   get '/destroy/:id' do
