@@ -3,6 +3,7 @@ class Selector
   include Mongoid::Timestamps
 
   belongs_to :source
+  has_many :rules
 
   # Type of field what this selector must extract. Example: title, start_price etc
   # Also, this field used as mark for determing entity type of return value
