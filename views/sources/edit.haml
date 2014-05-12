@@ -18,7 +18,7 @@
         .col-md-5
           %select.form-control{:id => "source_activity", :name => "source_activity"}
             %option{:value => "active", :selected => @sources.is_active ? "selected" : "" } Включен
-            %option{:value => "blocked", :selected => @sources.is_active ? "selected" : ""} Выключен
+            %option{:value => "blocked", :selected => @sources.is_active ? "" : "selected"} Выключен
 
       .form-group
         %label.col-md-4.control-label{:for => "source_external_site_id"} ID во внешней базе
@@ -28,3 +28,26 @@
       .form-group
         .col-md-5
           %input.btn{:name => "submint", :type => "submit", :value => "Сохранить"}
+
+.container-fluid
+  %table.table.table-striped.table-condensed.table-bordered
+    %thead
+      %tr
+        %td Selector
+        %td Delete
+        %td Is active?
+    %tbody
+    - @selectors.each do |s|
+      %tr
+        %td
+          %a{ href: "/sources/edit/#{@sources.id}/selector/#{s._id}"}= s.value_type
+        %td
+          %a{ href: "/sources/edit/#{@sources.id}/selector/#{s._id}/destroy"} Delete
+        %td= s.is_active
+
+.container-fluid
+  %p
+    %a{ href: "/sources/edit/#{@sources.id}/add_s"} Add new selector
+
+
+
