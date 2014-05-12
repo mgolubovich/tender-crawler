@@ -1,7 +1,7 @@
 - @title = 'Edit selector'
 %h1 Изменить селектор
 .container-fluid
-  %form.form-horizontal{:action => "/selectors/edit", :method => "post"}
+  %form.form-horizontal{:action => "/sources/edit/#{@source_id}/selector/#{@selector_id}", :method => "post"}
     %fieldset
       .form-group
         %label.col-md-4.control-label{:for => "selector_id"} ID
