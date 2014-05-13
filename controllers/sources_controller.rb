@@ -16,7 +16,7 @@ class SourcesController < ApplicationController
     source.is_active = params[:source_activity] == 'active' ? true : false
     source.external_site_id = params[:source_external_site_id]
     source.save
-    redirect '/sources/overview'
+    redirect "/sources/edit/#{source._id}"
   end
 
   get '/edit/:id' do
