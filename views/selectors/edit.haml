@@ -63,8 +63,8 @@
         %label.col-md-4.control-label{:for => "selector_activity"} Активность
         .col-md-5
           %select.form-control{:id => "selector_activity", :name => "selector_activity"}
-            %option{:value => "active", :selected => @selector.is_active ? "selected" : ""} Включен
-            %option{:value => "blocked", :selected => @selector.is_active ? "" : "selected"} Выключен
+            %option{:value => "active", :selected => @selector.is_active ? true : false} Включен
+            %option{:value => "blocked", :selected => @selector.is_active ? false : true } Выключен
 
       .form-group
         .col-md-5

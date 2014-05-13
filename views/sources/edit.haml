@@ -17,8 +17,8 @@
         %label.col-md-4.control-label{:for => "source_activity"} Активность
         .col-md-5
           %select.form-control{:id => "source_activity", :name => "source_activity"}
-            %option{:value => "active", :selected => @sources.is_active ? "selected" : "" } Включен
-            %option{:value => "blocked", :selected => @sources.is_active ? "" : "selected"} Выключен
+            %option{:value => "active", :selected => @sources.is_active ? true : false } Включен
+            %option{:value => "blocked", :selected => @sources.is_active ? false : true } Выключен
 
       .form-group
         %label.col-md-4.control-label{:for => "source_external_site_id"} ID во внешней базе
