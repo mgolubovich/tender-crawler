@@ -31,7 +31,7 @@ class Tender
   field :external_region_id, type: Integer
   field :external_db_id, type: Integer
 
-  field :status, type: Symbol
+  field :status, type: Hash
 
   index({ source_id: 1, code_by_source: 1 }, { unique: true })
 end

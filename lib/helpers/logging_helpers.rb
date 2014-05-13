@@ -23,3 +23,7 @@ end
 def log_tender_saved(tender_id)
   ParserLog.logger.info "[#{Time.now}] - tender ##{tender_id} saved"
 end
+
+def log_rule_failed(rule, value)
+  ParserLog.logger.info "[#{Time.now}] - #{rule} failed on '#{value}'"
+end
