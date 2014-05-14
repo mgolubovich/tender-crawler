@@ -61,6 +61,7 @@ class SourcesController < ApplicationController
    @source_id = params[:source_id]
    @selector_id = params[:id]
    @selector = Selector.find params[:id]
+   @rule = @selector.rules
    haml :'selectors/edit'
  end
 

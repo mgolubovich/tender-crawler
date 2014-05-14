@@ -1,5 +1,18 @@
 - @title = 'Edit selector'
-%h1 Изменить селектор
+%h1
+%b Edit
+selector for
+%a{ href: "/sources/edit/#{@source_id}" }
+  %b= Source.find(@source_id).name
+%h1
+- if @selector.rules.empty?
+  %a{ href: "/rules/new/#{@selector._id}"} Add rule
+- else
+  %b Rule
+  was updated at
+  %a{ :href => "/rules/#{@selector._id}/edit/#{@selector.rules.last._id}"} #{@selector.rules.last.updated_at.strftime("%d %B %Y (%R)")}
+%h1
+
 .container-fluid
   %form.form-horizontal{:action => "/sources/edit/#{@source_id}/selector/#{@selector_id}", :method => "post"}
     %fieldset
@@ -67,7 +80,11 @@
             %option{:value => "blocked", :selected => @selector.is_active ? false : true } Выключен
 
       .form-group
-        .col-md-5
-          %input.btn{:name => "submint", :type => "submit", :value => "Сохранить"}
+        .col-xs-5.col-md-offset-3
+          %input.btn.btn-primary.btn-lg{:name => "submint", :type => "submit", :value => "Сохранить"}
+          %a.btn.btn-danger.btn-lg{:href => "/sources/edit/#{@source_id}/selector/#{@selector_id}/destroy", :name => "delete", :type => "submit", :value => "Удалить", :method => "get"} Удалить
+
+
+
 
 

@@ -1,28 +1,26 @@
 - @title = 'Sources list'
 %h1 Sources list
 .container-fluid
-  %table.table.table-striped.table-condensed
+  %table.table.table-condensed.table-bordered
     %thead
       %tr
         %td Name
         %td Tenders count
         %td Selectors count
         %td Update frequency
-        %td Edit
         %td Delete
         %td Activity?
     %tbody
       - @sources.each do |source|
-        %tr
-          %td= source.name
+        %tr{:class => source.is_active ? "success" : "default" }
+          %td
+            %a{ href: "/sources/edit/#{source.id}"}= source.name
           %td= source.tenders.count
           %td= source.selectors.count
           %td= source.tenders_update_frequency
           %td
-            %a{ href: "/sources/edit/#{source.id}"} Edit
-          %td
             %a{ href: "/sources/destroy/#{source.id}"} Delete
-          %td= source.is_active
+          %td= source.is_active ? "Yes" : "No"
 
 .container-fluid
   %p

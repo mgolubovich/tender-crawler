@@ -1,0 +1,55 @@
+- @title = 'New rule'
+.container-fluid
+%h1
+%b New
+rule for
+%a{ href: "/sources/edit/#{@selector.source_id}/selector/#{@selector._id}" }
+  %b= @selector.value_type
+selector in
+%a{ href: "/sources/edit/#{@selector.source_id}"}
+  %b= @source_name
+%p
+.container-fluid
+  %form.form-horizontal{:action => "/rules/new/#{@selector._id}", :method => "post"}
+    %fieldset
+      .form-group
+        %label.col-md-4.control-label{:for => "rule_regexp"} Regexp
+        .col-md-5
+          %input.form-control.input-md{:id => "rule_regexp", :name => "rule_regexp", :type => "text", :size => 20}
+      .form-group
+        %label.col-md-4.control-label{:for => "rule_length"} Length
+        .col-md-1
+          %input.form-control{:id => "rule_length_less", :name => "rule_length_less", :type => "text", :size => 20, :placeholder => "less"}
+        .col-md-1
+          %input.form-control{:id => "rule_length_more", :name => "rule_length_more", :type => "text", :size => 20, :placeholder => "more"}
+        .col-md-1
+          %input.form-control{:id => "rule_equal", :name => "rule_equal", :type => "text", :size => 20, :placeholder => "equal"}
+        .col-md-2
+          .checkbox
+            %label
+              %input{:id => "rule_emptiness", :name => "rule_emptiness", :type => "checkbox", :size => 20} Check emptiness?
+      .form-group
+        %label.col-md-4.control-label{:for => "rule_status"} Failed status
+        .col-md-5
+          %select.form-control{:id => "rule_status", :name => "rule_status"}
+            %option{:value => "failed", :selected => true} Failed
+            %option{:value => "moderation"} Moderation
+      .form-group
+        %label.col-md-4.control-label{:for => "rule_activity"} Активность
+        .col-md-5
+          %select.form-control{:id => "rule_activity", :name => "rule_activity"}
+            %option{:value => "active", :selected => true} Включен
+            %option{:value => "blocked"} Выключен
+      .form-group
+        .col-xs-5.col-md-offset-3
+          %input.btn.btn-primary.btn-lg{:name => "submint", :type => "submit", :value => "Добавить"}
+
+
+
+
+
+
+
+
+
+
