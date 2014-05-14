@@ -20,7 +20,7 @@ class Tender
   field :start_price, type: Float
   field :tender_form, type: String
   field :customer_name, type: String
-  field :customer_adress, type: String
+  field :customer_address, type: String
   field :customer_inn, type: String
   field :okdps, type: String
   field :documents, type: Hash
