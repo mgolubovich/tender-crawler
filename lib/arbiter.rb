@@ -8,9 +8,9 @@ class Arbiter
   end
 
   def judge
-    @arbitrage[:check_length] = check_length
-    @arbitrage[:check_emptiness] = check_emptiness
-    @arbitrage[:check_regexp] = check_regexp
+    @arbitrage[:check_length] = check_length if @rule.check_length.kind_of(Hash) && @rule.check_length.count > 0
+    @arbitrage[:check_emptiness] = check_emptiness if @rule.check_emptiness
+    @arbitrage[:check_regexp] = check_regexp if @rule.check_regexp.length > 0
 
     @arbitrage.each_pair do |rule, result|
       if result == :failed
