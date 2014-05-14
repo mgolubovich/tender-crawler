@@ -13,6 +13,10 @@ class Source
   field :is_active, type: Boolean
   field :last_imported_at, type: DateTime
 
+  # Field used for invoking pre and post processing of data or parametres
+  # Example: { :class_name => 'ZakupkiTrigger', :before => false, :after => true}
+  field :trigger, type: Hash
+
   # Example of proxy_update_frequency field value
   # This {"type":"hits","value":"100"} means what every 100 hits we must change proxy server
   # Another form - {"type":"time", "value":"5.minutes"} means what every 5 minutes we also must change proxy server
