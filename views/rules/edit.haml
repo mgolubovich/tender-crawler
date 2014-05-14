@@ -1,0 +1,62 @@
+- @title = 'Edit rule'
+.container-fluid
+%h1
+%b Edit
+rule for
+%a{ href: "/sources/edit/#{@selector.source_id}/selector/#{@selector._id}" }
+  %b= @selector.value_type
+selector in
+%a{ href: "/sources/edit/#{@selector.source_id}"}
+  %b= @source_name
+source.
+%h1
+.container-fluid
+  %form.form-horizontal{:action => "/rules/#{@selector._id}/edit/#{@rule._id}", :method => "post"}
+    %fieldset
+      .form-group
+        %label.col-md-4.control-label{:for => "rule_id"} ID
+        .col-md-5
+          %input.form-control.input-md{:id => "rule_id", :name => "rule_id", :type => "text", :size => 20, :value => @rule._id, readonly:true}
+      .form-group
+        %label.col-md-4.control-label{:for => "rule_regexp"} Regexp
+        .col-md-5
+          %input.form-control.input-md{:id => "rule_regexp", :name => "rule_regexp", :type => "text", :size => 20, :value => @rule.regexp}
+      .form-group
+        %label.col-md-4.control-label{:for => "rule_length"} Length
+        .col-md-1
+          %input.form-control{:id => "rule_length_less", :name => "rule_length_less", :type => "text", :size => 20, :value => @rule.check_length["less"]}
+        .col-md-1
+          %input.form-control{:id => "rule_length_more", :name => "rule_length_more", :type => "text", :size => 20, :value => @rule.check_length["more"]}
+        .col-md-1
+          %input.form-control{:id => "rule_equal", :name => "rule_equal", :type => "text", :size => 20, :value => @rule.check_length["equal"]}
+        .col-md-2
+          .checkbox
+            %label
+              %input{:id => "rule_emptiness", :name => "rule_emptiness", :type => "checkbox", :size => 20, :checked => @rule.check_emptiness ? true : false } Check emptiness?
+      .form-group
+        %label.col-md-4.control-label{:for => "rule_status"} Failed status
+        .col-md-5
+          %select.form-control{:id => "rule_status", :name => "rule_status"}
+            %option{:value => "failed", :selected => @rule.failed_status == :failed ? true : false } Failed
+            %option{:value => "moderation", :selected => @rule.failed_status == :moderation ? true : false } Moderation
+      .form-group
+        %label.col-md-4.control-label{:for => "rule_activity"} Активность
+        .col-md-5
+          %select.form-control{:id => "rule_activity", :name => "rule_activity"}
+            %option{:value => "active", :selected => @rule.is_active ? true : false } Включен
+            %option{:value => "blocked", :selected => @rule.is_active ? false : true } Выключен
+      .form-group
+        .col-xs-5.col-md-offset-3
+          %input.btn.btn-primary.btn-lg{:name => "submint", :type => "submit", :value => "Сохранить"}
+          %a.btn.btn-danger.btn-lg{:href => "/rules/#{@rule._id}/destroy", :name => "delete", :type => "submit", :value => "Удалить", :method => "get"} Удалить
+
+
+
+
+
+
+
+
+
+
+
