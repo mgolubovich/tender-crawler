@@ -2,7 +2,7 @@ class Rule
   include Mongoid::Document
   include Mongoid::Timestamps
 
-  has_one :selector
+  belongs_to :selector
 
   field :regexp, type: String
   field :check_emptiness, type: Boolean
