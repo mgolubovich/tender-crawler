@@ -1,5 +1,9 @@
 class SourcesController < ApplicationController
 
+  get '/' do
+    @sources = Source.order_by(created_at: :asc)
+    haml :sources
+  end
 
   get '/overview' do
     @sources = Source.order_by(created_at: :asc)
