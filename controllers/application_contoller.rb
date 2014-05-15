@@ -1,5 +1,9 @@
 require 'sinatra/base'
 require 'bundler/setup'
+require 'will_paginate'
+require 'will_paginate_mongoid'
+require 'will_paginate-bootstrap'
+require 'will_paginate/view_helpers/sinatra'
 
 
 class ApplicationController < Sinatra::Base
@@ -26,5 +30,20 @@ class ApplicationController < Sinatra::Base
     set :environment, :production
     enable :sessions, :logging, :static, :inline_templates, :method_override, :dump_errors, :run
     Mongoid.load!(File.expand_path(File.join("config", "mongoid.yml")))
+  end
+
+  helpers WillPaginate::Sinatra::Helpers
+
+  helpers do
+    def paginate(collection)
+       options = {
+         renderer: BootstrapPagination::Sinatra,
+         inner_window: 0,
+         outer_window: 0,
+         previous_label: '&laquo;',
+         next_label: '&raquo;'
+       }
+      will_paginate collection, options
+    end
   end
 end

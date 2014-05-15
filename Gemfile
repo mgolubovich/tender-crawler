@@ -13,15 +13,13 @@ gem 'haml'
 gem 'capybara', '2.2.1'
 gem 'capybara-webkit', '1.1.0'
 gem 'activesupport', '3.2.17'
+gem "will_paginate"
+gem "will_paginate_mongoid"
+gem "will_paginate-bootstrap"
 
 
 platforms :ruby do # linux
   gem 'unicorn'
-end
-
-platforms :mswin, :mingw do #win
-  gem 'rackup'
-
 end
 
 group :development do
