@@ -22,7 +22,6 @@ class Reaper
       selectors = @source.selectors.active.data_fields.where(:group => group)
 
       ids_set.each do |entity_id|
-        debugger
         fields_status = Hash.new
         tender_status = Hash.new
 
@@ -33,7 +32,13 @@ class Reaper
 
         selectors.each do |selector|
           value = Grappler.new(selector, entity_id).grapple
-          tender[selector.value_type.to_sym] = value
+          
+          # GOVNOKOD
+          if selector.value_type.to_sym == :start_price
+            tender[selector.value_type.to_sym] = value.to_f
+          else
+            tender[selector.value_type.to_sym] = value
+          end
           
           fields_status[selector.value_type.to_sym] = Arbiter.new(value, selector.rule.first).judge if selector.rules.count > 0
           

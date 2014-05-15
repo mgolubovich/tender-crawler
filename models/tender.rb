@@ -6,8 +6,8 @@ class Tender
   has_many :protocols
   
   # Timestamps, created_at and updated_at included via mongoid
-  field :start_at, type: DateTime
-  field :published_at, type: DateTime
+  field :start_at, type: Time
+  field :published_at, type: Time
 
   # Source info
   field :code_by_source, type: String

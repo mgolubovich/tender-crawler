@@ -3,7 +3,7 @@ namespace :parsing do
   
   desc "Test task for reaping zakupki"
   task :test_reap do
-    reaper = Reaper.new(Source.active.where(:name => 'zakupki.gov.ru').first)
+    reaper = Reaper.new(Source.first)
     reaper.reap
     puts reaper.result
   end
@@ -22,7 +22,6 @@ namespace :parsing do
     source.each do |s|
       reaper = Reaper.new s
       reaper.reap
-      #ckjghkfjhg
     end
   end
 end
