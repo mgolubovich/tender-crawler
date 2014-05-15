@@ -8,7 +8,7 @@ class Reaper
   end
 
   def reap
-    log_started_parsing(source.name)
+    log_started_parsing(@source.name)
 
     selector_groups = @source.selectors.distinct(:group)
     @result = []
