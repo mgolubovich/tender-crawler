@@ -1,3 +1,4 @@
+require 'debugger'
 class Reaper
 
   attr_reader :result
@@ -11,15 +12,17 @@ class Reaper
     log_started_parsing(@source.name)
 
     selector_groups = @source.selectors.distinct(:group)
+    ParserLog.logger.info("Got groups - #{selector_groups}")
     @result = []
 
     selector_groups.each do |group|
-      ids_set = Grappler.new(@source.selectors.active.ids_set.where(:group => group).first).grapple_all.uniq
+      ids_set = Grappler.new(@source.selectors.active.ids_set.where(:group => group.to_s).first).grapple_all.uniq
       log_got_ids_set(ids_set.count)
 
       selectors = @source.selectors.active.data_fields.where(:group => group)
 
       ids_set.each do |entity_id|
+        debugger
         fields_status = Hash.new
         tender_status = Hash.new
 
@@ -32,7 +35,7 @@ class Reaper
           value = Grappler.new(selector, entity_id).grapple
           tender[selector.value_type.to_sym] = value
           
-          fields_status[selector.value_type.to_sym] = Arbiter.new(value, selector.rule.first).judge if selector.rule.count > 0
+          fields_status[selector.value_type.to_sym] = Arbiter.new(value, selector.rule.first).judge if selector.rules.count > 0
           
           log_got_value(selector.value_type, value)
         end

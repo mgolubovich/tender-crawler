@@ -2,7 +2,7 @@ require 'capybara'
 require 'capybara/dsl'
 require 'capybara/webkit'
 require 'date'
-require 'debugger'
+#require 'debugger'
 
 class Grappler
 
@@ -27,15 +27,19 @@ class Grappler
 
     visit @link
     ParserLog.logger.info("Visit - #{@link}")
-    
+
     execute_script(@js_code) unless @js_code.nil?
 
-    slice = @css.nil? ? all(:xpath, @xpath) : all(:css, @css)
+    slice = @css.empty? ? all(:xpath, @xpath) : all(:css, @css)
+    puts "#{slice} - #{slice.size} - #{slice.first}"
     slice.each do |item|
-      data = @attr.nil? ? item.text.to_s.strip : item[@attr.to_sym].to_s.strip
+      data = @attr.empty? ? item.text.to_s.strip : item[@attr.to_sym].to_s.strip
+      puts data
       data = apply_offset(data) unless @offset.nil? || data.empty?
-      data = apply_regexp(data) unless @regexp.nil? || data.empty?
-      data = apply_date_format(data) unless @date_format.nil? || data.empty?
+      puts "Data after offset #{data}"
+      data = apply_regexp(data) unless @regexp.empty? || data.empty?
+      puts "Data after regexp #{data}"
+      data = apply_date_format(data) unless @date_format.empty? || data.empty?
       target_data << data
     end
 
@@ -49,7 +53,13 @@ class Grappler
   private
 
   def apply_offset(data)
-    @offset > 0 ? data[0..@offset.to_i] : data[@offset.to_i.abs..-1]
+    if @offset.to_i > 0
+       data = data[0..@offset.to_i]
+    elsif @offset.to_i < 0
+      data = data[@offset.to_i, @offset.to_i.abs]
+    end
+    puts "Data in offset #{data}"
+    data
   end
 
   def apply_regexp(data)
