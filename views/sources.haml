@@ -1,6 +1,9 @@
 - @title = 'Sources list'
 %h1 Sources list
 .container-fluid
+  %p
+    %a{ href: "/sources/new"} Add new source
+.container-fluid
   %table.table.table-condensed.table-bordered
     %thead
       %tr
@@ -21,7 +24,4 @@
           %td
             %a{ href: "/sources/destroy/#{source.id}"} Delete
           %td= source.is_active ? "Yes" : "No"
-
-.container-fluid
-  %p
-    %a{ href: "/sources/new"} Add new source
+  = will_paginate @sources, renderer: BootstrapPagination::Sinatra

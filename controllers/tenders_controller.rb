@@ -1,7 +1,7 @@
 class TendersController < ApplicationController
 
   get '/' do
-    @tenders = Tender.order_by(created_at: :desc)
+    @tenders = Tender.order_by(created_at: :desc).paginate(page: params[:page], per_page: 25)
     haml :tenders
   end
 

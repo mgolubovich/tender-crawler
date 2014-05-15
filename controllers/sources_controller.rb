@@ -1,7 +1,7 @@
 class SourcesController < ApplicationController
 
   get '/' do
-    @sources = Source.order_by(created_at: :asc)
+    @sources = Source.order_by(created_at: :asc).paginate(page: params[:page], per_page: 25)
     haml :sources
   end
 

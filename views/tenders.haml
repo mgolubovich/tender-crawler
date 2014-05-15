@@ -1,6 +1,7 @@
 - @title = 'Tenders list'
 %h1 Tenders list
 .container-fluid
+  = will_paginate @tenders, renderer: BootstrapPagination::Sinatra
   %table.table.table-striped.table-condensed
     %thead
       %tr
@@ -22,3 +23,4 @@
           %td= tender.created_at
           %td= tender.updated_at
 
+= will_paginate @tenders, renderer: BootstrapPagination::Sinatra
