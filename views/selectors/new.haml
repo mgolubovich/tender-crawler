@@ -1,6 +1,6 @@
 - @title = 'New selector'
 %h1
-  Новый селектор for
+  New selector for
   %a{ href: "/sources/edit/#{@source_id}"}= Source.find(@source_id).name
 .container-fluid
   %form.form-horizontal{:action => "/sources/edit/#{@source_id}/add_s", :method => "post"}
