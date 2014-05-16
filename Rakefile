@@ -1,5 +1,4 @@
 require 'sinatra/base'
-<<<<<<< HEAD
 require 'bundler'
 
 Bundler.require
