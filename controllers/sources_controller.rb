@@ -51,7 +51,9 @@ class SourcesController < ApplicationController
    selector.css = params[:selector_css]
    selector.attr = params[:selector_attr]
    selector.offset = params[:selector_offset].to_i
-   selector.regexp = params[:selector_regexp].to_sym
+   selector.regexp = {"mode" => params[:selector_mode_reg], "pattern" => params[:selector_pat_reg]}
+  # selector.regexp[:mode] = params[:selector_mode_reg]
+  # selector.regexp[:pattern] = params[:selector_pat_reg]
    selector.date_format = params[:selector_date_format]
    selector.js_code = params[:selector_js_code]
    selector.group = params[:selector_group].to_sym
@@ -76,7 +78,8 @@ class SourcesController < ApplicationController
    selector.css = params[:selector_css]
    selector.attr = params[:selector_attr]
    selector.offset = params[:selector_offset].to_i
-   selector.regexp = params[:selector_regexp].to_sym
+   selector.regexp[:mode] = params[:selector_mode_reg] == 'gsub' ? true : false
+   selector.regexp[:pattern] = params[:selector_pat_reg]
    selector.date_format = params[:selector_date_format]
    selector.js_code = params[:selector_js_code]
    selector.group = params[:selector_group].to_sym
