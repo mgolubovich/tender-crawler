@@ -26,7 +26,8 @@ class Selector
   field :offset, type: Integer
 
   # Regular expression what will be executed on target data before saving. Can be empty.
-  field :regexp, type: String
+  # {'mode' => 'match/gsub', pattern => "dfdf"}
+  field :regexp, type: Hash
 
   # Format for parsed date
   field :date_format, type: String

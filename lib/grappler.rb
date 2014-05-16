@@ -12,12 +12,12 @@ class Grappler
 
   def initialize(selector, entity_id='')
     @link = selector.link_template.gsub('$entity_id', entity_id)
-    @xpath = selector.xpath
-    @css = selector.css
-    @attr = selector.attr unless selector.attr.nil?
+    @xpath = selector.xpath.to_s
+    @css = selector.css.to_s
+    @attr = selector.attr.to_s unless selector.attr.nil?
     @offset = selector.offset unless selector.offset.nil?
     @regexp = selector.regexp unless selector.regexp.nil?
-    @date_format = selector.date_format unless selector.date_format.nil?
+    @date_format = selector.date_format.to_s unless selector.date_format.nil?
     @js_code = selector.js_code unless selector.js_code.nil?
   end
 
@@ -34,7 +34,7 @@ class Grappler
     slice.each do |item|
       data = @attr.empty? ? item.text.to_s.strip : item[@attr.to_sym].to_s.strip
       data = apply_offset(data) unless @offset.nil? || data.empty?
-      data = apply_regexp(data) unless @regexp.empty? || data.empty?
+      data = apply_regexp(data) unless @regexp["pattern"].empty? || data.empty?
       data = apply_date_format(data) unless @date_format.empty? || data.empty?
       target_data << data
     end
@@ -58,7 +58,7 @@ class Grappler
   end
 
   def apply_regexp(data)
-    data.gsub!(Regexp.new(@regexp), '')
+    @regexp["mode"] == "gsub" ? data.gsub!(Regexp.new(@regexp["pattern"]), '') : data.scan(Regexp.new(@regexp["pattern"]).first)
   end
 
   def apply_date_format(data)
