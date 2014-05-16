@@ -10,9 +10,13 @@ class TendersController < ApplicationController
   end
 
   get '/:source_id' do
-    @tenders = Tender.where(:source_id => params[:source_id]).order_by(created_at: :desc).paginate(page: params[:page], per_page: 25)
-    @source_id = Source.find(params[:source_id])
-    haml :tenders
+    if Source.where(_id: params[:source_id]).exists?
+      @tenders = Tender.where(:source_id => params[:source_id]).order_by(created_at: :desc).paginate(page: params[:page], per_page: 25)
+      @source = Source.find params[:source_id]
+      haml :tenders
+    else
+      redirect ('/tenders')
+    end
   end
 
   get '/new' do
