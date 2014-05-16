@@ -55,10 +55,10 @@ selector for
         %label.col-md-4.control-label{:for => "selector_regexp"} regexp
         .col-md-2
           %select.form-control{:id => "selector_mode_reg", :name => "selector_mode_reg"}
-            %option{:value => "gsub", :selected => @selector.regexp[:mode] == 'gsub' ? true : false } gsub
-            %option{:value => "match", :selected => @selector.regexp[:mode] == 'gsub' ? false : true } match
+            %option{:value => "gsub", :selected => @selector.regexp["mode"] == 'gsub' ? true : false } gsub
+            %option{:value => "match", :selected => @selector.regexp["mode"] == 'gsub' ? false : true } match
         .col-md-6
-          %input.form-control.input-md{:id => "selector_regexp", :name => "selector_regexp", :type => "text", :size => 20, :value => @selector.regexp}
+          %input.form-control.input-md{:id => "selector_regexp", :name => "selector_regexp", :type => "text", :size => 20, :value => @selector.regexp["pattern"]}
 
       .form-group
         %label.col-md-4.control-label{:for => "selector_date_format"} date_format
