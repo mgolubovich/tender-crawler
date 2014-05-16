@@ -34,7 +34,7 @@ class Grappler
     slice.each do |item|
       data = @attr.empty? ? item.text.to_s.strip : item[@attr.to_sym].to_s.strip
       data = apply_offset(data) unless @offset.nil? || data.empty?
-      data = apply_regexp(data) unless @regexp.empty? || data.empty?
+      data = apply_regexp(data) unless @regexp["pattern"].empty? || data.empty?
       data = apply_date_format(data) unless @date_format.empty? || data.empty?
       target_data << data
     end
@@ -58,7 +58,7 @@ class Grappler
   end
 
   def apply_regexp(data)
-    data.gsub!(Regexp.new(@regexp), '')
+    @regexp["mode"] == "gsub" ? data.gsub!(Regexp.new(@regexp["pattern"]), '') : data.scan(Regexp.new(@regexp["pattern"]).first)
   end
 
   def apply_date_format(data)
