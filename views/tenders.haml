@@ -1,8 +1,13 @@
 - @title = 'Tenders list'
-%h1 Tenders list
+- if params[:source_id].nil?
+  %h1 Tenders list
+- else
+  %h1
+    Tender list of
+    %a{ href: "/sources/edit/#{@source._id}"}= @source.name
 .container-fluid
-  = will_paginate @tenders, renderer: BootstrapPagination::Sinatra
   %table.table.table-striped.table-condensed
+    = will_paginate @tenders, renderer: BootstrapPagination::Sinatra
     %thead
       %tr
         %td Code by source
@@ -11,16 +16,20 @@
         %td Link
         %td Created At
         %td Updated At
+        %td Delete
     %tbody
       - @tenders.each do |tender|
         %tr
           %td
             %a{ href: "/tenders/show/#{tender.id}"}= tender.code_by_source
-          %td= tender.source.name
+          %td
+            %a{ href: "/tenders/#{tender.source_id}"}= tender.source.name
           %td= tender.title
           %td
             %a{ href: tender.source_link, target: :blank}= tender.source_link
           %td= tender.created_at
           %td= tender.updated_at
+          %td
+            %a{ href: "/tenders/#{tender._id}/destroy"} Delete
 
 = will_paginate @tenders, renderer: BootstrapPagination::Sinatra

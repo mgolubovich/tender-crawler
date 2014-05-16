@@ -1,7 +1,11 @@
 %img{ :src => 'http://10.0.105.15/images/logo.png'}
 %h1 General Statistics
 %p.lead
-  Sources total count - #{@stats[:source_count]}
+  %a{href: "/sources"}
+    %b Sources
+  total count - #{@stats[:source_count]}
   %br
-  Tenders total count - #{@stats[:tenders_count]}
+  %a{href: "/tenders"}
+    %b Tenders
+  total count - #{@stats[:tenders_count]}
 
