@@ -6,7 +6,12 @@ class TendersController < ApplicationController
   end
 
   get '/overview' do
-    @tenders = Tender.order_by(created_at: :desc)
+    redirect '/tenders'
+  end
+
+  get '/:source_id' do
+    @tenders = Tender.where(:source_id => params[:source_id]).order_by(created_at: :desc).paginate(page: params[:page], per_page: 25)
+    @source_id = Source.find(params[:source_id])
     haml :tenders
   end
 
@@ -19,4 +24,9 @@ class TendersController < ApplicationController
     haml :'tenders/show'
   end
 
+  get '/:tender_id/destroy' do
+    tender = Tender.find params[:tender_id]
+    tender.destroy
+    redirect '/tenders'
+  end
 end

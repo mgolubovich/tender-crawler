@@ -6,8 +6,7 @@ class SourcesController < ApplicationController
   end
 
   get '/overview' do
-    @sources = Source.order_by(created_at: :asc)
-    haml :sources
+    redirect '/sources'
   end
 
   get '/new' do
@@ -35,7 +34,7 @@ class SourcesController < ApplicationController
     source.is_active = params[:source_activity] == 'active' ? true : false
     source.external_site_id = params[:source_external_site_id]
     source.save
-    redirect '/sources/overview'
+    redirect '/sources'
   end
 
   get '/edit/:source_id/add_s' do
@@ -90,7 +89,7 @@ class SourcesController < ApplicationController
   get '/destroy/:id' do
     source = Source.find params[:id]
     source.destroy
-    redirect "/sources/overview"
+    redirect "/sources"
   end
 
   get '/edit/:source_id/selector/:id/destroy' do

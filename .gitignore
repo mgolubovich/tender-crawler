@@ -6,3 +6,4 @@ config/unicorn.rb
 tmp/*
 log/*
 *.DS_Store
+Gemfile.lock
