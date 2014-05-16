@@ -1,10 +1,21 @@
 - @title = 'Tenders list'
 - if params[:source_id].nil?
-  %h1 Tenders list
+  %h1
+    Tenders list.
+    %br
+    Total count - [
+    %b
+      #{@tenders_count}
+    ]
 - else
   %h1
     Tender list of
     %a{ href: "/sources/edit/#{@source._id}"}= @source.name
+    %br
+    Count - [
+    %b
+      #{@tenders_count}
+    ]
 .container-fluid
   %table.table.table-striped.table-condensed
     = will_paginate @tenders, renderer: BootstrapPagination::Sinatra

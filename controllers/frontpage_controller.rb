@@ -1,5 +1,5 @@
 class FrontPageController < ApplicationController
-  
+
   get '/' do
     get_base_stats
     haml :index
