@@ -2,9 +2,10 @@ require 'sinatra/base'
 require 'bundler'
 
 Bundler.require
-Dir.glob('./{models,lib,controllers,fatalities}/*.rb').each { |file| require file }
+Dir.glob('./{models,lib,controllers}/*.rb').each { |file| require file }
 Dir.glob('./config/initializers/*.rb').each { |file| require file}
 Dir.glob('./lib/helpers/*.rb').each { |file| require file}
+Dir.glob('./lib/triggers/*.rb').each { |file| require file}
 
 map('/') { run FrontPageController }
 map('/tenders') { run TendersController }
