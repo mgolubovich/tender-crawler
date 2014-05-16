@@ -6,8 +6,8 @@
     Tender list of
     %a{ href: "/sources/edit/#{@source._id}"}= @source.name
 .container-fluid
-  = will_paginate @tenders, renderer: BootstrapPagination::Sinatra
   %table.table.table-striped.table-condensed
+    = will_paginate @tenders, renderer: BootstrapPagination::Sinatra
     %thead
       %tr
         %td Code by source
