@@ -8,6 +8,11 @@ namespace :parsing do
     puts reaper.result
   end
 
+  desc "Reap for a specific source"
+  task :reap, :source_id do |t, args|
+    Reaper.new(Source.find(args.source_id)).reap
+  end
+
   desc "Task for testing single selector"
   task :test_grapple do
     selector = Source.active.where(:name => 'zakupki.gov.ru').first.selectors.where(:value_type => :code_by_source).first

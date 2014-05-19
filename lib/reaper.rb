@@ -25,12 +25,16 @@ class Reaper
         fields_status = Hash.new
         tender_status = Hash.new
 
+        # HACK Fix later
+        entity_id = entity_id.first if entity_id.is_a?(Array)
+        #
         code = Grappler.new(selectors.active.where(:value_type => :code_by_source).first, entity_id).grapple
         log_got_code(code)
 
         tender = @source.tenders.find_or_create_by(code_by_source: code)
 
         selectors.each do |selector|
+          log_start_grappling(selector.value_type)
           value = Grappler.new(selector, entity_id).grapple
           
           # GOVNOKOD

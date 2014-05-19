@@ -20,6 +20,10 @@ def log_got_value(value_type, value)
   ParserLog.logger.info "[#{Time.now}] - got value for #{value_type} = #{value}"
 end
 
+def log_start_grappling(value_type)
+  ParserLog.logger.info "[#{Time.now}] - start grappling for #{value_type}"
+end
+
 def log_tender_saved(tender_id)
   ParserLog.logger.info "[#{Time.now}] - tender ##{tender_id} saved"
 end
