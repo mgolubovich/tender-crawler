@@ -11,7 +11,7 @@ class Reaper
   def reap
     log_started_parsing(@source.name)
 
-    selector_groups = @source.selectors.distinct(:group)
+    selector_groups = @source.selectors.active.distinct(:group)
     ParserLog.logger.info("Got groups - #{selector_groups}")
     @result = []
 
