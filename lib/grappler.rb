@@ -19,13 +19,15 @@ class Grappler
     @regexp = selector.regexp unless selector.regexp.nil?
     @date_format = selector.date_format.to_s unless selector.date_format.nil?
     @js_code = selector.js_code unless selector.js_code.nil?
+    @to_type = selector.to_type unless selector.to_type.nil? || selector.to_type.empty?
   end
 
   def grapple(mode = :single)
     @mode = [:single, :multiple].include?(mode) ? mode : :single
     target_data = []
 
-    visit @link
+    visit @link unless current_url == @link
+    
     ParserLog.logger.info("Visit - #{@link}")
 
     execute_script(@js_code) unless @js_code.nil?
@@ -36,6 +38,7 @@ class Grappler
       data = apply_offset(data) unless @offset.nil? || data.empty?
       data = apply_regexp(data) unless @regexp["pattern"].empty? || data.empty?
       data = apply_date_format(data) unless @date_format.empty? || data.empty?
+      data = apply_to_type(data) unless @to_type.nil? ||data.empty?
       target_data << data
     end
 
@@ -67,6 +70,20 @@ class Grappler
     rescue ArgumentError
       nil
     end
+  end
+
+  def apply_to_type(data)
+    case @to_type
+      when :float
+        data = data.to_f
+      when :integer
+        data = data.to_i
+      when :symbol
+        data = data.to_sym
+      else
+        data = data.to_s
+    end
+    data
   end
 
 end

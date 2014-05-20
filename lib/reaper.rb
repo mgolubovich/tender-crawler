@@ -1,59 +1,63 @@
 require 'debugger'
-class Reaper
+require 'capybara/dsl'
+require 'capybara/webkit'
 
-  attr_reader :result
+class Reaper
   
+  include Capybara::DSL
+  Capybara.default_driver = :webkit
+  Capybara.run_server = false
+
   def initialize(source, limit=0)
     @source = source
     @limit = limit
+    @fields_status = Hash.new
+
+    log_started_parsing(@source.name)
+  end
+
+  def get_cartridges
+    @cartridges = @source.cartridges.active
+  end
+
+  def apply_rules(value, selector)
+    @fields_status[selector.value_type.to_sym] = Arbiter.new(value, selector.rule.first).judge if selector.rules.count > 0
   end
 
   def reap
-    log_started_parsing(@source.name)
+    get_cartridges
+    @cartridges.each do |cartridge|
+      visit(cartridge.base_list_template) unless current_url == cartridge.base_list_template
 
-    selector_groups = @source.selectors.active.distinct(:group)
-    ParserLog.logger.info("Got groups - #{selector_groups}")
-    @result = []
-
-    selector_groups.each do |group|
-      ids_set = Grappler.new(@source.selectors.active.ids_set.where(:group => group.to_s).first).grapple_all.uniq
+      ids_set = Grappler.new(cartridge.selectors.active.ids_set.first).grapple_all.uniq
       log_got_ids_set(ids_set.count)
 
-      selectors = @source.selectors.active.data_fields.where(:group => group)
-
       ids_set.each do |entity_id|
-        fields_status = Hash.new
         tender_status = Hash.new
-
         # HACK Fix later
         entity_id = entity_id.first if entity_id.is_a?(Array)
         #
-        code = Grappler.new(selectors.active.where(:value_type => :code_by_source).first, entity_id).grapple
+
+        code = Grappler.new(cartridge.selectors.active.where(:value_type => :code_by_source).first, entity_id).grapple
         log_got_code(code)
 
         tender = @source.tenders.find_or_create_by(code_by_source: code)
 
-        selectors.each do |selector|
+        cartridge.selectors.data_fields.each do |selector|
           log_start_grappling(selector.value_type)
-          value = Grappler.new(selector, entity_id).grapple
-          
-          # GOVNOKOD
-          if selector.value_type.to_sym == :start_price
-            tender[selector.value_type.to_sym] = value.to_f
-          else
-            tender[selector.value_type.to_sym] = value
-          end
-          
-          fields_status[selector.value_type.to_sym] = Arbiter.new(value, selector.rule.first).judge if selector.rules.count > 0
+          value = Grappler.new(selector, entity_id).grapple 
+          #debugger
+          tender[selector.value_type.to_sym] = value
+          apply_rules(value, selector)
           
           log_got_value(selector.value_type, value)
         end
 
         tender.id_by_source = entity_id
-        tender.source_link = @source.external_link_templates[group.to_s].gsub('$entity_id', entity_id)
-        tender.group = group
+        tender.source_link = cartridge.base_link_template.gsub('$entity_id', entity_id)
+        tender.group = cartridge.tender_type
         
-        fields_status.each_pair do |field, status|
+        @fields_status.each_pair do |field, status|
           tender_status[:state] = status
           tender_status[:failed_fields] = [] unless tender_status[:failed_fields].kind_of(Array)
           tender_status[:failed_fields] << field if status == :failed
@@ -66,6 +70,7 @@ class Reaper
         
         tender.save
         log_tender_saved(tender[:_id])
+
       end
     end
   end

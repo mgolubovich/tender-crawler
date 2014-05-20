@@ -3,14 +3,12 @@ namespace :parsing do
   
   desc "Test task for reaping zakupki"
   task :test_reap do
-    reaper = Reaper.new(Source.first)
-    reaper.reap
-    puts reaper.result
+    Reaper.new(Source.first).reap
   end
 
   desc "Reap for a specific source"
-  task :reap, :source_id do |t, args|
-    Reaper.new(Source.find(args.source_id)).reap
+  task :reap, :source_id, :deep_level do |t, args|
+    Reaper.new(Source.find(args.source_id), args.deep_level.to_i).reap
   end
 
   desc "Task for testing single selector"
@@ -22,7 +20,7 @@ namespace :parsing do
   end
 
   desc "Task for getting new tenders"
-  task :grapple do
+  task :reap_all do
     sources = Source.active
     source.each do |s|
       reaper = Reaper.new s

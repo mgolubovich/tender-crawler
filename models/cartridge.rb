@@ -11,4 +11,8 @@ class Cartridge
   field :base_list_template, type: String
 
   field :tender_type, type: String
+
+  field :is_active, type: Boolean, default: true
+
+  scope :active, where(:is_active => true)
 end
