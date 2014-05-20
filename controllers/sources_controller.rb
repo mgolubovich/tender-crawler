@@ -62,6 +62,7 @@ class SourcesController < ApplicationController
    selector.js_code = params[:selector_js_code]
    selector.group = params[:selector_group].to_sym
    selector.is_active = params[:selector_activity] == 'active' ? true : false
+   selector.to_type = params[:selector_to_type]
    selector.save
    redirect "/sources/edit/#{selector.source_id}"
  end
@@ -87,6 +88,7 @@ class SourcesController < ApplicationController
    selector.date_format = params[:selector_date_format]
    selector.js_code = params[:selector_js_code]
    selector.group = params[:selector_group].to_sym
+   selector.to_type = params[:selector_to_type]
    selector.is_active = params[:selector_activity] == 'active' ? true : false
    selector.save
    redirect "/sources/edit/#{selector.source_id}"
