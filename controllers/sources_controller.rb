@@ -16,6 +16,7 @@ class SourcesController < ApplicationController
   post '/new' do
     source = Source.new
     source.name = params[:source_name]
+    source.url = params[:source_url]
     source.is_active = params[:source_activity] == 'active' ? true : false
     source.external_site_id = params[:source_external_site_id]
     source.save
@@ -31,6 +32,7 @@ class SourcesController < ApplicationController
   post '/edit' do
     source = Source.find params[:source_id]
     source.name = params[:source_name]
+    source.url = params[:source_url]
     source.is_active = params[:source_activity] == 'active' ? true : false
     source.external_site_id = params[:source_external_site_id]
     source.save

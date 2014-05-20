@@ -12,7 +12,10 @@
         %label.col-md-4.control-label{:for => "source_name"} Название источника
         .col-md-5
           %input.form-control.input-md{:id => "source_name", :name => "source_name", :type => "text", :placeholder => "", :size => 20, :value => @sources.name}
-
+      .form-group
+        %label.col-md-4.control-label{:for => "source_url"} URL источника
+        .col-md-5
+          %input.form-control.input-md{:id => "source_url", :name => "source_url", :type => "text", :placeholder => "", :size => 20, :value => @sources.url}
       .form-group
         %label.col-md-4.control-label{:for => "source_activity"} Активность
         .col-md-5
