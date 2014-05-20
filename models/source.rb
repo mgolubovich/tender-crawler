@@ -4,6 +4,7 @@ class Source
 
   has_many :tenders
   has_many :selectors
+  has_many :cartridges
 
   # Source info
   field :name, type: String

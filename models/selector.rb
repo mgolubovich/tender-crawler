@@ -3,6 +3,7 @@ class Selector
   include Mongoid::Timestamps
 
   belongs_to :source
+  belongs_to :cartridge
   has_many :rules
 
   # Type of field what this selector must extract. Example: title, start_price etc
