@@ -19,7 +19,7 @@
         %tr{:class => source.is_active ? "success" : "default" }
           - if source.url.nil?
             %td
-              %b= source.name
+              %b source.name
           - else
             %td
               %a{ href: "#{source.url}" }
