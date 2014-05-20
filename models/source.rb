@@ -8,6 +8,7 @@ class Source
   # Source info
   field :name, type: String
   field :url, type: String
+  field :comment, type: String
 
   # Service parametres
   field :tenders_update_frequency, type: Time
