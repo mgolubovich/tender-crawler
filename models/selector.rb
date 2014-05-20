@@ -11,6 +11,9 @@ class Selector
   # Example - :ids_set, :protocol, :contractor
   field :value_type, type: Symbol
 
+  # Type of value in ruby terms, example - :float, :integer, :string, :symbol, :time
+  field :to_type, type: Symbol
+
   # Link where this selector must do it's work. Example: http://test.com/view?id=
   field :link_template, type: String
 
