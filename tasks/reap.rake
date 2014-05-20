@@ -3,7 +3,7 @@ namespace :parsing do
   
   desc "Test task for reaping zakupki"
   task :test_reap do
-    Reaper.new(Source.first).reap
+    Reaper.new(Source.first, 2000).reap
   end
 
   desc "Reap for a specific source"

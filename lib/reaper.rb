@@ -13,6 +13,8 @@ class Reaper
     @limit = limit
     @fields_status = Hash.new
 
+    @current_page = 0
+
     log_started_parsing(@source.name)
   end
 
@@ -24,12 +26,31 @@ class Reaper
     @fields_status[selector.value_type.to_sym] = Arbiter.new(value, selector.rule.first).judge if selector.rules.count > 0
   end
 
+  def next_page(cartridge)
+    page_manager = cartridge.page_managers.first
+    if page_manager.action_type == :get
+      @current_page += 1
+      visit cartridge.base_list_template.gsub('$page_number', @current_page.to_s)
+    end
+  end
+
+  def get_ids(cartridge)
+    Grappler.new(cartridge.selectors.active.ids_set.first).grapple_all.uniq
+  end
+
   def reap
     get_cartridges
     @cartridges.each do |cartridge|
-      visit(cartridge.base_list_template) unless current_url == cartridge.base_list_template
+      @current_page = 0
+      #visit(cartridge.base_list_template) unless current_url == cartridge.base_list_template
 
-      ids_set = Grappler.new(cartridge.selectors.active.ids_set.first).grapple_all.uniq
+      ids_set = []
+      
+      while @limit > ids_set.count
+        next_page(cartridge) if ids_set.count < @limit
+        ids_set += get_ids(cartridge)
+      end
+      #debugger
       log_got_ids_set(ids_set.count)
 
       ids_set.each do |entity_id|
@@ -46,7 +67,7 @@ class Reaper
         cartridge.selectors.data_fields.each do |selector|
           log_start_grappling(selector.value_type)
           value = Grappler.new(selector, entity_id).grapple 
-          #debugger
+          
           tender[selector.value_type.to_sym] = value
           apply_rules(value, selector)
           
