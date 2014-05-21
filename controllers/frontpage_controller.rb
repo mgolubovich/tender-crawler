@@ -10,5 +10,4 @@ class FrontPageController < ApplicationController
     @stats[:source_count] = Source.active.count
     @stats[:tenders_count] = Tender.count
   end
-
 end

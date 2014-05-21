@@ -7,6 +7,14 @@
     %b
       #{@tenders_count}
     ]
+  .container-fluid
+  %form{:action => "/tenders", :method => "get"}
+    .form-group
+    С
+    %input.datepicker{:name => "start_date", :style => "width: 100px;", :type => "text", :value => @start_date}
+    по
+    %input.datepicker{:name => "end_date", :style => "width: 100px;", :type => "text", :value => @end_date}
+    %input.btn.btn-primary{:name => "submint", :type => "submit", :value => "Искать" }
 - else
   %h1
     Tender list of
@@ -16,6 +24,14 @@
     %b
       #{@tenders_count}
     ]
+  .container-fluid
+  %form{:action => "/tenders", :method => "get"}
+    %input{ :name => "source_id", :type => "hidden", :value => @source._id}
+    С
+    %input.datepicker{:name => "start_date", :style => "width: 100px;", :type => "text", :value => @start_date}
+    по
+    %input.datepicker{:name => "end_date", :style => "width: 100px;", :type => "text", :value => @end_date}
+    %input.btn.btn-primary{:name => "submint", :type => "submit", :value => "Искать" }
 .container-fluid
   %table.table.table-striped.table-condensed
     = will_paginate @tenders, renderer: BootstrapPagination::Sinatra
@@ -34,7 +50,7 @@
           %td
             %a{ href: "/tenders/show/#{tender.id}"}= tender.code_by_source
           %td
-            %a{ href: "/tenders/#{tender.source_id}"}= tender.source.name
+            %a{ href: "/tenders?source_id=#{tender.source_id}"}= tender.source.name
           %td= tender.title
           %td
             %a{ href: tender.source_link, target: :blank}= tender.source_link
@@ -44,3 +60,9 @@
             %a{ href: "/tenders/#{tender._id}/destroy"} Delete
 
 = will_paginate @tenders, renderer: BootstrapPagination::Sinatra
+
+:javascript
+  $('.datepicker').datepicker({
+    format: 'dd.mm.yyyy',
+    weekStart: 1
+  });
