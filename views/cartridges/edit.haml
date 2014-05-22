@@ -1,0 +1,94 @@
+- @title = 'Edit cartridge'
+%h1 Edit cartridge
+.container-fluid
+  %form.form-horizontal{:action => "/cartridges/edit", :method => "post"}
+    %fieldset
+      .form-group
+        %label.col-md-4.control-label{:for => "cartridge_id"} ID
+        .col-md-5
+          %input.form-control.input-md{:id => "cartridge_id", :name => "cartridge_id", :type => "text", :size => 20, :value => @cartridge._id, readonly:true}
+      .form-group
+        %label.col-md-4.control-label{:for => "cartridge_name"} Name
+        .col-md-5
+          %input.form-control.input-md{:id => "cartridge_name", :name => "cartridge_name", :type => "text", :size => 20, :value => @cartridge.name}
+      .form-group
+        %label.col-md-4.control-label{:for=> "cartridge_source"} Source
+        .col-md-5
+          %select.form-control{ :id => "cartridge_source", :name => "cartridge_source"}
+            - @sources.each do |source|
+              %option{:value => source._id, :selected => source._id == @cartridge.source_id ? true : false}= source.name
+      .form-group
+        %label.col-md-4.control-label{:for => "cartridge_base_link"} base_link_template
+        .col-md-5
+          %input.form-control.input-md{:id => "cartridge_base_link", :name => "cartridge_base_link", :type => "text", :value => @cartridge.base_link_template, :size => 20}
+      .form-group
+        %label.col-md-4.control-label{:for => "cartridge_base_list"} base_list_template
+        .col-md-5
+          %input.form-control.input-md{:id => "cartridge_base_list", :name => "cartridge_base_list", :type => "text", :value => @cartridge.base_list_template, :size => 20}
+      .form-group
+        %label.col-md-4.control-label{:for=> "cartridge_tender_type"} tender_type
+        .col-md-5
+          %select.form-control{ :id => "cartridge_tender_type", :name => "cartridge_tender_type"}
+            %option{:value => "223", :selected => @cartridge.tender_type == '223' ? true : false} 223
+            %option{:value => "44", :selected => @cartridge.tender_type == '44' ? true : false} 44
+      .form-group
+        %label.col-md-4.control-label{:for=> "cartridge_activity"} Активность
+        .col-md-5
+          %select.form-control{ :id => "cartridge_activity", :name => "cartridge_activity"}
+            %option{:value => "active", :selected => @cartridge.is_active? ? true : false } Включен
+            %option{:value => "blocked", :selected => @cartridge.is_active? ? false : true } Выключен
+    %fieldset
+      %h1 Page Manager
+      .form-group
+        %label.col-md-4.control-label{:for => "pm_id"} ID
+        .col-md-5
+          %input.form-control.input-md{:id => "pm_id", :name => "pm_id", :type => "text", :size => 20, :value => @pm._id, readonly:true}
+      .form-group
+        %label.col-md-4.control-label{:for=> "pm_type"} action_type
+        .col-md-5
+          %select.form-control{ :id => "pm_type", :name => "pm_type"}
+            %option{:value => :get, :selected => @pm.action_type == :get ? true : false} get
+            %option{:value => :js, :selected => @pm.action_type == :js ? true : false} js
+            %option{:value => :click, :selected => @pm.action_type == :click ? true : false} click
+        .form-group
+        %label.col-md-4.control-label{:for => "pm_value"} action_value
+        .col-md-5
+          %textarea.form-control.input-md{:id => "pm_value", :name => "pm_value", :type => "text", :raws => 15}= @pm.action_value
+      .form-group
+        .col-xs-5.col-md-offset-3
+          %input.btn.btn-primary.btn-lg{:name => "submint", :type => "submit", :value => "Сохранить"}
+          %a.btn.btn-danger.btn-lg{:href => "/cartridges/destroy/#{@cartridge._id}", :name => "delete", :type => "submit", :value => "Удалить", :method => "get"} Удалить
+
+.container-fluid
+  %table.table.table-condensed.table-bordered
+    %thead
+      %tr
+        %td Selector
+        %td Delete
+        %td Rules
+        %td Is active?
+    %tbody
+    - @selectors.each do |s|
+      %tr{:class => s.is_active ? "success" : "" }
+        %td
+          %a{ href: "/cartridges/edit/#{@cartridge.id}/selector/#{s._id}"}
+            %b= s.value_type
+        %td
+          %a{ href: "/cartridges/edit/#{@cartridge.id}/selector/#{s._id}/destroy"} Delete
+        - if s.rules.empty?
+          %td
+            %a{ :href => "/rules/new/#{s._id}"}
+              %i Empty :(
+        - else
+          %td
+            - if s.rules.last.is_active
+              %a{ :href => "/rules/#{s._id}/edit/#{s.rules.last._id}"}
+                %b= s.rules.last.updated_at.strftime("%d %B %Y (%R)")
+            - else
+              %a{ :href => "/rules/#{s._id}/edit/#{s.rules.last._id}"}
+                %i Disabled !
+        %td= s.is_active ? "Yes" : "No"
+
+.container-fluid
+  %p
+    %a{ href: "/cartridges/edit/#{@cartridge.id}/add_s"} Add new selector

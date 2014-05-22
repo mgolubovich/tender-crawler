@@ -1,9 +1,9 @@
 - @title = 'New selector'
 %h1
   New selector for
-  %a{ href: "/sources/edit/#{@source_id}"}= Source.find(@source_id).name
+  %a{ href: "/cartridges/edit/#{@cartridge_id}"}= Cartridge.find(@cartridge_id).name
 .container-fluid
-  %form.form-horizontal{:action => "/sources/edit/#{@source_id}/add_s", :method => "post"}
+  %form.form-horizontal{:action => "/cartridges/edit/#{@cartridge_id}/add_s", :method => "post"}
     %fieldset
 
       .form-group
@@ -55,10 +55,6 @@
         .col-md-8
           %input.form-control.input-md{:id => "selector_js_code", :name => "selector_js_code", :type => "text", :size => 20}
 
-      .form-group
-        %label.col-md-4.control-label{:for => "selector_group"} group
-        .col-md-8
-          %input.form-control.input-md{:id => "selector_group", :name => "selector_group", :type => "text", :size => 20}
       .form-group
         %label.col-md-4.control-label{:for => "selector_to_type"} to_type
         .col-md-8

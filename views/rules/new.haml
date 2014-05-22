@@ -3,11 +3,11 @@
 %h1
 %b New
 rule for
-%a{ href: "/sources/edit/#{@selector.source_id}/selector/#{@selector._id}" }
+%a{ href: "/cartridges/edit/#{@selector.cartridge_id}/selector/#{@selector._id}" }
   %b= @selector.value_type
 selector in
-%a{ href: "/sources/edit/#{@selector.source_id}"}
-  %b= @source_name
+%a{ href: "/cartridge/edit/#{@selector.cartridge_id}"}
+  %b= @cartridge_name
 %p
 .container-fluid
   %form.form-horizontal{:action => "/rules/new/#{@selector._id}", :method => "post"}

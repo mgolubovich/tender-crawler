@@ -2,7 +2,7 @@ class RulesController < ApplicationController
 
   get '/new/:selector_id' do
     @selector = Selector.find params[:selector_id]
-    @source_name = @selector.source.name
+    @cartridge_name = @selector.cartridge.name
     haml :'rules/new'
   end
 
@@ -15,12 +15,12 @@ class RulesController < ApplicationController
     rule.check_emptiness = params[:rule_emptiness] == 'on' ? true : false
     rule.failed_status = params[:rule_status] == 'failed' ? :failed : :moderation
     rule.save
-    redirect "/sources/edit/#{@selector.source_id}"
+    redirect "/cartridges/edit/#{@selector.cartridge_id}"
   end
 
   get '/:selector_id/edit/:id' do
     @selector = Selector.find params[:selector_id]
-    @source_name = @selector.source.name
+    @cartridge_name = @selector.cartridge.name
     @rule = Rule.find params[:id]
     haml :'rules/edit'
   end
@@ -33,15 +33,15 @@ class RulesController < ApplicationController
     rule.check_emptiness = params[:rule_emptiness] == 'on' ? true : false
     rule.failed_status = params[:rule_status] == 'failed' ? :failed : :moderation
     rule.save
-    @source_id = rule.selector.source_id
-    redirect "/sources/edit/#{@source_id}"
+    @cartridge_id = rule.selector.cartridge_id
+    redirect "/cartridges/edit/#{@cartridge_id}"
   end
 
   get '/:id/destroy' do
     rule = Rule.find params[:id]
-    @source_id = rule.selector.source_id
+    @cartridge_id = rule.selector.cartridge_id
     @rule_selector = rule.selector_id
     rule.destroy
-    redirect "/sources/edit/#{@source_id}"
+    redirect "/cartridges/edit/#{@cartridge_id}"
   end
 end

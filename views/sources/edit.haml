@@ -41,37 +41,22 @@
   %table.table.table-condensed.table-bordered
     %thead
       %tr
-        %td Selector
-        %td Group
+        %td Cartridge
         %td Delete
-        %td Rules
         %td Is active?
     %tbody
-    - @selectors.each do |s|
+    - @cartridges.each do |s|
       %tr{:class => s.is_active ? "success" : "" }
         %td
-          %a{ href: "/sources/edit/#{@sources.id}/selector/#{s._id}"}
-            %b= s.value_type
-        %td= s.group
+          %a{ href: "/cartridges/edit/#{s.id}"}
+            %b= s.name
         %td
-          %a{ href: "/sources/edit/#{@sources.id}/selector/#{s._id}/destroy"} Delete
-        - if s.rules.empty?
-          %td
-            %a{ :href => "/rules/new/#{s._id}"}
-              %i Empty :(
-        - else
-          %td
-            - if s.rules.last.is_active
-              %a{ :href => "/rules/#{s._id}/edit/#{s.rules.last._id}"}
-                %b= s.rules.last.updated_at.strftime("%d %B %Y (%R)")
-            - else
-              %a{ :href => "/rules/#{s._id}/edit/#{s.rules.last._id}"}
-                %i Disabled !
+          %a{ href: "/cartridges/destroy/#{s.id}/"} Delete
         %td= s.is_active ? "Yes" : "No"
 
 .container-fluid
   %p
-    %a{ href: "/sources/edit/#{@sources.id}/add_s"} Add new selector
+    %a{ href: "/cartridges/new?source_id=#{@sources.id}"} Add new cartridge
 
 
 

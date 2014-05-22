@@ -12,3 +12,4 @@ map('/tenders') { run TendersController }
 map('/sources') { run SourcesController }
 map('/controls') { run ManagementController }
 map('/rules') { run RulesController }
+map('/cartridges') { run CartridgesController }

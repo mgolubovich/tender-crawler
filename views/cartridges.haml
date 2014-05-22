@@ -1,0 +1,34 @@
+- @title = 'Cartridges list'
+%h1 Cartridges
+.container-fluid
+  %h4
+    - if params[:source_id].nil?
+      %a{ href: "/cartridges/new"} Add new cartridge
+    - else
+      %a{ href: "/cartridges/new?source_id=#{@source_id}"} Add new cartridge in
+      = Source.find(@source_id).name
+      source.
+.container-fluid
+  %table.table.table-condensed.table-bordered
+    %thead
+      %tr
+        %td Name
+        %td Selectors count
+        %td Source
+        %td Edit
+        %td Delete
+        %td Activity?
+    %tbody
+      - @cartridges.each do |cartridge|
+        %tr{:class => cartridge.is_active ? "success" : "default" }
+          %td
+            %a{ href: "/cartridges/edit/#{cartridge._id}"}= cartridge.name
+          %td
+            %a{ href: "/cartridges?id=#{cartridge._id}", title: "active: #{cartridge.selectors.active.count}"}= cartridge.selectors.count
+          %td= cartridge.source.name
+          %td
+            %a{ href: "/cartridges/edit/#{cartridge._id}"} Edit
+          %td
+            %a{ href: "/cartridges/destroy/#{cartridge._id}"} Delete
+          %td= cartridge.is_active ? "Yes" : "No"
+  = will_paginate @cartridges, renderer: BootstrapPagination::Sinatra
