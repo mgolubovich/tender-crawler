@@ -75,6 +75,17 @@ class SourcesController < ApplicationController
    haml :'selectors/edit'
  end
 
+get '/edit/:source_id/selector/:id/check' do
+  content_type :json
+  
+  @selector = Selector.find params[:id]
+  result = Hash.new
+
+  result[:grappled_value] = @selector.value_type == :ids_set ? Grappler.new(@selector, @selector.source.tenders.last.id_by_source).grapple : Grappler.new(@selector, @selector.source.tenders.last.id_by_source).grapple_all
+  result[:selector_type] = @selector.value_type
+  result.to_json
+end
+
  post '/edit/:source_id/selector/:id' do
    selector = Selector.find params[:selector_id]
    selector.value_type = params[:selector_value].to_sym

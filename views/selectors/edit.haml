@@ -11,7 +11,8 @@ selector for
   %b Rule
   was updated at
   %a{ :href => "/rules/#{@selector._id}/edit/#{@selector.rules.last._id}"} #{@selector.rules.last.updated_at.strftime("%d %B %Y (%R)")}
-%h1
+%p
+  %a{href: "/sources/edit/#{@source_id}/selector/#{@selector._id}/check"} Check
 
 .container-fluid
   %form.form-horizontal{:action => "/sources/edit/#{@source_id}/selector/#{@selector_id}", :method => "post"}
