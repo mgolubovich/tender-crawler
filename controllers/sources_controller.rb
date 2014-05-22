@@ -80,8 +80,9 @@ get '/edit/:source_id/selector/:id/check' do
   
   @selector = Selector.find params[:id]
   result = Hash.new
+  entity_id = params[:entity_id] ? params[:entity_id] : @selector.source.tenders.last.id_by_source
 
-  result[:grappled_value] = @selector.value_type == :ids_set ? Grappler.new(@selector, @selector.source.tenders.last.id_by_source).grapple : Grappler.new(@selector, @selector.source.tenders.last.id_by_source).grapple_all
+  result[:grappled_value] = @selector.value_type == :ids_set ? Grappler.new(@selector, entity_id).grapple : Grappler.new(@selector, entity_id).grapple_all
   result[:selector_type] = @selector.value_type
   result.to_json
 end
