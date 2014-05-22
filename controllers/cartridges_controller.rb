@@ -13,12 +13,6 @@ class CartridgesController < ApplicationController
     haml :'cartridges/new'
   end
 
-  get '/new/:source_id' do
-    @sources = Source.order_by(created_at: :asc)
-    @source_id = params[:source_id]
-    haml :'cartridges/new'
-  end
-
   post '/new' do
     cartridge = Source.find(params[:cartridge_source]).cartridges.new
     cartridge.name = params[:cartridge_name]

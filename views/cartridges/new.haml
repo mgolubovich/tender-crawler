@@ -1,5 +1,5 @@
 - @title = 'New cartridge'
-%h1 New cartridge
+%h1 New cartridge @source_id
 .container-fluid
   %form.form-horizontal{:action => "/cartridges/new", :method => "post"}
     %fieldset
@@ -12,7 +12,7 @@
         .col-md-5
           %select.form-control{ :id => "cartridge_source", :name => "cartridge_source"}
             - @sources.each do |source|
-              %option{:value => source._id, :selected => source._id == @source_id ? false : true}= source.name
+              %option{:value => source._id, :selected => source._id.to_s == @source_id ? true : false}= source.name
       .form-group
         %label.col-md-4.control-label{:for => "cartridge_base_link"} base_link_template
         .col-md-5
