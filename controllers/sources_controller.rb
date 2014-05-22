@@ -38,7 +38,7 @@ class SourcesController < ApplicationController
     source.external_site_id = params[:source_external_site_id]
     source.comment = params[:source_comment]
     source.save
-    redirect '/sources'
+    redirect "/sources"
   end
 
   get '/edit/:source_id/add_s' do
