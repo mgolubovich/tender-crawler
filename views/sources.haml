@@ -17,7 +17,7 @@
     %tbody
       - @sources.each do |source|
         %tr{:class => source.is_active ? "success" : "default" }
-          - if source.url.nil?
+          - if source.url.empty?
             %td= source.name
           - else
             %td

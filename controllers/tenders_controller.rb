@@ -9,7 +9,7 @@ class TendersController < ApplicationController
       @start_date = params[:start_date]
       @end_date = params[:end_date]
       @start_date_db = Time.parse(@start_date)
-      @end_date_db = Time.parse(@end_date)
+      @end_date_db = Time.parse(@end_date) + 23.hours + 59.minutes + 59.seconds
       @tenders = @tenders.where(created_at: @start_date_db..@end_date_db)
     end
     @tenders_count = @tenders.count
