@@ -38,6 +38,25 @@ class Reaper
     Grappler.new(cartridge.selectors.active.ids_set.first).grapple_all.uniq
   end
 
+  def get_docs(entity_id)
+    documents = Hash.new
+    doc_title_sl = @cartridge.selectors.where(:value_type => :doc_title).first
+    doc_link_sl = @cartridge.selectors.where(:value_type => :doc_link).first
+    doc_titles = []
+    doc_links = []
+
+    doc_titles = Grappler.new(doc_title_sl,entity_id.to_s).grapple_all
+    doc_links = Grappler.new(doc_link_sl, entity_id.to_s).grapple_all
+
+    i = 0;
+    doc_titles.each do |title|
+      documents[title] = doc_links[i]
+      i += 1
+    end
+
+    documents
+  end
+
   def reap
     get_cartridges
     @cartridges.each do |cartridge|
@@ -77,6 +96,7 @@ class Reaper
         tender.id_by_source = entity_id
         tender.source_link = cartridge.base_link_template.gsub('$entity_id', entity_id)
         tender.group = cartridge.tender_type
+        tender.documents = get_docs(entity_id)
         
         @fields_status.each_pair do |field, status|
           tender_status[:state] = status
