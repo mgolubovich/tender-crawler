@@ -11,7 +11,6 @@ selector for
   %b Rule
   was updated at
   %a{ :href => "/rules/#{@selector._id}/edit/#{@selector.rules.last._id}"} #{@selector.rules.last.updated_at.strftime("%d %B %Y (%R)")}
-%h1
 
 .container-fluid
   %form.form-horizontal{:action => "/cartridges/edit/#{@cartridge_id}/selector/#{@selector_id}", :method => "post"}
@@ -90,7 +89,17 @@ selector for
         .col-xs-5.col-md-offset-3
           %input.btn.btn-primary.btn-lg{:name => "submint", :type => "submit", :value => "Сохранить"}
           %a.btn.btn-danger.btn-lg{:href => "/cartridges/edit/#{@cartridge_id}/selector/#{@selector_id}/destroy", :name => "delete", :type => "submit", :value => "Удалить", :method => "get"} Удалить
+  
+  %fieldset
+    .form-group
+      .col-md-12
+        %label.control-label{:for => "entity_id"} Entity ID
+        %input{id: "entity_id", type: "text", name: "entity_id"}
+      .col-md-12
+        %a{:href => '#', :"data-selector-id" => @selector._id, :"data-cartridge-id" => @cartridge_id, :id => "grappler-check"} Check
 
+
+%script{:type => 'text/javascript', :src => "/javascripts/grappler-check.js" }
 
 
 
