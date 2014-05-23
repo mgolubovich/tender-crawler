@@ -23,7 +23,7 @@ class Tender
   field :customer_address, type: String
   field :customer_inn, type: String
   field :okdps, type: String
-  field :documents, type: Hash
+  field :documents, type: Array
 
   # Fields for MySQL integration
   field :work_type, type: Integer

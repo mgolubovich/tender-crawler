@@ -38,7 +38,7 @@ class Grappler
       data = apply_offset(data) unless @offset.nil? || data.empty?
       data = apply_regexp(data) unless @regexp["pattern"].empty? || data.empty?
       data = apply_date_format(data) unless @date_format.empty? || data.empty?
-      data = apply_to_type(data) unless @to_type.nil? ||data.empty?
+      data = apply_to_type(data) unless @to_type.nil? || data.empty? || @to_type.empty?
       target_data << data
     end
 
@@ -80,8 +80,9 @@ class Grappler
         data = data.to_i
       when :symbol
         data = data.to_sym
+      when :string
       else
-        data = data.to_s
+        data
     end
     data
   end

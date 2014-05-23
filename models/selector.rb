@@ -49,6 +49,6 @@ class Selector
   field :grapple_mode, type: Symbol, default: :single
 
   scope :ids_set, where(:value_type => :ids_set)
-  scope :data_fields, where(:value_type.ne => :ids_set).where(:value_type.ne => :doc_title).where(:value_type.ne => :doc_link)
+  scope :data_fields, not_in(:value_type => [:ids_set, :doc_title, :doc_link])
   scope :active, where(:is_active => true)
 end
