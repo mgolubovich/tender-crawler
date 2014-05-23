@@ -2,6 +2,8 @@ class SourcesController < ApplicationController
 
   get '/' do
     @sources = Source.order_by(created_at: :asc).paginate(page: params[:page], per_page: 25)
+    @source_counter = params[:page].nil? ? 1 : params[:page].to_i * 25 - 25
+#    @source_counter = @source_counter * 25 - 25 + 1
     haml :sources
   end
 

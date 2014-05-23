@@ -2,6 +2,7 @@ class TendersController < ApplicationController
 
   get '/' do
     @tenders = Tender.order_by(created_at: :desc)
+    @tender_counter = params[:page].nil? ? 1 : params[:page].to_i * 25 - 25
     @tenders = @tenders.where(source_id: params[:source_id]) if params[:source_id]
     @source = Source.find(params[:source_id]) if params[:source_id]
 

@@ -57,7 +57,7 @@
           %td= tender.created_at
           %td= tender.updated_at
           %td
-            %a{ href: "/tenders/#{tender._id}/destroy"} Delete
+            %a{ href: "/tenders/#{tender._id}/destroy", onclick: "return ORLY();"} Delete
 
 = will_paginate @tenders, renderer: BootstrapPagination::Sinatra
 
