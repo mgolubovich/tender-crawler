@@ -97,7 +97,7 @@ class CartridgesController < ApplicationController
   content_type :json
 
   entity_id = params[:entity_id].length > 0 ? params[:entity_id] : @selector.source.tenders.last.id_by_source
-  %x(rake parsing:test_grapple[#{params[:id]},#{entity_id}])
+  %x(DISPLAY=localhost:1.0 xvfb-run rake parsing:test_grapple[#{params[:id]},#{entity_id}])
 end
 
  post '/edit/:cart_id/selector/:id' do
