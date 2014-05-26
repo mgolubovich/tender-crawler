@@ -1,6 +1,7 @@
 source "https://rubygems.org/"
 
 gem 'sinatra'
+gem "rack-timeout"
 
 gem 'mongoid', '3.0.23'
 gem 'bson_ext'
