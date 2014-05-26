@@ -5,32 +5,32 @@
     %fieldset
       .form-group
         %label.col-md-4.control-label{:for => "cartridge_name"} Name
-        .col-md-5
+        .col-md-4
           %input.form-control.input-md{:id => "cartridge_name", :name => "cartridge_name", :type => "text", :placeholder => "Имя заряда, может быть произвольным", :required => "", :size => 20}
       .form-group
         %label.col-md-4.control-label{:for=> "cartridge_source"} Source
-        .col-md-5
+        .col-md-4
           %select.form-control{ :id => "cartridge_source", :name => "cartridge_source"}
             - @sources.each do |source|
               %option{:value => source._id, :selected => source._id.to_s == @source_id ? true : false}= source.name
       .form-group
         %label.col-md-4.control-label{:for => "cartridge_base_link"} base_link_template
-        .col-md-5
-          %input.form-control.input-md{:id => "cartridge_base_link", :name => "cartridge_base_link", :type => "text", :placeholder => "", :size => 20}
+        .col-md-8
+          %input.form-control.input-md{:id => "cartridge_base_link", :name => "cartridge_base_link", :type => "text", :placeholder => "", :size => 20, :value => "$entry_id"}
       .form-group
         %label.col-md-4.control-label{:for => "cartridge_base_list"} base_list_template
-        .col-md-5
-          %input.form-control.input-md{:id => "cartridge_base_list", :name => "cartridge_base_list", :type => "text", :placeholder => "", :size => 20}
+        .col-md-8
+          %input.form-control.input-md{:id => "cartridge_base_list", :name => "cartridge_base_list", :type => "text", :placeholder => "", :size => 20, :value => "$page_number"}
 
       .form-group
         %label.col-md-4.control-label{:for=> "cartridge_tender_type"} tender_type
-        .col-md-5
+        .col-md-4
           %select.form-control{ :id => "cartridge_tender_type", :name => "cartridge_tender_type"}
             %option{:value => "223", :selected => true} 223
             %option{:value => "44"} 44
       .form-group
         %label.col-md-4.control-label{:for=> "cartridge_activity"} Активность
-        .col-md-5
+        .col-md-4
           %select.form-control{ :id => "cartridge_activity", :name => "cartridge_activity"}
             %option{:value => "active", :selected => true} Включен
             %option{:value => "blocked"} Выключен
@@ -38,15 +38,15 @@
       %h1 Page Manager
       .form-group
         %label.col-md-4.control-label{:for=> "pm_type"} action_type
-        .col-md-5
+        .col-md-4
           %select.form-control{ :id => "pm_type", :name => "pm_type"}
             %option{:value => :get, :selected => true} get
             %option{:value => :js} js
             %option{:value => :click} click
         .form-group
         %label.col-md-4.control-label{:for => "pm_value"} action_value
-        .col-md-5
+        .col-md-6
           %textarea.form-control.input-md{:id => "pm_value", :name => "pm_value", :type => "text", :raws => 15}
       .form-group
-        .col-xs-5.col-md-offset-3
+        .col-xs-8.col-md-offset-3
           %input.btn.btn-primary.btn-lg{:name => "submint", :type => "submit", :value => "Добавить"}

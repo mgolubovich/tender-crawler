@@ -60,6 +60,7 @@ class CartridgesController < ApplicationController
 
   get '/edit/:cart_id/add_s' do
     @cartridge_id = params[:cart_id]
+    @link_template = Cartridge.find(@cartridge_id).base_link_template
     haml :'selectors/new'
   end
 
@@ -94,7 +95,7 @@ class CartridgesController < ApplicationController
 
  get '/edit/:cart_id/selector/:id/check' do
   content_type :json
-  
+
   @selector = Selector.find params[:id]
   result = Hash.new
   entity_id = params[:entity_id] ? params[:entity_id] : @selector.source.tenders.last.id_by_source
