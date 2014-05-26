@@ -12,11 +12,15 @@ namespace :parsing do
   end
 
   desc "Task for testing single selector"
-  task :test_grapple do
-    selector = Source.active.where(:name => 'zakupki.gov.ru').first.selectors.where(:value_type => :code_by_source).first
-    hook = Grappler.new 
-    hook.charge(selector, '8334313')
-    puts hook.grapple
+  task :test_grapple, :selector_id, :entity_id do |t, args|
+    selector = Selector.find(args.selector_id)
+    result = Hash.new
+    entity_id = args.entity_id.length > 0 ? args.entity_id : @selector.source.tenders.last.id_by_source
+    
+    result[:grappled_value] = selector.value_type == :ids_set ? Grappler.new(selector, entity_id).grapple_all : Grappler.new(selector, entity_id).grapple
+    result[:selector_type] = selector.value_type
+    
+    puts result.to_json
   end
 
   desc "Task for getting new tenders"
