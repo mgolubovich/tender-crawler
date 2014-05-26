@@ -46,7 +46,7 @@
         %td documents
         %td
           - @tenders.documents.each do |t|
-            %a{ href: "#{t["doc_link"]}"}= t["doc_title"]
+            %a{ href: "#{t["doc_link"]}",  target: "_blank"}= t["doc_title"]
             %br
 
 
