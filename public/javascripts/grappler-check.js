@@ -9,7 +9,7 @@
     e.preventDefault();
 
     url = url.replace("$source_id", cartridge_id);
-    url = url.replace("$selector_id", selector_id);
+    url = url.replace("$cartridge_id", selector_id);
 
     if (entity_id.val().length > 0) {
       url = url + '?entity_id=' + entity_id.val();
