@@ -26,7 +26,7 @@ class Grappler
     @mode = [:single, :multiple].include?(mode) ? mode : :single
     target_data = []
 
-    visit @link unless current_url == @link
+    visit @link #unless current_url == @link
     
     ParserLog.logger.info("Visit - #{@link}")
 

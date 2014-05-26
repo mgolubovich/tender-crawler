@@ -97,9 +97,9 @@ class CartridgesController < ApplicationController
   
   @selector = Selector.find params[:id]
   result = Hash.new
-  entity_id = params[:entity_id] ? params[:entity_id] : @selector.source.tenders.last.id_by_source
+  entity_id = params[:entity_id].length > 0 ? params[:entity_id] : @selector.source.tenders.last.id_by_source
 
-  result[:grappled_value] = @selector.value_type == :ids_set ? Grappler.new(@selector, entity_id).grapple : Grappler.new(@selector, entity_id).grapple_all
+  result[:grappled_value] = @selector.value_type == :ids_set ? Grappler.new(@selector, entity_id).grapple_all : Grappler.new(@selector, entity_id).grapple
   result[:selector_type] = @selector.value_type
   result.to_json
 end
