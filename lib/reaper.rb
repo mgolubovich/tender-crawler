@@ -57,6 +57,11 @@ class Reaper
     documents
   end
 
+  def extract_region(tender)
+    address = tender.customer_address
+    
+  end
+
   def reap
     get_cartridges
     @cartridges.each do |cartridge|
