@@ -60,12 +60,16 @@ class CartridgesController < ApplicationController
 
   get '/edit/:cart_id/add_s' do
     @cartridge_id = params[:cart_id]
+    @source = Cartridge.find(@cartridge_id).source
     @link_template = Cartridge.find(@cartridge_id).base_link_template
+
     haml :'selectors/new'
   end
 
  post '/edit/:cart_id/add_s' do
-   selector = Cartridge.find(params[:cart_id]).selectors.new
+   cartridge = Cartridge.find(params[:cart_id])
+   selector = cartridge.selectors.new
+   selector.source_id = cartridge.source_id #Source_id fix
  #  selector.source_id = params[:selector_source_id]
    selector.value_type = params[:selector_value].to_sym
    selector.link_template = params[:selector_link]
@@ -90,6 +94,7 @@ class CartridgesController < ApplicationController
    @selector_id = params[:id]
    @selector = Selector.find params[:id]
    @rule = @selector.rules
+   @source = @selector.source
    haml :'selectors/edit'
  end
 

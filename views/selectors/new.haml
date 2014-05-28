@@ -1,8 +1,11 @@
 - @title = 'New selector'
-%h1
+%h3
   New selector for
   %a{ href: "/cartridges/edit/#{@cartridge_id}"}= Cartridge.find(@cartridge_id).name
-  cartridge.
+  cartridge in
+  %a{ href: "/source/edit/#{@source._id}"}= @source.name
+  source.
+
 .container-fluid
   %form.form-horizontal{:action => "/cartridges/edit/#{@cartridge_id}/add_s", :method => "post"}
     %fieldset

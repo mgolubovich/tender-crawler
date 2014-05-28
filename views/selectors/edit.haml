@@ -4,6 +4,11 @@
 selector for
 %a{ href: "/cartridges/edit/#{@cartridge_id}" }
   %b= Cartridge.find(@cartridge_id).name
+- unless @source.nil?
+  in
+  %a{ href: "/sources/edit/#{@source._id}"}
+    %b= @source.name
+  source.
 %h1
 - if @selector.rules.empty?
   %a{ href: "/rules/new/#{@selector._id}"} Add rule
