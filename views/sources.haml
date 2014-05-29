@@ -1,12 +1,21 @@
 - @title = 'Sources list'
 %h1 Sources list
 .container-fluid
+  .col-lg-2.pull-right
+    %form{:action => "/sources", :method => "get"}
+      .input-group
+        %input.form-control{:name => "search", :type => "text", :placeholder => "Search"}
+        %span.input-group-btn
+          %button.btn.btn-primary Искать
+
+.container-fluid
   %h4
     %a{ href: "/sources/new"} Add new source
 .container-fluid
   %table.table.table-condensed.table-bordered
     %thead
       %tr
+        %td
         %td Name
         %td Tenders count
         %td Cartridge count
@@ -17,6 +26,7 @@
     %tbody
       - @sources.each do |source|
         %tr{:class => source.is_active ? "success" : "default" }
+          %td= @source_counter += 1
           - if source.url.empty?
             %td= source.name
           - else
