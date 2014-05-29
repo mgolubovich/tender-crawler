@@ -11,7 +11,7 @@ class Grappler
   Capybara.run_server = false
 
   def initialize(selector, entity_id='')
-    @link = selector.link_template.gsub('$entity_id', entity_id)
+    @link = selector.link_template.gsub('$entity_id', entity_id.to_s)
     @xpath = selector.xpath.to_s
     @css = selector.css.to_s
     @attr = selector.attr.to_s unless selector.attr.nil?
@@ -26,7 +26,7 @@ class Grappler
     @mode = [:single, :multiple].include?(mode) ? mode : :single
     target_data = []
 
-    visit @link #unless current_url == @link
+    visit @link unless current_url == @link
     
     ParserLog.logger.info("Visit - #{@link}")
 
@@ -38,7 +38,7 @@ class Grappler
       data = apply_offset(data) unless @offset.nil? || data.empty?
       data = apply_regexp(data) unless @regexp["pattern"].empty? || data.empty?
       data = apply_date_format(data) unless @date_format.empty? || data.empty?
-      data = apply_to_type(data) unless @to_type.nil? || data.empty? || @to_type.empty?
+      data = apply_to_type(data) unless @to_type.nil? || data.to_s.empty? || @to_type.empty?
       target_data << data
     end
 
@@ -75,6 +75,7 @@ class Grappler
   def apply_to_type(data)
     case @to_type
       when :float
+        data.gsub!(',','.')
         data = data.to_f
       when :integer
         data = data.to_i

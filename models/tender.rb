@@ -22,11 +22,11 @@ class Tender
   field :customer_name, type: String
   field :customer_address, type: String
   field :customer_inn, type: String
-  field :okdps, type: String
+  field :work_type, type: Array
   field :documents, type: Array
 
   # Fields for MySQL integration
-  field :work_type, type: Integer
+  field :external_work_type, type: Integer
   field :external_city_id, type: Integer
   field :external_region_id, type: Integer
   field :external_db_id, type: Integer
