@@ -10,9 +10,16 @@ class Tender
   field :published_at, type: Time
 
   # Source info
+  # Code of tender based on source
   field :code_by_source, type: String
+
+  # ID of tender on source-site
   field :id_by_source, type: String
+
+  # Original link
   field :source_link, type: String
+
+  # Group of tender (44, 223)
   field :group, type: Symbol
 
   # Actual tender info
@@ -26,9 +33,16 @@ class Tender
   field :documents, type: Array
 
   # Fields for MySQL integration
+  # Category of tender 0-5. Magic numbers. 0 - not needed.
   field :external_work_type, type: Integer
+
+  # ID based on altasib_kladr_cities table
   field :external_city_id, type: Integer
+
+  # ID based on altasib_kladr_region
   field :external_region_id, type: Integer
+
+  # Not used tight now
   field :external_db_id, type: Integer
 
   field :status, type: Hash
