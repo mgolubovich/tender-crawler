@@ -62,6 +62,8 @@ class Reaper
         tender.documents = get_docs(cartridge, entity_id)
         tender.work_type = get_work_type(cartridge, entity_id)
         tender.external_work_type = set_external_work_type_code(tender.work_type)
+
+        tender.external_db_id = Tender.max(:external_db_id).to_i + 1 if tender.external_db_id.nil?
         #debugger
         @fields_status.each_pair do |field, status|
           tender_status[:state] = status
