@@ -1,0 +1,19 @@
+- @title = 'Tender moderation'
+%br
+%h4 Moderate tender [#{@tender._id}]
+%br
+.container-fluid
+  %h1
+    %a{ href: "#{@tender.source_link}", target: "_blank"}= @tender.title
+%br
+.container-fluid
+  .col-md-8.col-md-offset-1
+    %a.btn.btn-danger.btn-lg{href: "/moderation/#{@tender.id}/0", style: "width: 200px;"} Не выгружать
+    %a.btn.btn-primary.btn-lg{href: "/moderation/#{@tender.id}/1", style: "width: 200px;"} Строительные
+    %a.btn.btn-primary.btn-lg{href: "/moderation/#{@tender.id}/2", style: "width: 200px;"} Проектные
+%br
+.container-fluid
+  .col-md-8.col-md-offset-1
+    %a.btn.btn-primary.btn-lg{href: "/moderation/#{@tender.id}/4", style: "width: 200px;"} Поставка
+    %a.btn.btn-primary.btn-lg{href: "/moderation/#{@tender.id}/3", style: "width: 200px;"} Изыскательные
+    %a.btn.btn-primary.btn-lg{href: "/moderation/#{@tender.id}/5", style: "width: 200px;"} Сервис и ТО
