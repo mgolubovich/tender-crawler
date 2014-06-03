@@ -11,9 +11,11 @@
     %fieldset
       .form-group
         %label.col-md-4.control-label{:for => "selector_value"} value_type
-        .col-md-5
-          %input.form-control.input-md{:id => "selector_value", :name => "selector_value", :type => "text", :size => 20, :placeholder => "Обязательное поле!" }
-          .help-block.with-errors
+        .col-md-3
+          %select.form-control{:id => "selector_value", :name => "selector_value"}
+            - @value_types.each do |v|
+              %option{:value => v}= v
+
       .form-group
         %label.col-md-4.control-label{:for => "selector_link"} link_template
         .col-md-8

@@ -62,6 +62,8 @@ class CartridgesController < ApplicationController
     @cartridge_id = params[:cart_id]
     @source = Cartridge.find(@cartridge_id).source
     @link_template = Cartridge.find(@cartridge_id).base_link_template
+    @value_types = YAML.load_file('config/value_types.yml').keys
+
 
     haml :'selectors/new'
   end
@@ -96,6 +98,7 @@ class CartridgesController < ApplicationController
    @selector = Selector.find params[:id]
    @rule = @selector.rules
    @source = @selector.source
+   @value_types = YAML.load_file('config/value_types.yml').keys
    haml :'selectors/edit'
  end
 
