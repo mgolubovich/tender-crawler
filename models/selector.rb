@@ -45,6 +45,9 @@ class Selector
   # Service field, used as activity flag of selector
   field :is_active, type: Boolean
 
+  # Sorting number, used for optimisation of visits
+  field :priority, type: Integer, default: 0
+
   # Service field, used as parameter for grappling method, shows which mode must be used. Can be :single or :multiple
   field :grapple_mode, type: Symbol, default: :single
 
