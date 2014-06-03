@@ -20,6 +20,69 @@ class Reaper
     log_started_parsing(@source.name)
   end
 
+  def reap(ids_set = [])
+    get_cartridges
+    @cartridges.each do |cartridge|
+      @current_page = 0
+      #visit(cartridge.base_list_template) unless current_url == cartridge.base_list_template
+      
+      unless ids_set.count > 0
+        while @limit > ids_set.count
+          next_page(cartridge) if ids_set.count < @limit
+          ids_set += get_ids(cartridge)
+        end
+      end
+      
+      log_got_ids_set(ids_set.count)
+
+      ids_set.each do |entity_id|
+        tender_status = Hash.new
+        # HACK Fix later
+        entity_id = entity_id.first if entity_id.is_a?(Array)
+        #
+
+        code = Grappler.new(cartridge.selectors.active.where(:value_type => :code_by_source).first, entity_id).grapple
+        log_got_code(code)
+
+        tender = @source.tenders.find_or_create_by(code_by_source: code)
+
+        cartridge.selectors.data_fields.order_by(priority: :desc).each do |selector|
+          log_start_grappling(selector.value_type)
+          value = Grappler.new(selector, entity_id).grapple 
+          
+          tender[selector.value_type.to_sym] = value
+          apply_rules(value, selector)
+          
+          log_got_value(selector.value_type, value)
+        end
+
+        tender.id_by_source = entity_id
+        tender.source_link = cartridge.base_link_template.gsub('$entity_id', entity_id)
+        tender.group = cartridge.tender_type
+        tender.documents = get_docs(cartridge, entity_id)
+        tender.work_type = get_work_type(cartridge, entity_id)
+        tender.external_work_type = set_external_work_type_code(tender.work_type)
+        #debugger
+        @fields_status.each_pair do |field, status|
+          tender_status[:state] = status
+          tender_status[:failed_fields] = [] unless tender_status[:failed_fields].kind_of(Array)
+          tender_status[:failed_fields] << field if status == :failed
+
+          tender_status[:fields_for_moderation] = [] unless tender_status[:fields_for_moderation].kind_of(Array)
+          tender_status[:fields_for_moderation] << field if status == :moderation
+        end
+
+        tender.status = tender_status
+        tender.save
+
+        log_tender_saved(tender[:_id])
+
+      end
+    end
+  end
+
+  private
+
   def get_cartridges
     @cartridges = @source.cartridges.active
   end
@@ -30,9 +93,14 @@ class Reaper
 
   def next_page(cartridge)
     page_manager = cartridge.page_managers.first
-    if page_manager.action_type == :get
-      @current_page += 1
-      visit cartridge.base_list_template.gsub('$page_number', @current_page.to_s)
+    case page_manager.action_type
+      when :get
+        @current_page += 1
+        visit cartridge.base_list_template.gsub('$page_number', @current_page.to_s)
+      when :click
+        find(:xpath, page_manager.action_value).click
+      when :js
+        execute_script(page_manager.action_value.gsub('$page_number', @current_page.to_s))
     end
   end
 
@@ -110,74 +178,6 @@ class Reaper
       end
     end
     external_work_type
-  end
-
-  def reap(ids_set = [])
-    get_cartridges
-    @cartridges.each do |cartridge|
-      @current_page = 0
-      #visit(cartridge.base_list_template) unless current_url == cartridge.base_list_template
-      
-      unless ids_set.count > 0
-        while @limit > ids_set.count
-          next_page(cartridge) if ids_set.count < @limit
-          ids_set += get_ids(cartridge)
-        end
-      end
-      #ids_set = get_ids(cartridge) unless ids_set.count > 0
-      
-      log_got_ids_set(ids_set.count)
-
-      ids_set.each do |entity_id|
-        tender_status = Hash.new
-        # HACK Fix later
-        entity_id = entity_id.first if entity_id.is_a?(Array)
-        #
-
-        code = Grappler.new(cartridge.selectors.active.where(:value_type => :code_by_source).first, entity_id).grapple
-        log_got_code(code)
-
-        tender = @source.tenders.find_or_create_by(code_by_source: code)
-
-        cartridge.selectors.data_fields.each do |selector|
-          log_start_grappling(selector.value_type)
-          value = Grappler.new(selector, entity_id).grapple 
-          
-          tender[selector.value_type.to_sym] = value
-          apply_rules(value, selector)
-          
-          log_got_value(selector.value_type, value)
-        end
-
-        tender.id_by_source = entity_id
-        tender.source_link = cartridge.base_link_template.gsub('$entity_id', entity_id)
-        tender.group = cartridge.tender_type
-        tender.documents = get_docs(cartridge, entity_id)
-        tender.work_type = get_work_type(cartridge, entity_id)
-        tender.external_work_type = set_external_work_type_code(tender.work_type)
-        #debugger
-        @fields_status.each_pair do |field, status|
-          tender_status[:state] = status
-          tender_status[:failed_fields] = [] unless tender_status[:failed_fields].kind_of(Array)
-          tender_status[:failed_fields] << field if status == :failed
-
-          tender_status[:fields_for_moderation] = [] unless tender_status[:fields_for_moderation].kind_of(Array)
-          tender_status[:fields_for_moderation] << field if status == :moderation
-        end
-
-        tender.status = tender_status
-        tender.save
-
-        log_tender_saved(tender[:_id])
-
-      end
-    end
-  end
-
-  private
-
-  def set_region_id
-    
   end
 
 end
