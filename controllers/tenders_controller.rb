@@ -47,6 +47,7 @@ class TendersController < ApplicationController
   get '/:t_id/:ext_w_type' do
     t = Tender.find params[:t_id]
     t.external_work_type = params[:ext_w_type].to_i
+    t.moderated_at = Time.now
     t.save
     redirect "/moderation/push"
   end

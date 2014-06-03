@@ -8,6 +8,7 @@ class Tender
   # Timestamps, created_at and updated_at included via mongoid
   field :start_at, type: Time
   field :published_at, type: Time
+  field :moderated_at, type: Time
 
   # Source info
   # Code of tender based on source
