@@ -25,7 +25,9 @@
           #{@tenders.customer_address}
       %tr
         %td ОКДПС
-        %td= @tenders.okdps
+        - @tenders.work_type.each do |w|
+          %td= w["code"] + "|" + "#{w["title"]}"
+          %br
       %tr
         %td URL извещения
         %td

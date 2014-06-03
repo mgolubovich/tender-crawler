@@ -32,5 +32,21 @@ class TendersController < ApplicationController
     redirect '/tenders'
   end
 
+  get '/push' do
+    if Tender.where(external_work_type: -1).count == 0
+      "Nothing to do!"
+    else
+      @tender = Tender.where(external_work_type: -1)
+      @tender = @tender.order_by(created_at: :desk)
+      @tender = @tender.last
+      haml :moderation
+    end
+  end
 
+  get '/:t_id/:ext_w_type' do
+    t = Tender.find params[:t_id]
+    t.external_work_type = params[:ext_w_type].to_i
+    t.save
+    redirect "/moderation/push"
+  end
 end

@@ -67,7 +67,7 @@ class CartridgesController < ApplicationController
   end
 
  post '/edit/:cart_id/add_s' do
-   cartridge = Cartridge.find(params[:cart_id])
+   cartridge = Cartridge.find params[:cart_id]
    selector = cartridge.selectors.new
    selector.source_id = cartridge.source_id #Source_id fix
  #  selector.source_id = params[:selector_source_id]
@@ -85,6 +85,7 @@ class CartridgesController < ApplicationController
   # selector.group = params[:selector_group].to_sym
    selector.is_active = params[:selector_activity] == 'active' ? true : false
    selector.to_type = params[:selector_to_type]
+ #  params[:selector_value].length > 0 ?
    selector.save
    redirect "/cartridges/edit/#{selector.cartridge_id}"
  end
