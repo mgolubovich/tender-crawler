@@ -77,6 +77,10 @@
 
       .form-group
         .col-xs-5.col-md-offset-3
-          %input.btn.btn-primary.btn-lg{:name => "submint", :type => "submit", :value => "Добавить"}
+          %input.btn.btn-primary.btn-lg{:name => "submit", :type => "submit", :value => "Добавить"}
+
+/%script{:type => 'text/javascript', :src => "http://10.0.105.15/javascripts/selector-form-validation.js" }
+:javascript
+  $('#selector_value').validator();
 
 
