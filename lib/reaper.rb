@@ -62,6 +62,8 @@ class Reaper
         tender.documents = get_docs(cartridge, entity_id)
         tender.work_type = get_work_type(cartridge, entity_id)
         tender.external_work_type = set_external_work_type_code(tender.work_type)
+
+        tender.external_db_id = Tender.max(:external_db_id).to_i + 1 if tender.external_db_id.nil?
         #debugger
         @fields_status.each_pair do |field, status|
           tender_status[:state] = status
@@ -161,22 +163,27 @@ class Reaper
   def set_external_work_type_code(work_type)
     external_work_type = 0
 
-    work_type.each do |w|
-      external_work_type = 1 if @construct_keys.include? w["code"]
-      external_work_type = 2 if @project_keys.include? w["code"]
-      #external_work_type = 3 if @research_keys.include? w["code"]
-      external_work_type = 4 if @supply_keys.include? w["code"]
-      external_work_type = 5 if @service_keys.include? w["code"]
+    if work_type.count > 0
+      work_type.each do |w|
+        external_work_type = 1 if @construct_keys.include? w["code"]
+        external_work_type = 2 if @project_keys.include? w["code"]
+        #external_work_type = 3 if @research_keys.include? w["code"]
+        external_work_type = 4 if @supply_keys.include? w["code"]
+        external_work_type = 5 if @service_keys.include? w["code"]
 
-      unless w["code"].include?('.')
-        external_work_type = 1 if w["code"].start_with?('451') || w["code"].start_with?('452') || w["code"].start_with?('453') || w["code"].start_with?('454')
-        external_work_type = 2 if w["code"].start_with?('456')
-        external_work_type = 4 if w["code"].start_with?('455') || w["code"].start_with?('459')
-      else
-        external_work_type = 1 if w["code"].start_with?('45')
-        external_work_type = 2 if w["code"].start_with?('74.2')
+        unless w["code"].include?('.')
+          external_work_type = 1 if w["code"].start_with?('451') || w["code"].start_with?('452') || w["code"].start_with?('453') || w["code"].start_with?('454')
+          external_work_type = 2 if w["code"].start_with?('456')
+          external_work_type = 4 if w["code"].start_with?('455') || w["code"].start_with?('459')
+        else
+          external_work_type = 1 if w["code"].start_with?('45')
+          external_work_type = 2 if w["code"].start_with?('74.2')
+        end
       end
+    else
+      external_work_type = -1
     end
+
     external_work_type
   end
 

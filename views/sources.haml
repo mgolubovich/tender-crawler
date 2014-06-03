@@ -41,6 +41,6 @@
           %td
             %a{ href: "/sources/edit/#{source.id}"} Edit
           %td
-            %a{ href: "/sources/destroy/#{source.id}"} Delete
+            %a{ href: "/sources/destroy/#{source.id}", onclick: "return ORLY();"} Delete
           %td= source.is_active ? "Yes" : "No"
   = will_paginate @sources, renderer: BootstrapPagination::Sinatra

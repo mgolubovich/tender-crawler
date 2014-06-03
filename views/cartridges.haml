@@ -29,6 +29,6 @@
           %td
             %a{ href: "/cartridges/edit/#{cartridge._id}"} Edit
           %td
-            %a{ href: "/cartridges/destroy/#{cartridge._id}"} Delete
+            %a{ href: "/cartridges/destroy/#{cartridge._id}", onclick: "return ORLY();"} Delete
           %td= cartridge.is_active ? "Yes" : "No"
   = will_paginate @cartridges, renderer: BootstrapPagination::Sinatra
