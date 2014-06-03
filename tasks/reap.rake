@@ -3,7 +3,7 @@ namespace :parsing do
   
   desc "Test task for reaping zakupki"
   task :test_reap do
-    Reaper.new(Source.first, 2000).reap
+    Reaper.new(Source.first, 500).reap
   end
 
   desc "Reap for a specific source"
@@ -12,11 +12,15 @@ namespace :parsing do
   end
 
   desc "Task for testing single selector"
-  task :test_grapple do
-    selector = Source.active.where(:name => 'zakupki.gov.ru').first.selectors.where(:value_type => :code_by_source).first
-    hook = Grappler.new 
-    hook.charge(selector, '8334313')
-    puts hook.grapple
+  task :test_grapple, :selector_id, :entity_id do |t, args|
+    selector = Selector.find(args.selector_id)
+    result = Hash.new
+    entity_id = args.entity_id.length > 0 ? args.entity_id : ''
+    
+    result[:grappled_value] = selector.value_type == :ids_set ? Grappler.new(selector, entity_id).grapple_all : Grappler.new(selector, entity_id).grapple
+    result[:selector_type] = selector.value_type
+    
+    puts result.to_json
   end
 
   desc "Task for getting new tenders"
@@ -25,6 +29,34 @@ namespace :parsing do
     source.each do |s|
       reaper = Reaper.new s
       reaper.reap
+    end
+  end
+
+  desc "Update all tenders task"
+  task :reap_update_all_for, :source_id do |t, args|
+    ids_set = []
+    source = Source.find(args.source_id)
+    source.tenders.each {|t| ids_set << t.id_by_source}
+
+    Reaper.new(source).reap(ids_set)
+  end
+
+  desc "Set regions for tenders"
+  task :set_regions_in_tenders_for, :source_id do |t, args|
+    source = Source.find(args.source_id)
+    tenders = source.tenders.where(:customer_address.ne => nil)
+    regions = Region.all
+    cities = City.all
+
+    tenders.each do |t|
+        # regions.each do |r|
+        #   t.external_region_id = r.external_id if t.customer_address.include? r.name
+        # end
+        # debugger
+        cities.each do |c|
+          t.external_city_id = c.external_id if t.customer_address.include? c.name
+        end
+        t.save
     end
   end
 end

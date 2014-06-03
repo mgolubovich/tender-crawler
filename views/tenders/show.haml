@@ -25,7 +25,9 @@
           #{@tenders.customer_address}
       %tr
         %td ОКДПС
-        %td= @tenders.okdps
+        - @tenders.work_type.each do |w|
+          %td= w["code"] + "|" + "#{w["title"]}"
+          %br
       %tr
         %td URL извещения
         %td
@@ -44,7 +46,12 @@
         %td= @tenders.updated_at
       %tr
         %td documents
-        %td= @tenders.documents
+        %td
+          - @tenders.documents.each do |t|
+            %a{ href: "#{t["doc_link"]}",  target: "_blank"}= t["doc_title"]
+            %br
+
+
 .container-fluid
   .col-xs-5.col-md-offset-3
     %a.btn.btn-primary.btn-lg{:href => env['HTTP_REFERER'], :method => "get"} Назад

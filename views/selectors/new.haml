@@ -1,7 +1,11 @@
 - @title = 'New selector'
-%h1
+%h3
   New selector for
   %a{ href: "/cartridges/edit/#{@cartridge_id}"}= Cartridge.find(@cartridge_id).name
+  cartridge in
+  %a{ href: "/source/edit/#{@source._id}"}= @source.name
+  source.
+
 .container-fluid
   %form.form-horizontal{:action => "/cartridges/edit/#{@cartridge_id}/add_s", :method => "post"}
     %fieldset
@@ -13,8 +17,8 @@
 
       .form-group
         %label.col-md-4.control-label{:for => "selector_link"} link_template
-        .col-md-5
-          %input.form-control.input-md{:id => "selector_link", :name => "selector_link", :type => "text", :size => 20}
+        .col-md-8
+          %input.form-control.input-md{:id => "selector_link", :name => "selector_link", :type => "text", :size => 20, :value => @link_template}
 
       .form-group
         %label.col-md-4.control-label{:for => "selector_xpath"} xpath
@@ -57,7 +61,7 @@
 
       .form-group
         %label.col-md-4.control-label{:for => "selector_to_type"} to_type
-        .col-md-8
+        .col-md-4
           %select.form-control{:id => "selector_to_type", :name => "selector_to_type"}
             %option{:value => :string, :selected => true} string
             %option{:value => :symbol} symbol
@@ -66,13 +70,17 @@
 
       .form-group
         %label.col-md-4.control-label{:for => "selector_activity"} Активность
-        .col-md-5
+        .col-md-4
           %select.form-control{:id => "selector_activity", :name => "selector_activity"}
             %option{:value => "active"} Включен
             %option{:value => "blocked"} Выключен
 
       .form-group
         .col-xs-5.col-md-offset-3
-          %input.btn.btn-primary.btn-lg{:name => "submint", :type => "submit", :value => "Добавить"}
+          %input.btn.btn-primary.btn-lg{:name => "submit", :type => "submit", :value => "Добавить"}
+
+/%script{:type => 'text/javascript', :src => "http://10.0.105.15/javascripts/selector-form-validation.js" }
+:javascript
+  $('#selector_value').validator();
 
 

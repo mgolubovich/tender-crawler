@@ -4,6 +4,11 @@
 selector for
 %a{ href: "/cartridges/edit/#{@cartridge_id}" }
   %b= Cartridge.find(@cartridge_id).name
+- unless @source.nil?
+  in
+  %a{ href: "/sources/edit/#{@source._id}"}
+    %b= @source.name
+  source.
 %h1
 - if @selector.rules.empty?
   %a{ href: "/rules/new/#{@selector._id}"} Add rule
@@ -71,7 +76,7 @@ selector for
 
       .form-group
         %label.col-md-4.control-label{:for => "selector_to_type"} to_type
-        .col-md-8
+        .col-md-4
           %select.form-control{:id => "selector_to_type", :name => "selector_to_type"}
             %option{:value => :string, :selected => @selector.to_type == :string ? true : false} string
             %option{:value => :symbol, :selected => @selector.to_type == :symbol ? true : false} symbol
@@ -80,16 +85,16 @@ selector for
 
       .form-group
         %label.col-md-4.control-label{:for => "selector_activity"} Активность
-        .col-md-5
+        .col-md-4
           %select.form-control{:id => "selector_activity", :name => "selector_activity"}
             %option{:value => "active", :selected => @selector.is_active ? true : false} Включен
             %option{:value => "blocked", :selected => @selector.is_active ? false : true } Выключен
 
       .form-group
         .col-xs-5.col-md-offset-3
-          %input.btn.btn-primary.btn-lg{:name => "submint", :type => "submit", :value => "Сохранить"}
+          %input.btn.btn-primary.btn-lg{:name => "submit", :type => "submit", :value => "Сохранить"}
           %a.btn.btn-danger.btn-lg{:href => "/cartridges/edit/#{@cartridge_id}/selector/#{@selector_id}/destroy", :name => "delete", :type => "submit", :value => "Удалить", :method => "get"} Удалить
-  
+
   %fieldset
     .form-group
       .col-md-12

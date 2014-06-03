@@ -60,11 +60,16 @@ class CartridgesController < ApplicationController
 
   get '/edit/:cart_id/add_s' do
     @cartridge_id = params[:cart_id]
+    @source = Cartridge.find(@cartridge_id).source
+    @link_template = Cartridge.find(@cartridge_id).base_link_template
+
     haml :'selectors/new'
   end
 
  post '/edit/:cart_id/add_s' do
-   selector = Cartridge.find(params[:cart_id]).selectors.new
+   cartridge = Cartridge.find params[:cart_id]
+   selector = cartridge.selectors.new
+   selector.source_id = cartridge.source_id #Source_id fix
  #  selector.source_id = params[:selector_source_id]
    selector.value_type = params[:selector_value].to_sym
    selector.link_template = params[:selector_link]
@@ -80,6 +85,7 @@ class CartridgesController < ApplicationController
   # selector.group = params[:selector_group].to_sym
    selector.is_active = params[:selector_activity] == 'active' ? true : false
    selector.to_type = params[:selector_to_type]
+ #  params[:selector_value].length > 0 ?
    selector.save
    redirect "/cartridges/edit/#{selector.cartridge_id}"
  end
@@ -89,19 +95,15 @@ class CartridgesController < ApplicationController
    @selector_id = params[:id]
    @selector = Selector.find params[:id]
    @rule = @selector.rules
+   @source = @selector.source
    haml :'selectors/edit'
  end
 
  get '/edit/:cart_id/selector/:id/check' do
   content_type :json
-  
-  @selector = Selector.find params[:id]
-  result = Hash.new
-  entity_id = params[:entity_id] ? params[:entity_id] : @selector.source.tenders.last.id_by_source
 
-  result[:grappled_value] = @selector.value_type == :ids_set ? Grappler.new(@selector, entity_id).grapple : Grappler.new(@selector, entity_id).grapple_all
-  result[:selector_type] = @selector.value_type
-  result.to_json
+  entity_id = params[:entity_id].length > 0 ? params[:entity_id] : @selector.source.tenders.last.id_by_source
+  %x(DISPLAY=localhost:1.0 xvfb-run rake parsing:test_grapple[#{params[:id]},#{entity_id}])
 end
 
  post '/edit/:cart_id/selector/:id' do

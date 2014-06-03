@@ -45,10 +45,13 @@ class Selector
   # Service field, used as activity flag of selector
   field :is_active, type: Boolean
 
+  # Sorting number, used for optimisation of visits
+  field :priority, type: Integer, default: 0
+
   # Service field, used as parameter for grappling method, shows which mode must be used. Can be :single or :multiple
   field :grapple_mode, type: Symbol, default: :single
 
   scope :ids_set, where(:value_type => :ids_set)
-  scope :data_fields, where(:value_type.ne => :ids_set)
+  scope :data_fields, not_in(:value_type => [:ids_set, :doc_title, :doc_link, :work_type_code, :work_type_title])
   scope :active, where(:is_active => true)
 end
