@@ -33,7 +33,7 @@ class Tender
   field :documents, type: Array
 
   # Fields for MySQL integration
-  # Category of tender 0-5. Magic numbers. 0 - not needed.
+  # Category of tender 0-5. Magic numbers. 0 - not needed. -1 - failed
   field :external_work_type, type: Integer
 
   # ID based on altasib_kladr_cities table
