@@ -9,12 +9,11 @@
 .container-fluid
   %form.form-horizontal{:action => "/cartridges/edit/#{@cartridge_id}/add_s", :method => "post"}
     %fieldset
-
       .form-group
         %label.col-md-4.control-label{:for => "selector_value"} value_type
         .col-md-5
-          %input.form-control.input-md{:id => "selector_value", :name => "selector_value", :type => "text", :size => 20}
-
+          %input.form-control.input-md{:id => "selector_value", :name => "selector_value", :type => "text", :size => 20, :placeholder => "Обязательное поле!" }
+          .help-block.with-errors
       .form-group
         %label.col-md-4.control-label{:for => "selector_link"} link_template
         .col-md-8
@@ -79,8 +78,5 @@
         .col-xs-5.col-md-offset-3
           %input.btn.btn-primary.btn-lg{:name => "submit", :type => "submit", :value => "Добавить"}
 
-/%script{:type => 'text/javascript', :src => "http://10.0.105.15/javascripts/selector-form-validation.js" }
-:javascript
-  $('#selector_value').validator();
-
+%script{:type => 'text/javascript', :src => "http://10.0.105.15/javascripts/selector-form-validation.js" }
 
