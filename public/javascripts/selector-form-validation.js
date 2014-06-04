@@ -10,5 +10,6 @@ button.click(function (e) {
         else {
             fieldDiv.addClass('has-error');
             field.attr('placeholder', 'value_type забыл!')
+            alert('govno!')
         }
     }
