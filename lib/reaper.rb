@@ -28,7 +28,7 @@ class Reaper
       
       unless ids_set.count > 0
         while @limit > ids_set.count
-          next_page(cartridge) if ids_set.count < @limit
+          get_next_page(cartridge) if ids_set.count < @limit
           ids_set += get_ids(cartridge)
         end
       end
@@ -64,7 +64,7 @@ class Reaper
         tender.external_work_type = set_external_work_type_code(tender.work_type)
 
         tender.external_db_id = Tender.max(:external_db_id).to_i + 1 if tender.external_db_id.nil?
-        #debugger
+        
         @fields_status.each_pair do |field, status|
           tender_status[:state] = status
           tender_status[:failed_fields] = [] unless tender_status[:failed_fields].kind_of(Array)
@@ -80,6 +80,7 @@ class Reaper
         log_tender_saved(tender[:_id])
 
       end
+      ids_set = []
     end
   end
 
@@ -93,16 +94,18 @@ class Reaper
     @fields_status[selector.value_type.to_sym] = Arbiter.new(value, selector.rule.first).judge if selector.rules.count > 0
   end
 
-  def next_page(cartridge)
+  def get_next_page(cartridge)
     page_manager = cartridge.page_managers.first
     case page_manager.action_type
       when :get
         @current_page += 1
-        visit cartridge.base_list_template.gsub('$page_number', @current_page.to_s)
+        next_page = cartridge.base_list_template.gsub('$page_number', @current_page.to_s)
+        
+        visit next_page
       when :click
         find(:xpath, page_manager.action_value).click
       when :js
-        execute_script(page_manager.action_value.gsub('$page_number', @current_page.to_s))
+        execute_script(page_manager.action_value.gsub!('$page_number', @current_page.to_s))
     end
   end
 
