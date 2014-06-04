@@ -162,7 +162,7 @@ class Reaper
 
   def set_external_work_type_code(work_type)
     external_work_type = 0
-    debugger
+    
     if work_type.count > 0
       work_type.each do |w|
         external_work_type = 1 if @construct_keys.include? w["code"] && !w["code"].blank?
