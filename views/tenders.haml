@@ -53,7 +53,7 @@
             %a{ href: "/tenders?source_id=#{tender.source_id}"}= tender.source.name
           %td= tender.title
           %td
-            %a{ href: tender.source_link, target: :blank}= tender.source_link
+            %a{ href: tender.source_link, target: "_blank"}= tender.source_link
           %td= tender.created_at
           %td= tender.updated_at
           %td
