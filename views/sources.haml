@@ -31,7 +31,7 @@
             %td= source.name
           - else
             %td
-              %a{ href: "#{source.url}" }
+              %a{ href: "#{source.url}", target: "_blank" }
                 %b= source.name
           %td
             %a{ href: "/tenders?source_id=#{source.id}"}= source.tenders.count
