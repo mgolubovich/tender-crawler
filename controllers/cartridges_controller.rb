@@ -135,4 +135,14 @@ end
    redirect "/cartridges/edit/#{cartridge_id}"
  end
 
+ get '/check/:tender' do
+   t = Tender.find params[:tender]
+   check_result(t)
+ end
+
+ def check_result(t)
+   @check_tender = t
+   haml :'check'
+ end
+
 end
