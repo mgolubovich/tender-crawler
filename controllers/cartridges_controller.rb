@@ -147,6 +147,8 @@ end
 
  def check_result(t)
    @check_tender = t
+   @cart = @check_tender.source.cartridges.where(:tender_type => @check_tender.group).last
+   @selector = @cart.selectors
    haml :'check'
  end
 
