@@ -33,6 +33,10 @@ class CartridgesController < ApplicationController
     @pm = @cartridge.page_managers.last
     @selectors = @cartridge.selectors
     @sources = Source.order_by(created_at: :asc)
+    @value_types = YAML.load_file('config/value_types.yml').keys
+    @value_types = @value_types.map {|v| v.to_sym}
+    @used_keys = @selectors.distinct(:value_type)
+
     haml :'cartridges/edit'
   end
 
@@ -58,11 +62,12 @@ class CartridgesController < ApplicationController
     redirect "/cartridges"
   end
 
-  get '/edit/:cart_id/add_s' do
+  get '/edit/:cart_id/add_s/:value_type' do
     @cartridge_id = params[:cart_id]
     @source = Cartridge.find(@cartridge_id).source
     @link_template = Cartridge.find(@cartridge_id).base_link_template
     @value_types = YAML.load_file('config/value_types.yml').keys
+    @value_type = params[:value_type]
 
 
     haml :'selectors/new'

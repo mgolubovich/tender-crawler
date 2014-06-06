@@ -64,30 +64,39 @@
     %thead
       %tr
         %td Selector
-        %td Delete
+        %td Control
         %td Rules
         %td Is active?
     %tbody
-    - @selectors.each do |s|
-      %tr{:class => s.is_active ? "success" : "" }
-        %td
-          %a{ href: "/cartridges/edit/#{@cartridge.id}/selector/#{s._id}"}
-            %b= s.value_type
-        %td
-          %a{ href: "/cartridges/edit/#{@cartridge.id}/selector/#{s._id}/destroy"} Delete
-        - if s.rules.empty?
+    - @value_types.each do |s|
+    - selector = @selectors.where(value_type: s).first
+    - is_exist = @used_keys.include?(s)
+      %tr{:class => is_exist ? "success" : ""}
+        %td= s
+        - if is_exist
           %td
-            %a{ :href => "/rules/new/#{s._id}"}
-              %i Empty :(
+            %a{href: "/cartridges/edit/#{@cartridge.id}/selector/#{selector._id}"} Edit
+            |
+            %a{href: "/cartridges/edit/#{@cartridge.id}/selector/#{selector._id}/destroy", :onclick => "return ORLY();"} Delete
+          - if selector.rules.empty?
+            %td
+              %a{ :href => "/rules/new/#{selector._id}"}
+                %i Empty :(
+          - else
+            %td
+              - if selector.rules.last.is_active
+                %a{ :href => "/rules/#{selector._id}/edit/#{selector.rules.last._id}"}
+                  %b= selector.rules.last.updated_at.strftime("%d %B %Y (%R)")
+              - else
+                %a{ :href => "/rules/#{selector._id}/edit/#{selector.rules.last._id}"}
+                  %i Disabled !
+          %td= selector.is_active ? "Yes" : "No"
         - else
           %td
-            - if s.rules.last.is_active
-              %a{ :href => "/rules/#{s._id}/edit/#{s.rules.last._id}"}
-                %b= s.rules.last.updated_at.strftime("%d %B %Y (%R)")
-            - else
-              %a{ :href => "/rules/#{s._id}/edit/#{s.rules.last._id}"}
-                %i Disabled !
-        %td= s.is_active ? "Yes" : "No"
+            %a{href: "/cartridges/edit/#{@cartridge.id}/add_s/#{s}"} Create
+          %td
+          %td
+
 
 .container-fluid
   %p

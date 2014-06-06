@@ -9,6 +9,7 @@ class Grappler
   include Capybara::DSL
   Capybara.default_driver = :webkit
   Capybara.run_server = false
+  Capybara.default_wait_time = 5
 
   def initialize(selector, entity_id='')
     @value_type = selector.value_type.to_sym
