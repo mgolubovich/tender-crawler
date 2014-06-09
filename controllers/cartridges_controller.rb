@@ -4,6 +4,7 @@ class CartridgesController < ApplicationController
     @cartridges = @cartridges.where(source_id: params[:source_id]) if params[:source_id] #cartridges in some source
     @source_id = params[:source_id] if params[:source_id]
     @cartridges = @cartridges.paginate(page: params[:page], per_page: 25) #paginate
+    @sources = Source.order_by(created_at: :asc)
     haml :cartridges
   end
 
