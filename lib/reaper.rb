@@ -153,8 +153,10 @@ class Reaper
 
     i = 0
     work_type_codes.each do |code|
-      work_types << { "code" =>  code.to_s, "title" => work_type_titles[i].to_s}
-      i += 1
+      unless code.empty?
+        work_types << { "code" =>  code.to_s, "title" => work_type_titles[i].to_s}
+        i += 1
+      end
     end
 
     work_types
