@@ -31,45 +31,48 @@
             |
             %a{ href: "/cartridges/destroy/#{cartridge._id}", onclick: "return ORLY();"} Delete
           %td
-            %a.copy-button{:href => "/cartridges/#{cartridge.source_id}", "data-target" => ".cart_copy", "data-toggle" => "modal", "data-cart-name" => "#{cartridge.name}", "data-source-name" => "#{cartridge.source.name}"} Copy To
+            %a.copy-button{:href => "/cartridges/#{cartridge.source_id}", "data-target" => ".cart_copy", "data-toggle" => "modal", "data-cart-name" => "#{cartridge.name}", "data-source-name" => "#{cartridge.source.name}", "data-cart-id" => cartridge.id} Copy To
           %td= cartridge.is_active ? "Yes" : "No"
   = will_paginate @cartridges, renderer: BootstrapPagination::Sinatra
 
 .container-fluid
-  .modal.fade.cart_copy
-    .modal-dialog
-      .modal-content
-        .modal-header
-          %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"} ×
-          %h4.modal-title Copy
-        .modal-body.form-horizontal
-          %fieldset
-            .form-group
-              %label.col-md-3.control-label{:for => "source"} To
-              .col-md-6
-                %select.form-control{:id => "source", :name => "source"}
-                  - @sources.each do |source|
-                    %option{:value => source._id, :selected => source._id.to_s == @source_id ? true : false}= source.name
-            .form-group
-              %label.col-md-3.control-label{:for => "cartridge_name"} With
-              .col-md-6
-                %input.form-control.input-md{:id => "cartridge_name", :name => "cartridge_name", :type => "text", :placeholder => "new cartridge name", :required => "", :size => 20}
-            %p.line{:style => "border-bottom: 1px solid #e5e5e5;"}
-            .form-group
-              %label.col-md-4.control-label{for: "cart_checkbox"}
-              .col-md-4
-                .checkbox
-                  %label{for: "cart_checkbox-0"}
-                    %input#cart_checkbox-0{name: "cart_checkbox", type: "checkbox", value: "copy_selectors"} Copy Selectors
-                .checkbox
-                  %label{for: "cart_checkbox-1"}
-                    %input#cart_checkbox-1{name: "cart_checkbox", type: "checkbox", value: "copy_pm"} Copy PageManager
-                .checkbox
-                  %label{for: "cart_checkbox-2"}
-                    %input#cart_checkbox-2{name: "cart_checkbox", type: "checkbox", value: "copy_rules"} Copy Rules
-        .modal-footer
-          %button.btn.btn-default{"data-dismiss" => "modal", type: "button"} Cancel
-          %button.btn.btn-primary{type: "button"} Push!
+  %form{:action => "/cartridges/copy", :method => "post"}
+    %input{:type => "hidden", :name => "cartridge_id", :id => "cartridge_id", :value => ""}
+    .modal.fade.cart_copy
+      .modal-dialog
+        .modal-content
+          .modal-header
+            %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"} ×
+            %h4.modal-title Copy
+          .modal-body.form-horizontal
+            %fieldset
+              .form-group
+                %label.col-md-3.control-label{:for => "source"} To
+                .col-md-6
+                  %select.form-control{:id => "source", :name => "source"}
+                    - @sources.each do |source|
+                      %option{:value => source._id, :selected => source._id.to_s == @source_id ? true : false}= source.name
+              .form-group
+                %label.col-md-3.control-label{:for => "cartridge_name"} With
+                .col-md-6
+                  %input.form-control.input-md{:id => "cartridge_name", :name => "cartridge_name", :type => "text", :placeholder => "new cartridge name", :required => "", :size => 20}
+              %p.line{:style => "border-bottom: 1px solid #e5e5e5;"}
+              .form-group
+                %label.col-md-4.control-label{for: "cart_checkbox"}
+                .col-md-4
+                  .checkbox
+                    %label{for: "copy_selectors"}
+                      %input#cart_checkbox-0{name: "copy_selectors", type: "checkbox", checked: "true"} Copy Selectors
+                  .checkbox
+                    %label{for: "copy_pm"}
+                      %input#cart_checkbox-1{name: "copy_pm", type: "checkbox", checked: "true"} Copy PageManager
+                  .checkbox
+                    %label{for: "copy_rules"}
+                      %input#cart_checkbox-2{name: "copy_rules", type: "checkbox", checked: "true"} Copy Rules
+          .modal-footer
+            %button.btn.btn-default{"data-dismiss" => "modal", type: "button"} Cancel
+            %button.btn.btn-primary{type: "submit"} Push!
+  }
 
 :javascript
   var copyButton = $('.copy-button');
