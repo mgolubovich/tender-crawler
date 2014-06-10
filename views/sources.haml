@@ -37,7 +37,7 @@
             %a{ href: "/tenders?source_id=#{source.id}"}= source.tenders.count
           %td
             %a{ href: "/cartridges?source_id=#{source.id}", title: "Active: #{source.cartridges.active.count}"}= source.cartridges.count
-          %td= source.tenders_update_frequency
+          %td= source.tenders_update_frequency.strftime("%d %B %Y (%R)") if source.tenders_update_frequency
           %td
             %a{ href: "/sources/edit/#{source.id}"} Edit
           %td

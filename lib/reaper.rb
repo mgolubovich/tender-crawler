@@ -14,6 +14,7 @@ class Reaper
     @fields_status = Hash.new
 
     @current_page = 0
+    @initial_visit = false
 
     load_work_type_codes
     
@@ -24,11 +25,9 @@ class Reaper
     get_cartridges
     @cartridges.each do |cartridge|
       @current_page = 0
-      #visit(cartridge.base_list_template) unless current_url == cartridge.base_list_template
       
       unless ids_set.count > 0
         while @limit > ids_set.count
-          #debugger
           get_next_page(cartridge) if ids_set.count < @limit
           ids_set += get_ids(cartridge)
         end
@@ -60,8 +59,8 @@ class Reaper
         tender.id_by_source = entity_id
         tender.source_link = cartridge.base_link_template.gsub('$entity_id', entity_id)
         tender.group = cartridge.tender_type
-        tender.documents = get_docs(cartridge, entity_id)
-        tender.work_type = get_work_type(cartridge, entity_id)
+        tender.documents = get_docs(cartridge, entity_id) if cartridge.selectors.where(value_type: :doc_title).count > 0
+        tender.work_type = get_work_type(cartridge, entity_id) if cartridge.selectors.where(value_type: :work_type_code).count > 0
         tender.external_work_type = set_external_work_type_code(tender.work_type)
 
         tender.external_db_id = Tender.max(:external_db_id).to_i + 1 if tender.external_db_id.nil?
@@ -105,8 +104,18 @@ class Reaper
         visit next_page
         sleep 2 # HACK for waiting of ajax execution. Need to fix later
       when :click
+        unless @initial_visit
+          initial_page = cartridge.base_list_template.gsub('$page_number', '1')
+          visit initial_page
+          @initial_visit = true
+        end
         find(:xpath, page_manager.action_value).click
       when :js
+        unless @initial_visit
+          initial_page = cartridge.base_list_template.gsub('$page_number', '1')
+          visit initial_page
+          @initial_visit = true
+        end
         execute_script(page_manager.action_value.gsub!('$page_number', @current_page.to_s))
     end
   end
