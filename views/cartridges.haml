@@ -62,13 +62,13 @@
                 .col-md-4
                   .checkbox
                     %label{for: "copy_selectors"}
-                      %input#cart_checkbox-0{name: "copy_selectors", type: "checkbox", checked: "true"} Copy Selectors
-                  .checkbox
+                      %input#copy_selectors{name: "copy_selectors", type: "checkbox", checked: "true"} Copy Selectors
+                  .checkbox.copy-rules
                     %label{for: "copy_rules"}
-                      %input#cart_checkbox-2{name: "copy_rules", type: "checkbox", checked: "true"} Copy Rules
+                      %input#copy_rules{name: "copy_rules", type: "checkbox", checked: "true"} Copy Rules
                   .checkbox
                     %label{for: "copy_pm"}
-                      %input#cart_checkbox-1{name: "copy_pm", type: "checkbox", checked: "true"} Copy PageManager
+                      %input#copy_pm{name: "copy_pm", type: "checkbox", checked: "true"} Copy PageManager
 
           .modal-footer
             %button.btn.btn-default{"data-dismiss" => "modal", type: "button"} Cancel
@@ -79,7 +79,20 @@
   var copyButton = $('.copy-button');
   var modalTitle = $('h4.modal-title');
   var cartridgeId = $('#cartridge_id');
+  var copyRules = $('.copy-rules');
+  var checkboxSelector = $('#copy_selectors');
+  var checkboxRules = $('#copy_rules');
   copyButton.click(function(e){
     modalTitle.html('Copy ' + $(this).attr('data-cart-name') + ' (' + $(this).attr('data-source-name') + ')');
     cartridgeId.val($(this).attr('data-cart-id'));
+  });
+  checkboxSelector.click(function () {
+    var currentState = $(this).prop('checked');
+    if (currentState) {
+        checkboxRules.removeAttr("disabled");
+        copyRules.show("slow");
+    } else {
+        copyRules.hide("slow");
+        checkboxRules.attr("disabled", true);
+    }
   });
