@@ -4,6 +4,7 @@ class CartridgesController < ApplicationController
     @cartridges = @cartridges.where(source_id: params[:source_id]) if params[:source_id] #cartridges in some source
     @source_id = params[:source_id] if params[:source_id]
     @cartridges = @cartridges.paginate(page: params[:page], per_page: 25) #paginate
+    @sources = Source.order_by(created_at: :asc)
     haml :cartridges
   end
 
@@ -138,6 +139,54 @@ end
    selector = Selector.find params[:id]
    selector.destroy
    redirect "/cartridges/edit/#{cartridge_id}"
+ end
+
+ get '/check/:tender' do
+   t = Tender.find params[:tender]
+   check_result(t)
+ end
+
+ def check_result(t)
+   @check_tender = t
+   haml :'check'
+ end
+
+ post '/copy' do
+   @cartridge = Cartridge.find params[:cartridge_id]
+  # Copy cart
+   dest_cart = Cartridge.new
+   dest_cart.update_attributes!(@cartridge.attributes)
+   dest_cart.name = params[:cartridge_name]
+   dest_cart.source_id = params[:source]
+   dest_cart.base_link_template = "$entity_id"
+   dest_cart.base_list_template = "$page_number"
+   dest_cart.save
+  # PageManagers
+   dest_pm = dest_cart.page_managers.new
+   if params[:copy_pm]
+     dest_pm.update_attributes!(@cartridge.page_managers.last.attributes)
+     dest_pm.cartridge_id = dest_cart._id
+   end
+   dest_pm.save
+  # Selectors
+   if params[:copy_selectors]
+     @cartridge.selectors.each do |s|
+       dest_s = Selector.new
+       dest_s.update_attributes!(s.attributes)
+       dest_s.cartridge_id = dest_cart._id
+       dest_s.source_id = dest_cart.source_id
+       dest_s.link_template = ""
+       dest_s.save
+       if params[:copy_rules]
+         dest_r = s.rules.new
+         dest_r.update_attributes!(s.rules.last.attributes)
+         dest_r.selector_id = dest_s._id
+         dest_r.save
+       end
+     end
+   end
+  #temp redirect
+   redirect "/cartridges/edit/#{dest_cart._id}"
  end
 
 end
