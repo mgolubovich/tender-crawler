@@ -1,0 +1,24 @@
+code_by_source:
+  - code_by_source
+title:
+  - title
+start_at:
+  - start_at
+start_price:
+  - start_price
+published_at:
+  - published_at
+tender_form:
+  - tender_form
+customer_name:
+  - customer_name
+customer_inn:
+  - customer_inn
+customer_address:
+  - customer_address
+documents:
+  - doc_title
+  - doc_link
+work_type:
+  - work_type_code
+  - work_type_title
