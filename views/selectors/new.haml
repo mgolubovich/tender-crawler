@@ -64,10 +64,10 @@
         %label.col-md-4.control-label{:for => "selector_to_type"} to_type
         .col-md-4
           %select.form-control{:id => "selector_to_type", :name => "selector_to_type"}
-            %option{:value => :string, :selected => true} string
+            %option{:value => :string, :selected => (@value_type.to_s == "start_price" ? false : true)} string
             %option{:value => :symbol} symbol
             %option{:value => :integer} integer
-            %option{:value => :float} float
+            %option{:value => :float, :selected => (@value_type.to_s == "start_price" ? true : false)} float
 
       .form-group
         %label.col-md-4.control-label{:for => "selector_activity"} Активность
