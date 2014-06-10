@@ -90,6 +90,7 @@ class CartridgesController < ApplicationController
   # selector.regexp[:pattern] = params[:selector_pat_reg]
    selector.date_format = params[:selector_date_format]
    selector.js_code = params[:selector_js_code]
+   selector.priority = params[:selector_priority].to_i
   # selector.group = params[:selector_group].to_sym
    selector.is_active = params[:selector_activity] == 'active' ? true : false
    selector.to_type = params[:selector_to_type]
