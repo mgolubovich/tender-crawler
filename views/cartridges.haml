@@ -64,19 +64,22 @@
                     %label{for: "copy_selectors"}
                       %input#cart_checkbox-0{name: "copy_selectors", type: "checkbox", checked: "true"} Copy Selectors
                   .checkbox
-                    %label{for: "copy_pm"}
-                      %input#cart_checkbox-1{name: "copy_pm", type: "checkbox", checked: "true"} Copy PageManager
-                  .checkbox
                     %label{for: "copy_rules"}
                       %input#cart_checkbox-2{name: "copy_rules", type: "checkbox", checked: "true"} Copy Rules
+                  .checkbox
+                    %label{for: "copy_pm"}
+                      %input#cart_checkbox-1{name: "copy_pm", type: "checkbox", checked: "true"} Copy PageManager
+
           .modal-footer
             %button.btn.btn-default{"data-dismiss" => "modal", type: "button"} Cancel
             %button.btn.btn-primary{type: "submit"} Push!
-  }
+
 
 :javascript
   var copyButton = $('.copy-button');
   var modalTitle = $('h4.modal-title');
+  var cartridgeId = $('#cartridge_id');
   copyButton.click(function(e){
     modalTitle.html('Copy ' + $(this).attr('data-cart-name') + ' (' + $(this).attr('data-source-name') + ')');
+    cartridgeId.val($(this).attr('data-cart-id'));
   });
