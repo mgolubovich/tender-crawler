@@ -7,21 +7,19 @@
         %input.form-control{:name => "search", :type => "text", :placeholder => "Search"}
         %span.input-group-btn
           %button.btn.btn-primary Искать
-
-.container-fluid
-  %h4
-    %a{ href: "/sources/new"} Add new source
 .container-fluid
   %table.table.table-condensed.table-bordered
     %thead
+      %a.btn.btn-info.pull-right{href: "/sources/new", style: "margin-bottom: 10px;"}
+        %b +
+        Add new source
       %tr
         %td
         %td Name
         %td Tenders count
         %td Cartridge count
         %td Update frequency
-        %td Edit
-        %td Delete
+        %td.text-center Control
         %td Activity?
     %tbody
       - @sources.each do |source|
@@ -38,9 +36,12 @@
           %td
             %a{ href: "/cartridges?source_id=#{source.id}", title: "Active: #{source.cartridges.active.count}"}= source.cartridges.count
           %td= source.tenders_update_frequency.strftime("%d %B %Y (%R)") if source.tenders_update_frequency
-          %td
-            %a{ href: "/sources/edit/#{source.id}"} Edit
-          %td
-            %a{ href: "/sources/destroy/#{source.id}", onclick: "return ORLY();"} Delete
+          %td.text-center
+            %a.btn.btn-info.btn-xs{ href: "/sources/edit/#{source.id}"}
+              %span.glyphicon.glyphicon-edit
+              Edit
+            %a.btn.btn-danger.btn-xs{ href: "/sources/destroy/#{source.id}", onclick: "return ORLY();"}
+              %span.glyphicon.glyphicon-remove
+              Delete
           %td= source.is_active ? "Yes" : "No"
   = will_paginate @sources, renderer: BootstrapPagination::Sinatra

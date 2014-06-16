@@ -15,7 +15,7 @@
         %td Name
         %td Selectors count
         %td Source
-        %td Control
+        %td.text-center Control
         %td Copy
         %td Activity?
     %tbody
@@ -26,10 +26,13 @@
           %td
             %a{ href: "/cartridges?id=#{cartridge._id}", title: "active: #{cartridge.selectors.active.count}"}= cartridge.selectors.count
           %td= cartridge.source.name
-          %td
-            %a{ href: "/cartridges/edit/#{cartridge._id}"} Edit
-            |
-            %a{ href: "/cartridges/destroy/#{cartridge._id}", onclick: "return ORLY();"} Delete
+          %td.text-center
+            %a.btn.btn-info.btn-xs{ href: "/cartridges/edit/#{cartridge._id}"}
+              %span.glyphicon.glyphicon-edit
+              Edit
+            %a.btn.btn-danger.btn-xs{ href: "/cartridges/destroy/#{cartridge._id}", onclick: "return ORLY();"}
+              %span.glyphicon.glyphicon-remove
+              Delete
           %td
             %a.copy-button{:href => "/cartridges/#{cartridge.source_id}", "data-target" => ".cart_copy", "data-toggle" => "modal", "data-cart-name" => "#{cartridge.name}", "data-source-name" => "#{cartridge.source.name}", "data-cart-id" => cartridge.id} Copy To
           %td= cartridge.is_active ? "Yes" : "No"
