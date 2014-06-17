@@ -63,6 +63,14 @@ class CartridgesController < ApplicationController
     redirect "/cartridges"
   end
 
+  get '/edit/:cart_id/add_s' do
+    @cartridge_id = params[:cart_id]
+    @source = Cartridge.find(@cartridge_id).source
+    @link_template = Cartridge.find(@cartridge_id).base_link_template
+    @value_types = YAML.load_file('config/value_types.yml').keys
+    haml :'selectors/new'
+  end
+
   get '/edit/:cart_id/add_s/:value_type' do
     @cartridge_id = params[:cart_id]
     @source = Cartridge.find(@cartridge_id).source
@@ -129,6 +137,7 @@ end
    selector.date_format = params[:selector_date_format]
    selector.js_code = params[:selector_js_code]
   # selector.group = params[:selector_group].to_sym
+   selector.priority = params[:selector_priority].to_i
    selector.to_type = params[:selector_to_type]
    selector.is_active = params[:selector_activity] == 'active' ? true : false
    selector.save

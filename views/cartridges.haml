@@ -15,7 +15,7 @@
         %td Name
         %td Selectors count
         %td Source
-        %td Control
+        %td.text-center Control
         %td Copy
         %td Activity?
     %tbody
@@ -26,10 +26,13 @@
           %td
             %a{ href: "/cartridges?id=#{cartridge._id}", title: "active: #{cartridge.selectors.active.count}"}= cartridge.selectors.count
           %td= cartridge.source.name
-          %td
-            %a{ href: "/cartridges/edit/#{cartridge._id}"} Edit
-            |
-            %a{ href: "/cartridges/destroy/#{cartridge._id}", onclick: "return ORLY();"} Delete
+          %td.text-center
+            %a.btn.btn-info.btn-xs{ href: "/cartridges/edit/#{cartridge._id}"}
+              %span.glyphicon.glyphicon-edit
+              Edit
+            %a.btn.btn-danger.btn-xs{ href: "/cartridges/destroy/#{cartridge._id}", onclick: "return ORLY();"}
+              %span.glyphicon.glyphicon-remove
+              Delete
           %td
             %a.copy-button{:href => "/cartridges/#{cartridge.source_id}", "data-target" => ".cart_copy", "data-toggle" => "modal", "data-cart-name" => "#{cartridge.name}", "data-source-name" => "#{cartridge.source.name}", "data-cart-id" => cartridge.id} Copy To
           %td= cartridge.is_active ? "Yes" : "No"
@@ -62,24 +65,16 @@
                 .col-md-4
                   .checkbox
                     %label{for: "copy_selectors"}
-                      %input#cart_checkbox-0{name: "copy_selectors", type: "checkbox", checked: "true"} Copy Selectors
-                  .checkbox
+                      %input#copy_selectors{name: "copy_selectors", type: "checkbox", checked: "true"} Copy Selectors
+                  .checkbox.copy-rules
                     %label{for: "copy_rules"}
-                      %input#cart_checkbox-2{name: "copy_rules", type: "checkbox", checked: "true"} Copy Rules
+                      %input#copy_rules{name: "copy_rules", type: "checkbox", checked: "true"} Copy Rules
                   .checkbox
                     %label{for: "copy_pm"}
-                      %input#cart_checkbox-1{name: "copy_pm", type: "checkbox", checked: "true"} Copy PageManager
+                      %input#copy_pm{name: "copy_pm", type: "checkbox", checked: "true"} Copy PageManager
 
           .modal-footer
             %button.btn.btn-default{"data-dismiss" => "modal", type: "button"} Cancel
             %button.btn.btn-primary{type: "submit"} Push!
 
-
-:javascript
-  var copyButton = $('.copy-button');
-  var modalTitle = $('h4.modal-title');
-  var cartridgeId = $('#cartridge_id');
-  copyButton.click(function(e){
-    modalTitle.html('Copy ' + $(this).attr('data-cart-name') + ' (' + $(this).attr('data-source-name') + ')');
-    cartridgeId.val($(this).attr('data-cart-id'));
-  });
+%script{:type => 'text/javascript', :src => "javascripts/cartridge-copy-popup.js" }
