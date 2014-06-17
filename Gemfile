@@ -17,6 +17,8 @@ gem 'activesupport', '3.2.17'
 gem "will_paginate"
 gem "will_paginate_mongoid"
 gem "will_paginate-bootstrap"
+gem 'activerecord'
+gem 'mysql2'
 
 
 platforms :ruby do # linux
