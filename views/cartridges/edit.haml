@@ -80,9 +80,10 @@
               %a.btn.btn-danger.btn-xs{ href: "#{@cartridge._id}/selector/#{selector._id}/destroy", onclick: "return ORLY();"}
                 %span.glyphicon.glyphicon-remove
               %br
+            %a{href: "/cartridges/edit/#{@cartridge.id}/add_s/#{s}"} Create
           %td
             - @selectors.where(value_type: s).order_by(priority: :asc).each do |selector|
-              = selector.is_active ? "YES" : "NO"
+              = selector.is_active ? "Yes" : "No"
               %br
         - else
           %td
