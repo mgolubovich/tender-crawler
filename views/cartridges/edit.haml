@@ -63,40 +63,32 @@
   %table.table.table-condensed.table-bordered
     %thead
       %tr
+        %td Value Type
         %td Selector
-        %td Control
-        %td Rules
         %td Is active?
     %tbody
     - @value_types.each do |s|
-    - selector = @selectors.where(value_type: s).first
     - is_exist = @used_keys.include?(s)
       %tr{:class => is_exist ? "success" : ""}
         %td= s
         - if is_exist
           %td
-            %a{href: "/cartridges/edit/#{@cartridge.id}/selector/#{selector._id}"} Edit
-            |
-            %a{href: "/cartridges/edit/#{@cartridge.id}/selector/#{selector._id}/destroy", :onclick => "return ORLY();"} Delete
-          - if selector.rules.empty?
-            %td
-              %a{ :href => "/rules/new/#{selector._id}"}
-                %i Empty :(
-          - else
-            %td
-              - if selector.rules.last.is_active
-                %a{ :href => "/rules/#{selector._id}/edit/#{selector.rules.last._id}"}
-                  %b= selector.rules.last.updated_at.strftime("%d %B %Y (%R)")
-              - else
-                %a{ :href => "/rules/#{selector._id}/edit/#{selector.rules.last._id}"}
-                  %i Disabled !
-          %td= selector.is_active ? "Yes" : "No"
+            - i = 0
+            - @selectors.where(value_type: s).order_by(priority: :asc).each do |selector|
+              %a{href: "#{@cartridge._id}/selector/#{selector._id}", title: "Priority: #{selector.priority}"} #{selector.value_type} #{i += 1}
+              &nbsp;&nbsp;&nbsp;
+              %a.btn.btn-danger.btn-xs{ href: "#{@cartridge._id}/selector/#{selector._id}/destroy", onclick: "return ORLY();"}
+                %span.glyphicon.glyphicon-remove
+              %br
+            %a{href: "/cartridges/edit/#{@cartridge.id}/add_s/#{s}"} Create
+          %td
+            - @selectors.where(value_type: s).order_by(priority: :asc).each do |selector|
+              = selector.is_active ? "Yes" : "No"
+              %br
         - else
           %td
             %a{href: "/cartridges/edit/#{@cartridge.id}/add_s/#{s}"} Create
           %td
-          %td
-
 
 .container-fluid
   %p
