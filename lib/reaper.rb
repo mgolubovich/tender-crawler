@@ -30,7 +30,7 @@ class Reaper
         while @limit > ids_set.count
           get_next_page(cartridge) if ids_set.count < @limit
           ids_set += get_ids(cartridge)
-          debugger
+          #debugger
         end
       end
       
@@ -101,7 +101,7 @@ class Reaper
       when :get
         @current_page += 1
         next_page = cartridge.base_list_template.gsub('$page_number', @current_page.to_s)
-        debugger
+        #debugger
         visit next_page
         sleep 2 # HACK for waiting of ajax execution. Need to fix later
       when :click
