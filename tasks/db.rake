@@ -2,9 +2,7 @@ require 'rubygems'
 require 'active_record'
 require 'mysql2'
 require 'debugger'
-#LOGS in tux
-require 'logger'
-ActiveRecord::Base.logger = Logger.new(STDERR)
+
 
 
 ActiveRecord::Base.establish_connection(
@@ -24,22 +22,30 @@ namespace :db do
     ABYSS = '53a0152790c043c46500000b'
     current_eid = Tender.max(:external_db_id).to_i
     query = "Select * FROM tenders WHERE 1 LIMIT #{args.records_count} OFFSET #{i * args.slice_size.to_i}"
+    slice_size = i * args.slice_size.to_i
+    log_started_import(args.records_count, slice_size)
     records = ActiveRecord::Base.connection.exec_query(query)
     records.each do |record|
+    	log_import_id(record["id"], record["code"])
       if assoc_source[record["site_id"]]
       	source_id = assoc_source[record["site_id"]].first
-      #	puts "good: #{source_id}"
       else
       	source_id = ABYSS
-      #	puts "abysstop: #{source_id}"
       end
+      source_name = Source.find(source_id).name
+      log_import_source_id(source_id, source_name)
       mongo_tender = Tender.find_or_create_by(code_by_source: record["code"], source_id: source_id)
       if assoc_source[record["site_id"]]
       	mongo_tender.group = assoc_source[record["site_id"]][1]
+      	log_import_group(mongo_tender.group, record["site_id"])
       end
-    #  debugger
-      current_eid += 1
-    	mongo_tender.external_db_id = current_eid
+      log_import_badgroup() if assoc_source[record["site_id"]].nil?
+      # debugger
+      unless mongo_tender.external_db_id.to_i > 0
+      	current_eid += 1
+        mongo_tender.external_db_id = current_eid
+        log_import_eid(mongo_tender.external_db_id)
+      end
       mongo_tender.title = record["title"]
       mongo_tender.start_price = record["start_price"].to_f
       mongo_tender.source_link = record["link"]
@@ -69,10 +75,11 @@ namespace :db do
 	      end
 	    mongo_tender.work_type = work_type
       end
-
+	  #  log_import_doc_wt(mongo_tender.documents, mongo_tender.work_type)
+	  	log_import_attributes(mongo_tender.attributes)
       mongo_tender.save
-      puts mongo_tender.code_by_source
-      puts mongo_tender.source_id
+      log_import_save(mongo_tender._id)
+      puts "Tender was saved in #{source_name} (#{source_id})"
       i += 1
     end
   end

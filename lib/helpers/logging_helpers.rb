@@ -31,3 +31,43 @@ end
 def log_rule_failed(rule, value)
   ParserLog.logger.info "[#{Time.now}] - #{rule} failed on '#{value}'"
 end
+
+def log_start_import(entity)
+	ImportLog.logger.info "[#{Time.now}] - started import for #{entity}"
+end
+
+def log_started_import(records_count, slice_size)
+	ImportLog.logger.info "[#{Time.now}] - started import with LIMIT #{records_count} OFFSET #{slice_size}"
+end
+
+def log_import_id(id, code)
+	ImportLog.logger.info "[#{Time.now}] - got ##{id} with original code from source = #{code}"
+end
+
+def log_import_source_id(source_id, source_name)
+	ImportLog.logger.info "[#{Time.now}] - source is #{source_name} (#{source_id})"
+end
+
+def log_import_group(group, site_id)
+	ImportLog.logger.info "[#{Time.now}] - site_id is #{site_id}, group = #{group}"
+end
+
+def log_import_badgroup
+	ImportLog.logger.info "[#{Time.now}] - site_id is empty"
+end
+
+def log_import_doc_wt(documents, work_type)
+	ImportLog.logger.info "[#{Time.now}] - documents = #{documents}, okdp = #{work_type}"
+end
+
+def log_import_save(tender_id)
+	ImportLog.logger.info "[#{Time.now}] - tender ##{tender_id} saved"
+end
+
+def log_import_attributes(atr)
+	ImportLog.logger.info "[#{Time.now}] - was copied #{atr}"
+end
+
+def log_import_eid(eid)
+	ImportLog.logger.info "[#{Time.now}] - new external_id is #{eid}"
+end
