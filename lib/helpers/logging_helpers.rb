@@ -71,3 +71,7 @@ end
 def log_import_eid(eid)
 	ImportLog.logger.info "[#{Time.now}] - new external_id is #{eid}"
 end
+
+def log_import_new(tender_id)
+	ImportLog.logger.info "[#{Time.now}] - create new tender with ##{tender_id}"
+end
