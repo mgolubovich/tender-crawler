@@ -26,8 +26,8 @@ class Selector
   # Need to be set if target data contains in attribute of selected tag instead of content. Can be empty.
   field :attr, type: Symbol
 
-  # Need to be set if we need to move cursor to get target data. Can be empty.
-  field :offset, type: Integer
+  # Need to be set if we need to move cursor to get target data. Example: {start: 0, end: 15}. Can be empty.
+  field :offset, type: Hash
 
   # Regular expression what will be executed on target data before saving. Can be empty.
   # {'mode' => 'match/gsub', pattern => "dfdf"}
