@@ -44,6 +44,7 @@ namespace :db do
       unless mongo_tender.external_db_id.to_i > 0
       	current_eid += 1
         mongo_tender.external_db_id = current_eid
+        log_import_new(mongo_tender._id)
         log_import_eid(mongo_tender.external_db_id)
       end
       mongo_tender.title = record["title"]
@@ -58,6 +59,8 @@ namespace :db do
       mongo_tender.external_region_id = record["region_id"].to_i
       mongo_tender.start_at = record["start_at"]
       mongo_tender.published_at = record["public_at"]
+      mongo_tender.created_at = record["created"]
+      mongo_tender.updated_at = record["updated"]
 
       unless record["documents"].nil?
 	      mysql_doc = JSON.parse(record["documents"])
