@@ -25,9 +25,12 @@
           #{@tenders.customer_address}
       %tr
         %td ОКДПС
-        - @tenders.work_type.each do |w|
-          %td= w["code"] + "|" + "#{w["title"]}"
-          %br
+        - if @tenders.work_type
+          - @tenders.work_type.each do |w|
+            %td= w["code"] + "|" + "#{w["title"]}"
+            %br
+        - else
+          %td none
       %tr
         %td URL извещения
         %td
@@ -47,9 +50,12 @@
       %tr
         %td documents
         %td
-          - @tenders.documents.each do |t|
-            %a{ href: "#{t["doc_link"]}",  target: "_blank"}= t["doc_title"]
-            %br
+          - if @tenders.documents
+            - @tenders.documents.each do |t|
+              %a{ href: "#{t["doc_link"]}",  target: "_blank"}= t["doc_title"]
+              %br
+          - else
+            none
 
 
 .container-fluid
