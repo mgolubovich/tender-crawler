@@ -3,8 +3,8 @@ namespace :utils do
   task :convert_offset_for_selectors do
     selectors = Selector.all
     selectors.each do |selector|
-      unless selector.offset.kinf_of? Hash
-        selector.offset = { start: 0, end: selector.offset }
+      unless selector.offset.kind_of? Hash
+        selector.offset = { "start" => 0, "end" => selector.offset }
         selector.save
       end
     end
