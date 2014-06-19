@@ -81,6 +81,8 @@ class Reaper
         tender.status = tender_status
         tender.save
 
+        result << tender
+        
         log_tender_saved(tender[:_id])
 
       end
