@@ -86,17 +86,20 @@ class CartridgesController < ApplicationController
    cartridge = Cartridge.find params[:cart_id]
    selector = cartridge.selectors.new
    selector.source_id = cartridge.source_id #Source_id fix
-   # selector.source_id = params[:selector_source_id]
+ #  selector.source_id = params[:selector_source_id]
    selector.value_type = params[:selector_value].to_sym
    selector.link_template = params[:selector_link]
    selector.xpath = params[:selector_xpath]
    selector.css = params[:selector_css]
    selector.attr = params[:selector_attr]
-   selector.offset = {"start" => params[:selector_offset_start].to_i, "end" => params[:selector_offset_start].to_i}
+   selector.offset = params[:selector_offset].to_i
    selector.regexp = {"mode" => params[:selector_mode_reg], "pattern" => params[:selector_pat_reg]}
+  # selector.regexp[:mode] = params[:selector_mode_reg]
+  # selector.regexp[:pattern] = params[:selector_pat_reg]
    selector.date_format = params[:selector_date_format]
    selector.js_code = params[:selector_js_code]
    selector.priority = params[:selector_priority].to_i
+  # selector.group = params[:selector_group].to_sym
    selector.is_active = params[:selector_activity] == 'active' ? true : false
    selector.to_type = params[:selector_to_type]
  #  params[:selector_value].length > 0 ?
@@ -128,7 +131,7 @@ end
    selector.xpath = params[:selector_xpath]
    selector.css = params[:selector_css]
    selector.attr = params[:selector_attr]
-   selector.offset = {"start" => params[:selector_offset_start].to_i, "end" => params[:selector_offset_start].to_i}
+   selector.offset = params[:selector_offset].to_i
    selector.regexp["mode"] = params[:selector_mode_reg] == 'gsub' ? 'gsub' : 'match'
    selector.regexp["pattern"] = params[:selector_pat_reg]
    selector.date_format = params[:selector_date_format]
