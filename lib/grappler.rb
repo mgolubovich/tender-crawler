@@ -58,10 +58,10 @@ class Grappler
   private
 
   def apply_offset(data)
-    if @offset[:start] > 0
-       data = data[@offset[:start]..@offset[:end]]
-    elsif @offset[:start] < 0
-      data = data[@offset[:start], (@offset[:end] - 1).abs]
+    if @offset["start"] > 0
+       data = data[@offset["start"]..@offset["end"]]
+    elsif @offset["start"] < 0
+      data = data[@offset["start"], (@offset["end"] - 1).abs]
     end
     data
   end
