@@ -3,18 +3,21 @@ require 'capybara/dsl'
 require 'capybara/webkit'
 
 class Reaper
-  
+  attr_reader :result
+
   include Capybara::DSL
   Capybara.default_driver = :webkit
   Capybara.run_server = false
 
-  def initialize(source, limit=0)
+  def initialize(source, limit=0, cartridge_id = nil)
     @source = source
     @limit = limit
     @fields_status = Hash.new
+    @cartridge_id = cartridge_id
 
     @current_page = 0
     @initial_visit = false
+    @result = []
 
     load_work_type_codes
     
@@ -78,17 +81,21 @@ class Reaper
         tender.status = tender_status
         tender.save
 
+        result << tender
+        
         log_tender_saved(tender[:_id])
 
       end
       ids_set = []
     end
+    result.first
   end
 
   private
 
   def get_cartridges
     @cartridges = @source.cartridges.active
+    @cartridges = @source.cartridges.where(_id: @cartridge_id) if @cartridge_id
   end
 
   def apply_rules(value, selector)

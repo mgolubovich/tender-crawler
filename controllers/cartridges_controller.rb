@@ -82,7 +82,7 @@ class CartridgesController < ApplicationController
     haml :'selectors/new'
   end
 
- post '/edit/:cart_id/add_s' do
+  post '/edit/:cart_id/add_s' do
    cartridge = Cartridge.find params[:cart_id]
    selector = cartridge.selectors.new
    selector.source_id = cartridge.source_id #Source_id fix
@@ -102,12 +102,12 @@ class CartridgesController < ApplicationController
   # selector.group = params[:selector_group].to_sym
    selector.is_active = params[:selector_activity] == 'active' ? true : false
    selector.to_type = params[:selector_to_type]
- #  params[:selector_value].length > 0 ?
+  #  params[:selector_value].length > 0 ?
    selector.save
    redirect "/cartridges/edit/#{selector.cartridge_id}"
- end
+  end
 
- get '/edit/:cart_id/selector/:id' do
+  get '/edit/:cart_id/selector/:id' do
    @cartridge_id = params[:cart_id]
    @selector_id = params[:id]
    @selector = Selector.find params[:id]
@@ -115,71 +115,70 @@ class CartridgesController < ApplicationController
    @source = @selector.source
    @value_types = YAML.load_file('config/value_types.yml').keys
    haml :'selectors/edit'
- end
+  end
 
- get '/edit/:cart_id/selector/:id/check' do
-  content_type :json
+  get '/edit/:cart_id/selector/:id/check' do
+    content_type :json
 
-  entity_id = params[:entity_id].length > 0 ? params[:entity_id] : @selector.source.tenders.last.id_by_source
-  %x(DISPLAY=localhost:1.0 xvfb-run rake parsing:test_grapple[#{params[:id]},#{entity_id}])
-end
+    entity_id = params[:entity_id].length > 0 ? params[:entity_id] : @selector.source.tenders.last.id_by_source
+    %x(DISPLAY=localhost:1.0 xvfb-run rake parsing:test_grapple[#{params[:id]},#{entity_id}])
+  end
 
- post '/edit/:cart_id/selector/:id' do
-   selector = Selector.find params[:selector_id]
-   selector.value_type = params[:selector_value].to_sym
-   selector.link_template = params[:selector_link]
-   selector.xpath = params[:selector_xpath]
-   selector.css = params[:selector_css]
-   selector.attr = params[:selector_attr]
-   selector.offset = params[:selector_offset].to_i
-   selector.regexp["mode"] = params[:selector_mode_reg] == 'gsub' ? 'gsub' : 'match'
-   selector.regexp["pattern"] = params[:selector_pat_reg]
-   selector.date_format = params[:selector_date_format]
-   selector.js_code = params[:selector_js_code]
-  # selector.group = params[:selector_group].to_sym
-   selector.priority = params[:selector_priority].to_i
-   selector.to_type = params[:selector_to_type]
-   selector.is_active = params[:selector_activity] == 'active' ? true : false
-   selector.save
-   redirect "/cartridges/edit/#{selector.cartridge_id}"
- end
+  post '/edit/:cart_id/selector/:id' do
+    selector = Selector.find params[:selector_id]
+    selector.value_type = params[:selector_value].to_sym
+    selector.link_template = params[:selector_link]
+    selector.xpath = params[:selector_xpath]
+    selector.css = params[:selector_css]
+    selector.attr = params[:selector_attr]
+    selector.offset = {"start" => params[:selector_offset_start].to_i, "end" => params[:selector_offset_start].to_i}
+    selector.regexp["mode"] = params[:selector_mode_reg] == 'gsub' ? 'gsub' : 'match'
+    selector.regexp["pattern"] = params[:selector_pat_reg]
+    selector.date_format = params[:selector_date_format]
+    selector.js_code = params[:selector_js_code]
+    # selector.group = params[:selector_group].to_sym
+    selector.priority = params[:selector_priority].to_i
+    selector.to_type = params[:selector_to_type]
+    selector.is_active = params[:selector_activity] == 'active' ? true : false
+    selector.save
+    redirect "/cartridges/edit/#{selector.cartridge_id}"
+  end
 
- get '/edit/:cart_id/selector/:id/destroy' do
-   cartridge_id = params[:cart_id]
-   selector = Selector.find params[:id]
-   selector.destroy
-   redirect "/cartridges/edit/#{cartridge_id}"
- end
+  get '/edit/:cart_id/selector/:id/destroy' do
+    cartridge_id = params[:cart_id]
+    selector = Selector.find params[:id]
+    selector.destroy
+    redirect "/cartridges/edit/#{cartridge_id}"
+  end
 
- get '/check/:tender' do
-   t = Tender.find params[:tender]
-   check_result(t)
- end
+  get '/check/:cartridge_id' do
+    cartridge = Cartridge.find params[:cartridge_id]
+    @check_tender = Reaper.new(cartridge.source_id, 1, cartridge._id).reap
 
- def check_result(t)
-   @check_tender = t
-   haml :'check'
- end
+    haml :'check'
+  end
 
- post '/copy' do
-   @cartridge = Cartridge.find params[:cartridge_id]
-  # Copy cart
-   dest_cart = Cartridge.new
-   dest_cart.update_attributes!(@cartridge.attributes)
-   dest_cart.name = params[:cartridge_name]
-   dest_cart.source_id = params[:source]
-   dest_cart.base_link_template = "$entity_id"
-   dest_cart.base_list_template = "$page_number"
-   dest_cart.save
-  # PageManagers
-   dest_pm = dest_cart.page_managers.new
-   if params[:copy_pm]
+  post '/copy' do
+    @cartridge = Cartridge.find params[:cartridge_id]
+    # Copy cart
+    dest_cart = Cartridge.new
+    dest_cart.update_attributes!(@cartridge.attributes)
+    dest_cart.name = params[:cartridge_name]
+    dest_cart.source_id = params[:source]
+    dest_cart.base_link_template = "$entity_id"
+    dest_cart.base_list_template = "$page_number"
+    dest_cart.save
+
+    # PageManagers
+    dest_pm = dest_cart.page_managers.new
+    if params[:copy_pm]
      dest_pm.update_attributes!(@cartridge.page_managers.last.attributes)
      dest_pm.cartridge_id = dest_cart._id
-   end
-   dest_pm.save
-  # Selectors
-   if params[:copy_selectors]
+    end
+    dest_pm.save
+
+    # Selectors
+    if params[:copy_selectors]
      @cartridge.selectors.each do |s|
        dest_s = Selector.new
        dest_s.update_attributes!(s.attributes)
@@ -194,9 +193,10 @@ end
          dest_r.save
        end
      end
-   end
-  #temp redirect
-   redirect "/cartridges/edit/#{dest_cart._id}"
- end
+    end
+
+    # temp redirect
+    redirect "/cartridges/edit/#{dest_cart._id}"
+  end
 
 end
