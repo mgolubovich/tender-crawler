@@ -1,4 +1,5 @@
 class CartridgesController < ApplicationController
+  require 'debugger'
   get '/' do
     @cartridges = Cartridge.order_by(created_at: :desc)
     @cartridges = @cartridges.where(source_id: params[:source_id]) if params[:source_id] #cartridges in some source
@@ -34,7 +35,7 @@ class CartridgesController < ApplicationController
     @pm = @cartridge.page_managers.last
     @selectors = @cartridge.selectors
     @sources = Source.order_by(created_at: :asc)
-    @value_types = YAML.load_file('config/value_types.yml').keys
+    @value_types = YAML.load_file('config/value_types.yml')
     @value_types = @value_types.map {|v| v.to_sym}
     @used_keys = @selectors.distinct(:value_type)
 
@@ -67,7 +68,7 @@ class CartridgesController < ApplicationController
     @cartridge_id = params[:cart_id]
     @source = Cartridge.find(@cartridge_id).source
     @link_template = Cartridge.find(@cartridge_id).base_link_template
-    @value_types = YAML.load_file('config/value_types.yml').keys
+    @value_types = YAML.load_file('config/value_types.yml')
     haml :'selectors/new'
   end
 
@@ -75,7 +76,7 @@ class CartridgesController < ApplicationController
     @cartridge_id = params[:cart_id]
     @source = Cartridge.find(@cartridge_id).source
     @link_template = Cartridge.find(@cartridge_id).base_link_template
-    @value_types = YAML.load_file('config/value_types.yml').keys
+    @value_types = YAML.load_file('config/value_types.yml')
     @value_type = params[:value_type]
 
 
@@ -113,7 +114,7 @@ class CartridgesController < ApplicationController
    @selector = Selector.find params[:id]
    @rule = @selector.rules
    @source = @selector.source
-   @value_types = YAML.load_file('config/value_types.yml').keys
+   @value_types = YAML.load_file('config/value_types.yml')
    haml :'selectors/edit'
   end
 
@@ -152,9 +153,21 @@ class CartridgesController < ApplicationController
   end
 
   get '/check/:cartridge_id' do
-    cartridge = Cartridge.find params[:cartridge_id]
-    @check_tender = Reaper.new(cartridge.source_id, 1, cartridge._id).reap
+   # @cartridge = Cartridge.find params[:cartridge_id]
+   # @check_tender = Reaper.new(cartridge.source_id, 1, cartridge._id).reap
+    @check_tender = Tender.find '53749ae21d0aab0c75000001'
+    @cartridge = Cartridge.where(source_id: @check_tender.source_id, tender_type: @check_tender.group).first
 
+    @fields_list = YAML.load_file('config/selectors_assoc.yml')
+    @value_types = YAML.load_file('config/value_types.yml')
+    @value_types.delete("ids_set")
+    @selectors_data = Hash.new
+    @value_types.each do |value_type|
+      is_exist = @cartridge.selectors.where(:value_type => value_type).count > 0 ? true : false
+      selector = is_exist ? @cartridge.selectors.active.where(:value_type => value_type).first : nil
+      @selectors_data[value_type.to_sym] = { :is_exist => is_exist, :id => (selector.nil? ? nil : selector._id)}
+    end
+    #debugger
     haml :'check'
   end
 
@@ -198,5 +211,5 @@ class CartridgesController < ApplicationController
     # temp redirect
     redirect "/cartridges/edit/#{dest_cart._id}"
   end
-
 end
+
