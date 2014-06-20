@@ -1,0 +1,36 @@
+- @title = 'View tender'
+%h1 Просмотр тендера
+%script{:type => 'text/javascript', :src => "http://johnny.github.io/jquery-sortable/js/jquery-sortable.js"}
+.container-fluid
+  %table.table.table-striped.table-bordered.sorted_table
+    %thead
+      %tr
+        %td{:style => "width: 100px;"} value_type
+        %td{:style => "width: 30px;"}   priority
+    %tbody
+      - i = 0
+      - max_p = @selectors.count - 1
+      - @selectors.each do |s|
+        %tr.movable
+          %td
+            #{s.value_type}
+            %input{type: "hidden", value: s.priority}
+          %td.priority-value{:style => "color: red;"}= s.priority
+
+
+.container-fluid
+  .col-xs-5.col-md-offset-3
+    %a.btn.btn-primary.btn-lg{:href => env['HTTP_REFERER'], :method => "get"} Назад
+
+%script{:type => 'text/javascript', :src => "http://10.0.105.15/javascripts/priority-sortable.js" }
+
+:javascript
+  var selectors = $('.movable');
+  selectors.drop(function () {
+      var index = 0;
+      selectors.each(function () {
+          $(this).child('input').val(index);
+          $(this).child('priority-value').html(index);
+          index++;
+      });
+  });

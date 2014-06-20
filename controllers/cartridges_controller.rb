@@ -211,5 +211,12 @@ class CartridgesController < ApplicationController
     # temp redirect
     redirect "/cartridges/edit/#{dest_cart._id}"
   end
+
+  get '/priority/:cartridge_id'  do
+    @cartridge = Cartridge.find params[:cartridge_id]
+    @selectors = @cartridge.selectors
+    @selectors = @selectors.order_by(priority: :asc)
+    haml :'cartridges/priority'
+  end
 end
 
