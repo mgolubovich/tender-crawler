@@ -57,17 +57,13 @@ class Grappler
 
   private
 
-  def apply_offset(data)
-    if @offset["start"] > 0
-       data = data[@offset["start"]..@offset["end"]]
-    elsif @offset["start"] < 0
-      data = data[@offset["start"], (@offset["end"] - 1).abs]
-    end
+  def apply_offset(data) 
+    data = data[@offset["start"]..@offset["end"]] if @offset["start"] != 0 && @offset["end"] != 0
     data
   end
 
   def apply_regexp(data)
-    @regexp["mode"] == "gsub" ? data.gsub!(Regexp.new(@regexp["pattern"]), '') : data.scan(Regexp.new(@regexp["pattern"])).first
+    @regexp["mode"] == "gsub" ? data.gsub!(Regexp.new(@regexp["pattern"]), '') : data.scan(Regexp.new(@regexp["pattern"])).join
   end
 
   def apply_date_format(data)
