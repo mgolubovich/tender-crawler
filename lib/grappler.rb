@@ -67,7 +67,7 @@ class Grappler
   end
 
   def apply_regexp(data)
-    @regexp["mode"] == "gsub" ? data.gsub!(Regexp.new(@regexp["pattern"]), '') : data.scan(Regexp.new(@regexp["pattern"])).first
+    @regexp["mode"] == "gsub" ? data.gsub!(Regexp.new(@regexp["pattern"]), '') : data.scan(Regexp.new(@regexp["pattern"])).join
   end
 
   def apply_date_format(data)
