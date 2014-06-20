@@ -1,14 +1,14 @@
-ids_set:
-code_by_source:
-title:
-start_at:
-start_price:
-published_at:
-tender_form:
-customer_name:
-customer_inn:
-customer_address:
-doc_title:
-doc_link:
-work_type_code:
-work_type_title:
+- ids_set
+- code_by_source
+- title
+- start_at
+- start_price
+- published_at
+- tender_form
+- customer_name
+- customer_inn
+- customer_address
+- doc_title
+- doc_link
+- work_type_code
+- work_type_title
