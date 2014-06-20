@@ -24,13 +24,3 @@
 
 %script{:type => 'text/javascript', :src => "http://10.0.105.15/javascripts/priority-sortable.js" }
 
-:javascript
-  var selectors = $('.movable');
-  selectors.drop(function () {
-      var index = 0;
-      selectors.each(function () {
-          $(this).child('input').val(index);
-          $(this).child('priority-value').html(index);
-          index++;
-      });
-  });
