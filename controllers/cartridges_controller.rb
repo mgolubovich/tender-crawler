@@ -128,7 +128,10 @@ class CartridgesController < ApplicationController
     selector.xpath = params[:selector_xpath]
     selector.css = params[:selector_css]
     selector.attr = params[:selector_attr]
+    
     selector.offset = {"start" => params[:selector_offset_start].to_i, "end" => params[:selector_offset_start].to_i}
+    selector.offset["end"] = -1 if selector.offset["start"] != 0 && selector.offset["end"] == 0
+
     selector.regexp["mode"] = params[:selector_mode_reg] == 'gsub' ? 'gsub' : 'match'
     selector.regexp["pattern"] = params[:selector_pat_reg]
     selector.date_format = params[:selector_date_format]
@@ -191,7 +194,7 @@ class CartridgesController < ApplicationController
        end
      end
     end
-    
+
     # temp redirect
     redirect "/cartridges/edit/#{dest_cart._id}"
   end
