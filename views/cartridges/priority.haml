@@ -14,7 +14,7 @@
         %tr.movable
           %td
             #{s.value_type}
-            %input{type: "hidden", value: s.priority}
+            %input{:type => "hidden", :value => s.priority}
           %td.priority-value{:style => "color: red;"}= s.priority
 
 
