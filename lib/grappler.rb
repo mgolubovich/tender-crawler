@@ -37,9 +37,8 @@ class Grappler
     execute_script(@js_code) unless @js_code.nil?
 
     slice = @css.empty? ? all(:xpath, @xpath) : all(:css, @css)
-
+    
     slice.each do |item|
-      #debugger
       data = @attr.empty? ? item.text.to_s.strip : item[@attr.to_sym].to_s.strip
       data = apply_offset(data) unless @offset.nil? || data.empty?
       data = apply_regexp(data) unless @regexp["pattern"].empty? || data.empty?

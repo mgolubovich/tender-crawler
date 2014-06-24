@@ -133,7 +133,7 @@ class CartridgesController < ApplicationController
     selector.css = params[:selector_css]
     selector.attr = params[:selector_attr]
     
-    selector.offset = {"start" => params[:selector_offset_start].to_i, "end" => params[:selector_offset_start].to_i}
+    selector.offset = {"start" => params[:selector_offset_start].to_i, "end" => params[:selector_offset_end].to_i}
     selector.offset["end"] = -1 if selector.offset["start"] != 0 && selector.offset["end"] == 0
 
     selector.regexp["mode"] = params[:selector_mode_reg] == 'gsub' ? 'gsub' : 'match'

@@ -55,7 +55,7 @@ namespace :db do
       mongo_tender.customer_address = record["address"]
       mongo_tender.customer_inn = record["customer_inn"]
       mongo_tender.external_city_id = record["city_id"].to_i
-      mongo_tender.external_work_type = record["work_type"].to_i
+      mongo_tender.external_work_type = record["work_type_key"].to_i
       mongo_tender.external_region_id = record["region_id"].to_i
       mongo_tender.start_at = record["start_at"]
       mongo_tender.published_at = record["public_at"]

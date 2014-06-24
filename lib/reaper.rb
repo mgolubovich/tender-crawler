@@ -65,8 +65,8 @@ class Reaper
         tender.group = cartridge.tender_type
         tender.documents = get_docs(cartridge, entity_id) if cartridge.selectors.where(value_type: :doc_title).count > 0
         tender.work_type = get_work_type(cartridge, entity_id) if cartridge.selectors.where(value_type: :work_type_code).count > 0
-        tender.external_work_type = set_external_work_type_code(tender.work_type)
-
+        tender.external_work_type = set_external_work_type_code(tender.work_type) unless tender.work_type.nil?
+        tender.external_work_type = -1 if tender.work_type.nil?
         tender.external_db_id = Tender.max(:external_db_id).to_i + 1 if tender.external_db_id.nil?
         
         @fields_status.each_pair do |field, status|
@@ -82,7 +82,7 @@ class Reaper
         tender.save
 
         result << tender
-        
+
         log_tender_saved(tender[:_id])
 
       end
@@ -108,9 +108,8 @@ class Reaper
       when :get
         @current_page += 1
         next_page = cartridge.base_list_template.gsub('$page_number', @current_page.to_s)
-        #debugger
         visit next_page
-        sleep 2 # HACK for waiting of ajax execution. Need to fix later
+        sleep 5 # HACK for waiting of ajax execution. Need to fix later
       when :click
         unless @initial_visit
           initial_page = cartridge.base_list_template.gsub('$page_number', '1')
@@ -125,6 +124,7 @@ class Reaper
           @initial_visit = true
         end
         execute_script(page_manager.action_value.gsub!('$page_number', @current_page.to_s))
+        sleep 2 # HACK for waiting of ajax execution. Need to fix later
     end
   end
 
@@ -161,7 +161,7 @@ class Reaper
 
     i = 0
     work_type_codes.each do |code|
-      unless code.empty?
+      unless code.nil?
         work_types << { "code" =>  code.to_s, "title" => work_type_titles[i].to_s}
         i += 1
       end
