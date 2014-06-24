@@ -93,7 +93,7 @@ class CartridgesController < ApplicationController
    selector.xpath = params[:selector_xpath]
    selector.css = params[:selector_css]
    selector.attr = params[:selector_attr]
-   selector.offset = params[:selector_offset].to_i
+   selector.offset = {"start" => params[:selector_offset_start].to_i, "end" => params[:selector_offset_end].to_i}
    selector.regexp = {"mode" => params[:selector_mode_reg], "pattern" => params[:selector_pat_reg]}
   # selector.regexp[:mode] = params[:selector_mode_reg]
   # selector.regexp[:pattern] = params[:selector_pat_reg]
@@ -157,10 +157,10 @@ class CartridgesController < ApplicationController
   end
 
   get '/check/:cartridge_id' do
-   # @cartridge = Cartridge.find params[:cartridge_id]
-   # @check_tender = Reaper.new(cartridge.source_id, 1, cartridge._id).reap
-    @check_tender = Tender.find '53749ae21d0aab0c75000001'
-    @cartridge = Cartridge.where(source_id: @check_tender.source_id, tender_type: @check_tender.group).first
+    @cartridge = Cartridge.find params[:cartridge_id]
+    @check_tender = Reaper.new(Source.find(@cartridge.source_id), 1, @cartridge._id, true).reap
+    #@check_tender = Tender.find '53749ae21d0aab0c75000001'
+    #@cartridge = Cartridge.where(source_id: @check_tender.source_id, tender_type: @check_tender.group).first
 
     @fields_list = YAML.load_file('config/selectors_assoc.yml')
     @value_types = YAML.load_file('config/value_types.yml')

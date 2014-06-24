@@ -9,15 +9,17 @@ class Reaper
   Capybara.default_driver = :webkit
   Capybara.run_server = false
 
-  def initialize(source, limit=0, cartridge_id = nil)
+  def initialize(source, limit=0, cartridge_id = nil, is_checking = false)
     @source = source
     @limit = limit
     @fields_status = Hash.new
     @cartridge_id = cartridge_id
+    @is_checking = is_checking
 
     @current_page = 0
     @initial_visit = false
     @result = []
+    @reaped_tenders_count = 0
 
     load_work_type_codes
     
@@ -40,6 +42,7 @@ class Reaper
       log_got_ids_set(ids_set.count)
 
       ids_set.each do |entity_id|
+        break if @reaped_tenders_count >= @limit
         tender_status = Hash.new
         # HACK Fix later
         entity_id = entity_id.first if entity_id.is_a?(Array)
@@ -79,9 +82,10 @@ class Reaper
         end
 
         tender.status = tender_status
-        tender.save
-
+        tender.save unless @is_checking
         result << tender
+
+        @reaped_tenders_count += 1
 
         log_tender_saved(tender[:_id])
 
