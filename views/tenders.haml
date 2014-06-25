@@ -54,8 +54,8 @@
           %td= tender.title
           %td
             %a{ href: tender.source_link, target: "_blank"}= tender.source_link
-          %td= tender.created_at.strftime("%d %B %Y (%R)")
-          %td= tender.updated_at.strftime("%d %B %Y (%R)")
+          %td= tender.created_at.strftime("%d %B %Y (%R)") if tender.created_at
+          %td= tender.updated_at.strftime("%d %B %Y (%R)") if tender.updated_at
           %td
             %a{ href: "/tenders/#{tender._id}/destroy", onclick: "return ORLY();"} Delete
 

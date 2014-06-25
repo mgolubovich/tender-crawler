@@ -3,18 +3,23 @@ require 'capybara/dsl'
 require 'capybara/webkit'
 
 class Reaper
-  
+  attr_reader :result
+
   include Capybara::DSL
   Capybara.default_driver = :webkit
   Capybara.run_server = false
 
-  def initialize(source, limit=0)
+  def initialize(source, limit=0, cartridge_id = nil, is_checking = false)
     @source = source
     @limit = limit
     @fields_status = Hash.new
+    @cartridge_id = cartridge_id
+    @is_checking = is_checking
 
     @current_page = 0
     @initial_visit = false
+    @result = []
+    @reaped_tenders_count = 0
 
     load_work_type_codes
     
@@ -30,12 +35,14 @@ class Reaper
         while @limit > ids_set.count
           get_next_page(cartridge) if ids_set.count < @limit
           ids_set += get_ids(cartridge)
+          #debugger
         end
       end
       
       log_got_ids_set(ids_set.count)
 
       ids_set.each do |entity_id|
+        break if @reaped_tenders_count >= @limit
         tender_status = Hash.new
         # HACK Fix later
         entity_id = entity_id.first if entity_id.is_a?(Array)
@@ -61,8 +68,8 @@ class Reaper
         tender.group = cartridge.tender_type
         tender.documents = get_docs(cartridge, entity_id) if cartridge.selectors.where(value_type: :doc_title).count > 0
         tender.work_type = get_work_type(cartridge, entity_id) if cartridge.selectors.where(value_type: :work_type_code).count > 0
-        tender.external_work_type = set_external_work_type_code(tender.work_type)
-
+        tender.external_work_type = set_external_work_type_code(tender.work_type) unless tender.work_type.nil?
+        tender.external_work_type = -1 if tender.work_type.nil?
         tender.external_db_id = Tender.max(:external_db_id).to_i + 1 if tender.external_db_id.nil?
         
         @fields_status.each_pair do |field, status|
@@ -75,19 +82,24 @@ class Reaper
         end
 
         tender.status = tender_status
-        tender.save
+        tender.save unless @is_checking
+        result << tender
+
+        @reaped_tenders_count += 1
 
         log_tender_saved(tender[:_id])
 
       end
       ids_set = []
     end
+    result.first
   end
 
   private
 
   def get_cartridges
     @cartridges = @source.cartridges.active
+    @cartridges = @source.cartridges.where(_id: @cartridge_id) if @cartridge_id
   end
 
   def apply_rules(value, selector)
@@ -100,9 +112,8 @@ class Reaper
       when :get
         @current_page += 1
         next_page = cartridge.base_list_template.gsub('$page_number', @current_page.to_s)
-        #debugger
         visit next_page
-        sleep 2 # HACK for waiting of ajax execution. Need to fix later
+        sleep 5 # HACK for waiting of ajax execution. Need to fix later
       when :click
         unless @initial_visit
           initial_page = cartridge.base_list_template.gsub('$page_number', '1')
@@ -117,6 +128,7 @@ class Reaper
           @initial_visit = true
         end
         execute_script(page_manager.action_value.gsub!('$page_number', @current_page.to_s))
+        sleep 2 # HACK for waiting of ajax execution. Need to fix later
     end
   end
 
@@ -153,8 +165,10 @@ class Reaper
 
     i = 0
     work_type_codes.each do |code|
-      work_types << { "code" =>  code.to_s, "title" => work_type_titles[i].to_s}
-      i += 1
+      unless code.nil?
+        work_types << { "code" =>  code.to_s, "title" => work_type_titles[i].to_s}
+        i += 1
+      end
     end
 
     work_types

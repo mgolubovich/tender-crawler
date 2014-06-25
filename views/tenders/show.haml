@@ -25,12 +25,13 @@
           #{@tenders.customer_address}
       %tr
         %td ОКДПС
-        - if @tenders.work_type
-          - @tenders.work_type.each do |w|
-            %td= w["code"] + "|" + "#{w["title"]}"
-            %br
-        - else
-          %td none
+        %td
+          - if @tenders.work_type
+            - @tenders.work_type.each do |w|
+              #{w["code"]}: #{w["title"]}
+              %br
+          - else
+            none
       %tr
         %td URL извещения
         %td

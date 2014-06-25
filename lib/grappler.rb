@@ -37,7 +37,7 @@ class Grappler
     execute_script(@js_code) unless @js_code.nil?
 
     slice = @css.empty? ? all(:xpath, @xpath) : all(:css, @css)
-
+    
     slice.each do |item|
       data = @attr.empty? ? item.text.to_s.strip : item[@attr.to_sym].to_s.strip
       data = apply_offset(data) unless @offset.nil? || data.empty?
@@ -56,23 +56,19 @@ class Grappler
 
   private
 
-  def apply_offset(data)
-    if @offset.to_i > 0
-       data = data[0..@offset.to_i]
-    elsif @offset.to_i < 0
-      data = data[@offset.to_i, @offset.to_i.abs]
-    end
+  def apply_offset(data) 
+    data = data[@offset["start"]..@offset["end"]] if @offset["start"] != 0 && @offset["end"] != 0
     data
   end
 
   def apply_regexp(data)
-    @regexp["mode"] == "gsub" ? data.gsub!(Regexp.new(@regexp["pattern"]), '') : data.scan(Regexp.new(@regexp["pattern"])).first
+    @regexp["mode"] == "gsub" ? data.gsub!(Regexp.new(@regexp["pattern"]), '') : data.scan(Regexp.new(@regexp["pattern"])).join
   end
 
   def apply_date_format(data)
     begin
       DateTime.parse(data, @date_format).to_time
-    rescue ArgumentError
+    rescue Exception
       nil
     end
   end
