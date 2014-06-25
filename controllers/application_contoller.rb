@@ -46,4 +46,7 @@ class ApplicationController < Sinatra::Base
       will_paginate collection, options
     end
   end
+  use Rack::Auth::Basic, "Restricted Area" do |username, password|
+    username == 'parser' and password == 'laserdisk'
+  end
 end
