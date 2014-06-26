@@ -113,14 +113,16 @@ class Reaper
         @current_page += 1
         next_page = cartridge.base_list_template.gsub('$page_number', @current_page.to_s)
         visit next_page
-        sleep 5 # HACK for waiting of ajax execution. Need to fix later
+        sleep 2 # HACK for waiting of ajax execution. Need to fix later
       when :click
         unless @initial_visit
           initial_page = cartridge.base_list_template.gsub('$page_number', '1')
           visit initial_page
           @initial_visit = true
         end
+        # debugger
         find(:xpath, page_manager.action_value).click
+        sleep 2 # HACK for waiting of ajax execution. Need to fix later
       when :js
         unless @initial_visit
           initial_page = cartridge.base_list_template.gsub('$page_number', '1')
