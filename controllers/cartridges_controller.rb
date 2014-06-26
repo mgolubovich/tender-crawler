@@ -17,15 +17,12 @@ class CartridgesController < ApplicationController
 
   post '/new' do
     cartridge = Source.find(params[:cartridge_source]).cartridges.new
-    cartridge.name = params[:cartridge_name]
-    cartridge.base_link_template = params[:cartridge_base_link]
-    cartridge.base_list_template = params[:cartridge_base_list]
-    cartridge.tender_type = params[:cartridge_tender_type]
-    cartridge.is_active = params[:cartridge_activity] == 'active' ? true : false
-    cartridge.save
     pm = cartridge.page_managers.new
-    pm.action_type = params[:pm_type].to_sym
-    pm.action_value = params[:pm_value]
+    attributes = parse_cartridge_form
+    attributes[:pm][:cartridge_id] = cartridge._id
+    cartridge.update_attributes!(attributes[:cartridge])
+    pm.update_attributes!(attributes[:pm])
+    cartridge.save
     pm.save
     redirect "/cartridges/edit/#{cartridge._id}"
   end
@@ -44,16 +41,12 @@ class CartridgesController < ApplicationController
 
   post '/edit' do
     cartridge = Cartridge.find params[:cartridge_id]
-    cartridge.name = params[:cartridge_name]
-    cartridge.source_id = params[:cartridge_source]
-    cartridge.base_link_template = params[:cartridge_base_link]
-    cartridge.base_list_template = params[:cartridge_base_list]
-    cartridge.tender_type = params[:cartridge_tender_type]
-    cartridge.is_active = params[:cartridge_activity] == 'active' ? true : false
-    cartridge.save
     pm = PageManager.find params[:pm_id]
-    pm.action_type = params[:pm_type].to_sym
-    pm.action_value = params[:pm_value]
+    attributes = parse_cartridge_form
+    attributes[:pm][:cartridge_id] = cartridge._id
+    cartridge.update_attributes!(attributes[:cartridge])
+    pm.update_attributes!(attributes[:pm])
+    cartridge.save
     pm.save
     redirect "/cartridges"
   end
@@ -78,13 +71,14 @@ class CartridgesController < ApplicationController
     @link_template = Cartridge.find(@cartridge_id).base_link_template
     @value_types = YAML.load_file('config/value_types.yml')
     @value_type = params[:value_type]
-
-
     haml :'selectors/new'
   end
 
   post '/edit/:cart_id/add_s' do
    cartridge = Cartridge.find params[:cart_id]
+   attributes = parse_selector_form
+   attributes[:cartridge_id] = cartridge._id
+   attributes[:source_id] = cartridge.source_id
    selector = cartridge.selectors.new
    selector.source_id = cartridge.source_id #Source_id fix
  #  selector.source_id = params[:selector_source_id]
@@ -133,7 +127,7 @@ class CartridgesController < ApplicationController
     selector.xpath = params[:selector_xpath]
     selector.css = params[:selector_css]
     selector.attr = params[:selector_attr]
-    
+
     selector.offset = {"start" => params[:selector_offset_start].to_i, "end" => params[:selector_offset_end].to_i}
     selector.offset["end"] = -1 if selector.offset["start"] != 0 && selector.offset["end"] == 0
 
@@ -215,5 +209,22 @@ class CartridgesController < ApplicationController
     # temp redirect
     redirect "/cartridges/edit/#{dest_cart._id}"
   end
-end
 
+private
+  def parse_selector_form
+    data = {}
+    data = {:value_type => params[:selector_value].to_sym, :link_template => params[:selector_link], :xpath => params[:selector_xpath], :css => params[:selector_css], :attr => params[:selector_attr], :date_format => params[:selector_date_format], :js_code => params[:selector_js_code], :priority => params[:selector_priority].to_i, :to_type => params[:selector_to_type]}
+    data[:offset] = {"start" => params[:selector_offset_start].to_i, "end" => params[:selector_offset_end].to_i}
+    data[:regexp] = {"mode" => params[:selector_mode_reg], "pattern" => params[:selector_pat_reg]}
+    data[:is_active] = params[:selector_activity] == 'active' ? true : false
+    data
+  end
+
+  def parse_cartridge_form
+    data = {}
+    data[:cartridge] = {:name => params[:cartridge_name], :source_id => params[:cartridge_source], :base_link_template => params[:cartridge_base_link], :base_list_template => params[:cartridge_base_list], :tender_type => params[:cartridge_tender_type]}
+    data[:cartridge][:is_active] = params[:cartridge_activity] == 'active' ? true : false
+    data[:pm] = {:action_type => params[:pm_type].to_sym, :action_value => params[:pm_value]}
+    data
+  end
+end
