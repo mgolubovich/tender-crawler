@@ -9,15 +9,13 @@ class Reaper
   Capybara.default_driver = :webkit
   Capybara.run_server = false
 
-  def initialize(source, limit=0, cartridge_id = nil, is_checking = false)
+  def initialize(source, args = {}) # limit=0, cartridge_id = nil, is_checking = false
     @source = source
     @limit = limit
-    @fields_status = Hash.new
     @cartridge_id = cartridge_id
     @is_checking = is_checking
 
-    @current_page = 0
-    @initial_visit = false
+    @fields_status = Hash.new
     @result = []
     @reaped_tenders_count = 0
 
@@ -29,8 +27,6 @@ class Reaper
   def reap(ids_set = [])
     get_cartridges
     @cartridges.each do |cartridge|
-      @current_page = 0
-      
       unless ids_set.count > 0
         while @limit > ids_set.count
           get_next_page(cartridge) if ids_set.count < @limit
@@ -108,30 +104,8 @@ class Reaper
 
   def get_next_page(cartridge)
     page_manager = cartridge.page_managers.first
-    case page_manager.action_type
-      when :get
-        @current_page += 1
-        next_page = cartridge.base_list_template.gsub('$page_number', @current_page.to_s)
-        visit next_page
-        sleep 2 # HACK for waiting of ajax execution. Need to fix later
-      when :click
-        unless @initial_visit
-          initial_page = cartridge.base_list_template.gsub('$page_number', '1')
-          visit initial_page
-          @initial_visit = true
-        end
-        # debugger
-        find(:xpath, page_manager.action_value).click
-        sleep 2 # HACK for waiting of ajax execution. Need to fix later
-      when :js
-        unless @initial_visit
-          initial_page = cartridge.base_list_template.gsub('$page_number', '1')
-          visit initial_page
-          @initial_visit = true
-        end
-        execute_script(page_manager.action_value.gsub!('$page_number', @current_page.to_s))
-        sleep 2 # HACK for waiting of ajax execution. Need to fix later
-    end
+    @current_page = page_manager.page_number_start_value if @current_page == -1
+    
   end
 
   def get_ids(cartridge)
@@ -215,6 +189,51 @@ class Reaper
     end
 
     external_work_type
+  end
+
+  class ReaperStatus
+    attr_accessor :source, :args, :params
+
+    def initialize(source, args)
+      @source = source
+      @args = args
+      @params = {}
+    end
+  end
+
+  class PaginationObserver
+    attr_accessor :current_page, :initial_visit, :page_manager
+
+    def initialize(page_manager)
+      @page_manager = page_manager
+      @current_page = page_manager.page_number_start_value.to_s
+      @is_started = false
+    end
+
+    def next_page
+      case @page_manager.action_type
+        when :get
+          @current_page += 1
+          next_page = @page_manager.cartridge.base_list_template.gsub('$page_number', @current_page)
+          visit next_page
+        when :click
+          initial_visit unless @is_started
+          find(:xpath, @page_manager.action_value).click
+        when :js
+          initial_visit unless @is_started
+          @current_page += 1
+          execute_script(@page_manager.action_value.gsub!('$page_number', @current_page))
+      end
+      sleep @page_manager.delay_between_pages
+    end
+
+    private
+    
+    def initial_visit
+      initial_page = @page_manager.cartridge.base_list_template.gsub('$page_number', @page_manager.page_number_start_value.to_s)
+      visit initial_page
+      @is_started = true
+    end
   end
 
 end
