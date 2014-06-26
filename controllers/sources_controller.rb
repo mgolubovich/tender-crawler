@@ -18,11 +18,8 @@ class SourcesController < ApplicationController
 
   post '/new' do
     source = Source.new
-    source.name = params[:source_name]
-    source.url = params[:source_url]
-    source.is_active = params[:source_activity] == 'active' ? true : false
-    source.external_site_id = params[:source_external_site_id]
-    source.comment = params[:source_comment]
+    attributes = parse_source_form
+    source.update_attributes!(attributes)
     source.save
     redirect "/sources/edit/#{source._id}"
   end
@@ -36,11 +33,8 @@ class SourcesController < ApplicationController
 
   post '/edit' do
     source = Source.find params[:source_id]
-    source.name = params[:source_name]
-    source.url = params[:source_url]
-    source.is_active = params[:source_activity] == 'active' ? true : false
-    source.external_site_id = params[:source_external_site_id]
-    source.comment = params[:source_comment]
+    attributes = parse_source_form
+    source.update_attributes!(attributes)
     source.save
     redirect "/sources"
   end
@@ -49,5 +43,13 @@ class SourcesController < ApplicationController
     source = Source.find params[:id]
     source.destroy
     redirect "/sources"
+  end
+
+private
+  def parse_source_form
+    data = {}
+    data = {:name => params[:source_name], :url => params[:source_url], :external_site_id => params[:source_external_site_id], :comment => params[:source_comment]}
+    data[:is_active] = params[:source_activity] == 'active' ? true : false
+    data
   end
 end
