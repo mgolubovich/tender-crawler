@@ -9,15 +9,8 @@ class Reaper
   Capybara.default_driver = :webkit
   Capybara.run_server = false
 
-  def initialize(source, args = {}) # limit=0, cartridge_id = nil, is_checking = false
-    @source = source
-    @limit = limit
-    @cartridge_id = cartridge_id
-    @is_checking = is_checking
-
-    @fields_status = Hash.new
-    @result = []
-    @reaped_tenders_count = 0
+  def initialize(source, args = {}) # { :limit => 0, :cartridge_id => nil, :is_checking => false }
+    @reaper_params = ReaperParams.new(source, args)
 
     load_work_type_codes
     
@@ -27,18 +20,19 @@ class Reaper
   def reap(ids_set = [])
     get_cartridges
     @cartridges.each do |cartridge|
+      pagination = PaginationObserver.new(cartridge.page_managers.first)
+
       unless ids_set.count > 0
         while @limit > ids_set.count
-          get_next_page(cartridge) if ids_set.count < @limit
+          pagination.next_page if ids_set.count < @limit
           ids_set += get_ids(cartridge)
-          #debugger
         end
       end
       
       log_got_ids_set(ids_set.count)
 
       ids_set.each do |entity_id|
-        break if @reaped_tenders_count >= @limit
+        break if @reaper_params.status[:reaped_tenders_count] >= @reaper_params.args[:limit]
         tender_status = Hash.new
         # HACK Fix later
         entity_id = entity_id.first if entity_id.is_a?(Array)
@@ -47,7 +41,7 @@ class Reaper
         code = Grappler.new(cartridge.selectors.active.where(:value_type => :code_by_source).first, entity_id).grapple
         log_got_code(code)
 
-        tender = @source.tenders.find_or_create_by(code_by_source: code)
+        tender = @reaper_params.source.tenders.find_or_create_by(code_by_source: code)
 
         cartridge.selectors.data_fields.order_by(priority: :desc).each do |selector|
           log_start_grappling(selector.value_type)
@@ -78,8 +72,8 @@ class Reaper
         end
 
         tender.status = tender_status
-        tender.save unless @is_checking
-        result << tender
+        tender.save unless @reaper_params.args[:is_checking]
+        @reaper_params.status[:result] << tender
 
         @reaped_tenders_count += 1
 
@@ -88,24 +82,18 @@ class Reaper
       end
       ids_set = []
     end
-    result.first
+    @reaper_params.status[:result].first
   end
 
   private
 
   def get_cartridges
-    @cartridges = @source.cartridges.active
-    @cartridges = @source.cartridges.where(_id: @cartridge_id) if @cartridge_id
+    @cartridges = @reaper_params.source.cartridges.active
+    @cartridges = @reaper_params.source.cartridges.where(_id: @cartridge_id) if @reaper_params.args[:cartridge_id]
   end
 
   def apply_rules(value, selector)
-    @fields_status[selector.value_type.to_sym] = Arbiter.new(value, selector.rule.first).judge if selector.rules.count > 0
-  end
-
-  def get_next_page(cartridge)
-    page_manager = cartridge.page_managers.first
-    @current_page = page_manager.page_number_start_value if @current_page == -1
-    
+    @reaper_params.status[:fields_status][selector.value_type.to_sym] = Arbiter.new(value, selector.rule.first).judge if selector.rules.count > 0
   end
 
   def get_ids(cartridge)
@@ -191,13 +179,21 @@ class Reaper
     external_work_type
   end
 
-  class ReaperStatus
-    attr_accessor :source, :args, :params
+  class ReaperParams
+    attr_accessor :source, :args, :status
 
     def initialize(source, args)
       @source = source
       @args = args
-      @params = {}
+      @status = {}
+
+      @args[:limit] = 500 unless @args.has_key? :limit
+      @args[:cartridge_id] = nil unless @args.has_key? :cartridge_id
+      @args[:is_checking] = false unless @args.has_key? :is_checking
+
+      @status[:result] = []
+      @status[:reaped_tenders_count] = 0
+      @status[:fields_status] = Hash.new
     end
   end
 
