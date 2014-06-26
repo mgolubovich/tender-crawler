@@ -13,7 +13,7 @@ class TendersController < ApplicationController
       @end_date_db = Time.parse(@end_date) + 23.hours + 59.minutes + 59.seconds
       @tenders = @tenders.where(created_at: @start_date_db..@end_date_db)
     end
-    @tenders_count = @tenders.count
+    @tenders_count = Statistics.first.global_tenders_count
     @tenders = @tenders.paginate(page: params[:page], per_page: 25)
     haml :tenders
   end
