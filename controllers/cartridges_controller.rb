@@ -1,7 +1,7 @@
 class CartridgesController < ApplicationController
   require 'debugger'
   get '/' do
-    @cartridges = Cartridge.order_by(created_at: :desc)
+    @cartridges = Cartridge.order_by(source_id: :asc).order_by(created_at: :asc)
     @cartridges = @cartridges.where(source_id: params[:source_id]) if params[:source_id] #cartridges in some source
     @source_id = params[:source_id] if params[:source_id]
     @cartridges = @cartridges.paginate(page: params[:page], per_page: 25) #paginate
@@ -133,7 +133,7 @@ class CartridgesController < ApplicationController
     selector.xpath = params[:selector_xpath]
     selector.css = params[:selector_css]
     selector.attr = params[:selector_attr]
-    
+
     selector.offset = {"start" => params[:selector_offset_start].to_i, "end" => params[:selector_offset_end].to_i}
     selector.offset["end"] = -1 if selector.offset["start"] != 0 && selector.offset["end"] == 0
 

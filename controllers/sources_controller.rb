@@ -1,7 +1,7 @@
 class SourcesController < ApplicationController
 
   get '/' do
-    @sources = Source.order_by(created_at: :asc)
+    @sources = Source.order_by(is_active: :desc).order_by(created_at: :asc)
     @sources = @sources.where(name: Regexp.new(params[:search], Regexp::IGNORECASE)) if params[:search]
     @sources = @sources.paginate(page: params[:page], per_page: 25)
     @source_counter = params[:page].nil? ? 0 : params[:page].to_i * 25 - 25
