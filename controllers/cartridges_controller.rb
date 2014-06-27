@@ -1,7 +1,7 @@
 class CartridgesController < ApplicationController
   require 'debugger'
   get '/' do
-    @cartridges = Cartridge.order_by(created_at: :desc)
+    @cartridges = Cartridge.order_by(source_id: :asc).order_by(created_at: :asc)
     @cartridges = @cartridges.where(source_id: params[:source_id]) if params[:source_id] #cartridges in some source
     @source_id = params[:source_id] if params[:source_id]
     @cartridges = @cartridges.paginate(page: params[:page], per_page: 25) #paginate
@@ -106,8 +106,8 @@ class CartridgesController < ApplicationController
   post '/edit/:cart_id/selector/:id' do
     selector = Selector.find params[:selector_id]
     attributes = parse_selector_form
-  #  attributes[:cartridge_id] = selector.cartridge_id
-  #  attributes[:source_id] = selector.source_id
+    # attributes[:cartridge_id] = selector.cartridge_id
+    # attributes[:source_id] = selector.source_id
     selector.update_attributes!(attributes)
     selector.save
     redirect "/cartridges/edit/#{selector.cartridge_id}"

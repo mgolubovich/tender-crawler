@@ -8,7 +8,7 @@ namespace :parsing do
 
   desc "Reap for a specific source"
   task :reap, :source_id, :deep_level do |t, args|
-    Reaper.new(Source.find(args.source_id), args.deep_level.to_i).reap
+    Reaper.new(Source.find(args.source_id), {:limit => args.deep_level.to_i}).reap
   end
 
   desc "Task for testing single selector"

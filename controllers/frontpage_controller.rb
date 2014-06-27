@@ -7,7 +7,7 @@ class FrontPageController < ApplicationController
 
   def get_base_stats
     @stats = Hash.new
-    @stats[:source_count] = Source.active.count
-    @stats[:tenders_count] = Tender.count
+    @stats[:source_count] = Statistics.first.global_sources_count
+    @stats[:tenders_count] = Statistics.first.global_tenders_count
   end
 end
