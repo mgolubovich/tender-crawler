@@ -5,26 +5,22 @@ require 'capybara/webkit'
 class Reaper
   attr_reader :result
 
-  include Capybara::DSL
-  Capybara.default_driver = :webkit
-  Capybara.run_server = false
-
   def initialize(source, args = {}) # { :limit => 0, :cartridge_id => nil, :is_checking => false }
     @reaper_params = ReaperParams.new(source, args)
-
-    load_work_type_codes
-    
-    log_started_parsing(@source.name)
+    load_work_type_codes    
+    log_started_parsing(@reaper_params.source.name)
   end
 
-  def reap(ids_set = [])
+  def reap
     get_cartridges
+    # debugger
     @cartridges.each do |cartridge|
+      ids_set = []
       pagination = PaginationObserver.new(cartridge.page_managers.first)
 
       unless ids_set.count > 0
-        while @limit > ids_set.count
-          pagination.next_page if ids_set.count < @limit
+        while @reaper_params.args[:limit] > ids_set.count
+          pagination.next_page if ids_set.count < @reaper_params.args[:limit]
           ids_set += get_ids(cartridge)
         end
       end
@@ -32,7 +28,7 @@ class Reaper
       log_got_ids_set(ids_set.count)
 
       ids_set.each do |entity_id|
-        break if @reaper_params.status[:reaped_tenders_count] >= @reaper_params.args[:limit]
+        # break if @reaper_params.status[:reaped_tenders_count] >= @reaper_params.args[:limit]
         tender_status = Hash.new
         # HACK Fix later
         entity_id = entity_id.first if entity_id.is_a?(Array)
@@ -62,7 +58,7 @@ class Reaper
         tender.external_work_type = -1 if tender.work_type.nil?
         tender.external_db_id = Tender.max(:external_db_id).to_i + 1 if tender.external_db_id.nil?
         
-        @fields_status.each_pair do |field, status|
+        @reaper_params.status[:fields_status].each_pair do |field, status|
           tender_status[:state] = status
           tender_status[:failed_fields] = [] unless tender_status[:failed_fields].kind_of(Array)
           tender_status[:failed_fields] << field if status == :failed
@@ -75,7 +71,7 @@ class Reaper
         tender.save unless @reaper_params.args[:is_checking]
         @reaper_params.status[:result] << tender
 
-        @reaped_tenders_count += 1
+        @reaper_params.status[:reaped_tenders_count] += 1
 
         log_tender_saved(tender[:_id])
 
@@ -199,26 +195,30 @@ class Reaper
 
   class PaginationObserver
     attr_accessor :current_page, :initial_visit, :page_manager
-
+    
+    include Capybara::DSL
+    Capybara.default_driver = :webkit
+    Capybara.run_server = false
+    
     def initialize(page_manager)
       @page_manager = page_manager
-      @current_page = page_manager.page_number_start_value.to_s
+      @current_page = page_manager.page_number_start_value
       @is_started = false
     end
 
     def next_page
+      @current_page += 1
+      next_page_number = @page_manager.leading_zero && (@current_page + 1) < 10 ? "0#{@current_page}" : "#{@current_page}"
       case @page_manager.action_type
         when :get
-          @current_page += 1
-          next_page = @page_manager.cartridge.base_list_template.gsub('$page_number', @current_page)
+          next_page = @page_manager.cartridge.base_list_template.gsub('$page_number', next_page_number)
           visit next_page
         when :click
           initial_visit unless @is_started
           find(:xpath, @page_manager.action_value).click
         when :js
           initial_visit unless @is_started
-          @current_page += 1
-          execute_script(@page_manager.action_value.gsub!('$page_number', @current_page))
+          execute_script(@page_manager.action_value.gsub!('$page_number', next_page_number))
       end
       sleep @page_manager.delay_between_pages
     end

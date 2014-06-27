@@ -12,4 +12,5 @@ class PageManager
   field :action_value, type: String
   field :page_number_start_value, type: Integer, default: 1
   field :delay_between_pages, type: Integer, default: 0
+  field :leading_zero, type: Boolean, default: false
 end
