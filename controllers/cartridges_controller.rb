@@ -182,7 +182,7 @@ class CartridgesController < ApplicationController
 
 private
   def parse_selector_form
-    data = {}
+    data = Hash.new
     data = {:value_type => params[:selector_value].to_sym, :link_template => params[:selector_link], :xpath => params[:selector_xpath], :css => params[:selector_css], :attr => params[:selector_attr], :date_format => params[:selector_date_format], :js_code => params[:selector_js_code], :priority => params[:selector_priority].to_i, :to_type => params[:selector_to_type]}
     data[:offset] = {"start" => params[:selector_offset_start].to_i, "end" => params[:selector_offset_end].to_i}
     data[:regexp] = {"mode" => params[:selector_mode_reg], "pattern" => params[:selector_pat_reg]}
@@ -191,10 +191,11 @@ private
   end
 
   def parse_cartridge_form
-    data = {}
+    data = Hash.new
     data[:cartridge] = {:name => params[:cartridge_name], :source_id => params[:cartridge_source], :base_link_template => params[:cartridge_base_link], :base_list_template => params[:cartridge_base_list], :tender_type => params[:cartridge_tender_type]}
     data[:cartridge][:is_active] = params[:cartridge_activity] == 'active' ? true : false
-    data[:pm] = {:action_type => params[:pm_type].to_sym, :action_value => params[:pm_value]}
+    data[:pm] = {:action_type => params[:pm_type].to_sym, :action_value => params[:pm_value], :page_number_start_value => params[:pm_num_start].to_i, :delay_between_pages => params[:pm_delay].to_i}
+    data[:pm][:leading_zero] = params[:leading_zero] == 'on' ? true : false
     data
   end
 end

@@ -41,7 +41,7 @@ class RulesController < ApplicationController
 
 private
   def parse_rules_form
-    data = {}
+    data = Hash.new
     data = {:regexp => params[:rule_regexp]}
     data[:is_active] = params[:rule_activity] == 'active' ? true : false
     data[:check_length] = {:less => params[:rule_length_less].to_i, :more => params[:rule_length_more].to_i, :equal => params[:rule_equal].to_i}
