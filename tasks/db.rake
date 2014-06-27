@@ -91,7 +91,7 @@ namespace :db do
     dictionary = Hash.new
     i = 0
     Source.where(:_id.ne => '53a0152790c043c46500000b').each do |source|
-      url = source.url.scan(/http:\/\/.{0,3}\.([^\/]*).*/).join
+      url = source.url.scan(/http:\/\/([^\/]*).*/).join
       dictionary[url] = source._id
     end
     Tender.where(:source_id.in => ['53a0152790c043c46500000b', '537302fd90c0433480000001' ]).each do |tender|
