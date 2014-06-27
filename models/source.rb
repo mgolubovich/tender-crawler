@@ -28,6 +28,9 @@ class Source
   field :external_site_id, type: Integer
   field :external_link_templates, type: Hash
 
+  # Statistic tenders count
+  field :tenders_count, type: Integer
+
   scope :active, where(:is_active => true)
 
 end
