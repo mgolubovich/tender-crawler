@@ -10,4 +10,5 @@ class Statistics
   field :global_page_managers_count, type: Integer
   field :global_cities_count, type: Integer
   field :global_regions_count, type: Integer
+  field :moderation_today_count, type: Integer
 end

@@ -40,6 +40,7 @@ class TendersController < ApplicationController
       @tender = Tender.where(external_work_type: -1)
       @tender = @tender.order_by(created_at: :desk)
       @tender = @tender.last
+      @moderated_today_count = Statistics.last.moderation_today_count
       haml :moderation
     end
   end
