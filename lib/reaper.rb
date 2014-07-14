@@ -20,6 +20,7 @@ class Reaper
 
       unless ids_set.count > 0
         while @reaper_params.args[:limit] > ids_set.count
+          # debugger
           pagination.next_page if ids_set.count < @reaper_params.args[:limit]
           ids_set += get_ids(cartridge)
         end
@@ -143,7 +144,7 @@ class Reaper
 
     @construct_keys = YAML.load_file('config/work_type_codes/construct.yml').keys + YAML.load_file('config/work_type_codes/construct_okpd.yml').keys
     @project_keys = YAML.load_file('config/work_type_codes/project.yml').keys + YAML.load_file('config/work_type_codes/project_okpd.yml').keys
-    #@research_keys = YAML.load_file('config/work_type_codes/research.yml').keys
+    # @research_keys = YAML.load_file('config/work_type_codes/research.yml').keys
     @supply_keys = YAML.load_file('config/work_type_codes/supply.yml').keys + YAML.load_file('config/work_type_codes/supply_okpd.yml').keys
     @service_keys = YAML.load_file('config/work_type_codes/service_okdp.yml').keys
   end
@@ -155,7 +156,7 @@ class Reaper
       work_type.each do |w|
         external_work_type = 1 if @construct_keys.include? w["code"] && !w["code"].blank?
         external_work_type = 2 if @project_keys.include? w["code"] && !w["code"].blank?
-        #external_work_type = 3 if @research_keys.include? w["code"] && !w["code"].blank?
+        # external_work_type = 3 if @research_keys.include? w["code"] && !w["code"].blank?
         external_work_type = 4 if @supply_keys.include? w["code"] && !w["code"].blank?
         external_work_type = 5 if @service_keys.include? w["code"] && !w["code"].blank?
 
@@ -214,6 +215,7 @@ class Reaper
           next_page = @page_manager.cartridge.base_list_template.gsub('$page_number', next_page_number)
           visit next_page
         when :click
+          # debugger
           initial_visit unless @is_started
           find(:xpath, @page_manager.action_value).click
         when :js
@@ -226,6 +228,7 @@ class Reaper
     private
     
     def initial_visit
+      # debugger
       initial_page = @page_manager.cartridge.base_list_template.gsub('$page_number', @page_manager.page_number_start_value.to_s)
       visit initial_page
       @is_started = true
