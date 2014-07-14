@@ -4,7 +4,7 @@
   .col-lg-4.pull-right
     %form{:action => "/sources", :method => "get"}
       .input-group
-        %input.form-control{:name => "search", :type => "text", :placeholder => "Search"}
+        %input.form-control{:name => "search", :type => "text", :placeholder => "Search", :value => params[:search]}
         %span.input-group-btn
           %button.btn.btn-primary Искать
 .container-fluid
