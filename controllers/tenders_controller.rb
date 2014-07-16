@@ -37,9 +37,7 @@ class TendersController < ApplicationController
     if Tender.where(external_work_type: -1).count == 0
       "Nothing to do!"
     else
-      @tender = Tender.where(external_work_type: -1)
-      @tender = @tender.order_by(created_at: :desk)
-      @tender = @tender.last
+      @tender = params[:last] ? Tender.order_by(moderated_at: :asc).last : Tender.where(external_work_type: -1).order_by(created_at: :desk).last
       @moderated_today_count = Statistics.last.moderation_today_count
       haml :moderation
     end
