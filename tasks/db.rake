@@ -87,4 +87,24 @@ namespace :db do
       i += 1
     end
   end
+
+  task :abyss_sort do
+    dictionary = Hash.new
+    i = 0
+    Source.where(:_id.ne => '53a0152790c043c46500000b').each do |source|
+      url = source.url.scan(/http:\/\/([^\/]*).*/).join
+      dictionary[url] = source._id
+    end
+    Tender.where(:source_id.in => ['53a0152790c043c46500000b', '537302fd90c0433480000001' ]).each do |tender|
+      dictionary.each_pair do |url, source_id|
+        if tender.source_link.include?(url)
+          puts "[#{Time.now}] In tender ##{tender._id} detached from #{tender.source_id} attached to #{source_id}"
+          tender.source_id = source_id
+          tender.save
+          i += 1
+        end
+      end
+    end
+    puts "[#{Time.now}] Was changed #{i} tenders."
+  end
 end

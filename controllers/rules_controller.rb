@@ -9,11 +9,8 @@ class RulesController < ApplicationController
   post '/new/:selector_id' do
     @selector = Selector.find params[:selector_id]
     rule = @selector.rules.new
-    rule.regexp = params[:rule_regexp]
-    rule.is_active = params[:rule_activity] == 'active' ? true : false
-    rule.check_length = {:less => params[:rule_length_less].to_i, :more => params[:rule_length_more].to_i, :equal => params[:rule_equal].to_i}
-    rule.check_emptiness = params[:rule_emptiness] == 'on' ? true : false
-    rule.failed_status = params[:rule_status] == 'failed' ? :failed : :moderation
+    attributes = parse_rules_form
+    rule.update_attributes!(attributes)
     rule.save
     redirect "/cartridges/edit/#{@selector.cartridge_id}"
   end
@@ -27,11 +24,8 @@ class RulesController < ApplicationController
 
   post '/:selector_id/edit/:id' do
     rule = Rule.find params[:rule_id]
-    rule.regexp = params[:rule_regexp]
-    rule.is_active = params[:rule_activity] == 'active' ? true : false
-    rule.check_length = {:less => params[:rule_length_less].to_i, :more => params[:rule_length_more].to_i, :equal => params[:rule_equal].to_i}
-    rule.check_emptiness = params[:rule_emptiness] == 'on' ? true : false
-    rule.failed_status = params[:rule_status] == 'failed' ? :failed : :moderation
+    attributes = parse_rules_form
+    rule.update_attributes!(attributes)
     rule.save
     @cartridge_id = rule.selector.cartridge_id
     redirect "/cartridges/edit/#{@cartridge_id}"
@@ -43,5 +37,16 @@ class RulesController < ApplicationController
     @rule_selector = rule.selector_id
     rule.destroy
     redirect "/cartridges/edit/#{@cartridge_id}"
+  end
+
+private
+  def parse_rules_form
+    data = Hash.new
+    data = {:regexp => params[:rule_regexp]}
+    data[:is_active] = params[:rule_activity] == 'active' ? true : false
+    data[:check_length] = {:less => params[:rule_length_less].to_i, :more => params[:rule_length_more].to_i, :equal => params[:rule_equal].to_i}
+    data[:check_emptiness] = params[:rule_emptiness] == 'on' ? true : false
+    data[:failed_status] = params[:rule_status] == 'failed' ? :failed : :moderation
+    data
   end
 end

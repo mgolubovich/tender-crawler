@@ -27,6 +27,9 @@
             %a{ href: "/cartridges?id=#{cartridge._id}", title: "active: #{cartridge.selectors.active.count}"}= cartridge.selectors.count
           %td= cartridge.source.name
           %td.text-center
+            %a.btn.btn-info.btn-xs{ href: "/cartridges/check/#{cartridge._id}" }
+              %span.glyphicon.glyphicon-check
+              Check
             %a.btn.btn-info.btn-xs{ href: "/cartridges/edit/#{cartridge._id}"}
               %span.glyphicon.glyphicon-edit
               Edit
@@ -77,4 +80,4 @@
             %button.btn.btn-default{"data-dismiss" => "modal", type: "button"} Cancel
             %button.btn.btn-primary{type: "submit"} Push!
 
-%script{:type => 'text/javascript', :src => "javascripts/cartridge-copy-popup.js" }
+%script{:type => 'text/javascript', :src => "http://10.0.105.15/javascripts/cartridge-copy-popup.js" }
