@@ -44,19 +44,27 @@ namespace :parsing do
   desc "Set regions for tenders"
   task :set_regions_in_tenders_for, :source_id do |t, args|
     source = Source.find(args.source_id)
-    tenders = source.tenders.where(:customer_address.ne => nil)
+    tenders = source.tenders.where(:customer_address.ne => nil).where(:external_region_id => nil)
     regions = Region.all
+
+    tenders.each do |t|
+        regions.each do |r|
+          t.external_region_id = r.external_id if t.customer_address.include? r.name
+        end
+        t.save
+    end
+  end
+
+  desc 'Set cities for tenders'
+  task :set_cities_in_tenders_for, :source_id do |t, args|
+    tenders = Source.find(args.source_id).tenders.where(:customer_address.ne => nil).where(:external_city_id => nil)
     cities = City.all
 
     tenders.each do |t|
-        # regions.each do |r|
-        #   t.external_region_id = r.external_id if t.customer_address.include? r.name
-        # end
-        # debugger
-        cities.each do |c|
+      cities.each do |c|
           t.external_city_id = c.external_id if t.customer_address.include? c.name
-        end
-        t.save
+      end
+      t.save
     end
   end
 end
