@@ -187,6 +187,16 @@ class CartridgesController < ApplicationController
     haml :'cartridges/priority'
   end
 
+  post '/priority/:cartridge_id/save' do
+    data = params[:data]
+    data.each_pair do |id, priority|
+      selector = Selector.find id
+      debugger
+      selector.update_attributes!({:priority => priority})
+    end
+    nil
+  end
+
 private
   def parse_selector_form
     data = Hash.new

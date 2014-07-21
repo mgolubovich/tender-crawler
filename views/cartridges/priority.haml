@@ -1,5 +1,5 @@
 - @title = 'View tender'
-%h1 Просмотр тендера
+%h1{:id => @cartridge._id} Priority for #{@cartridge.name}
 %script{:type => 'text/javascript', :src => "http://johnny.github.io/jquery-sortable/js/jquery-sortable.js"}
 .container-fluid
   %table.table.table-striped.table-bordered.sorted_table
