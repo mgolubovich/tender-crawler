@@ -15,6 +15,7 @@ class Reaper
     get_cartridges
     # debugger
     @cartridges.each do |cartridge|
+      @reaper_params[:reaped_tenders_count] = 0
       ids_set = []
       pagination = PaginationObserver.new(cartridge.page_managers.first)
 
@@ -29,7 +30,7 @@ class Reaper
       log_got_ids_set(ids_set.count)
 
       ids_set.each do |entity_id|
-        # break if @reaper_params.status[:reaped_tenders_count] >= @reaper_params.args[:limit]
+        break if @reaper_params.status[:reaped_tenders_count] >= @reaper_params.args[:limit]
         tender_status = Hash.new
         # HACK Fix later
         entity_id = entity_id.first if entity_id.is_a?(Array)

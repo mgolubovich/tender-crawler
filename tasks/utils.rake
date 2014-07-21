@@ -9,4 +9,9 @@ namespace :utils do
       end
     end
   end
+
+  desc 'Export schedule.rb to crontab'
+  task :export_tasks_to_crontab do
+    %x(whenever -w)
+  end
 end

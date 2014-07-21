@@ -43,8 +43,7 @@ namespace :parsing do
 
   desc "Set regions for tenders"
   task :set_regions_in_tenders_for, :source_id do |t, args|
-    source = Source.find(args.source_id)
-    tenders = source.tenders.where(:customer_address.ne => nil).where(:external_region_id => nil)
+    tenders = Source.find(args.source_id).tenders.where(:customer_address.ne => nil).where(:external_region_id => nil)
     regions = Region.all
 
     tenders.each do |t|
