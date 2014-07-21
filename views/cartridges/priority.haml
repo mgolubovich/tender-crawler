@@ -14,7 +14,7 @@
         %tr.movable
           %td
             #{s.value_type}
-            %input{:type => "hidden", :value => s.priority}
+            %input{:type => "hidden",:name => s._id, :value => s.priority}
           %td.priority-value{:style => "color: red;"}= s.priority
 
 
@@ -24,6 +24,9 @@
 
 %script{:type => 'text/javascript', :src => "http://10.0.105.15/javascripts/priority-sortable.js" }
 
-
-
-
+:javascript
+  var inputs = $('.movable input');
+  var data = {};
+  inputs.each(function () {
+    data[$(this).attr('name')] = $(this).val();
+  });
