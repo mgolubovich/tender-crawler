@@ -191,7 +191,7 @@ class CartridgesController < ApplicationController
     data = params[:data]
     data.each_pair do |id, priority|
       selector = Selector.find id
-      debugger
+      #debugger
       selector.update_attributes!({:priority => priority})
     end
     nil
