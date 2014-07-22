@@ -22,6 +22,7 @@ namespace :db do
     ABYSS = '53a0152790c043c46500000b'
     current_eid = Tender.max(:external_db_id).to_i
     query = "Select * FROM tenders WHERE 1 LIMIT #{args.records_count} OFFSET #{i * args.slice_size.to_i}"
+    puts "Let's start. #{query}"
     slice_size = i * args.slice_size.to_i
     log_started_import(args.records_count, slice_size)
     records = ActiveRecord::Base.connection.exec_query(query)
@@ -82,7 +83,7 @@ namespace :db do
 	  	log_import_attributes(mongo_tender.attributes)
       mongo_tender.save
       log_import_save(mongo_tender._id)
-      puts "Tender was saved in #{source_name} (#{source_id})"
+      puts "Tender ##{record["id"]} was saved in #{source_name} (#{source_id})"
       i += 1
     end
   end

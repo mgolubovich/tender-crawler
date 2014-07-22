@@ -180,6 +180,23 @@ class CartridgesController < ApplicationController
     redirect "/cartridges/edit/#{dest_cart._id}"
   end
 
+  get '/priority/:cartridge_id'  do
+    @cartridge = Cartridge.find params[:cartridge_id]
+    @selectors = @cartridge.selectors
+    @selectors = @selectors.order_by(priority: :asc)
+    haml :'cartridges/priority'
+  end
+
+  post '/priority/:cartridge_id/save' do
+    data = params[:data]
+    data.each_pair do |id, priority|
+      selector = Selector.find id
+      #debugger
+      selector.update_attributes!({'priority' => priority})
+    end
+    nil
+  end
+
 private
   def parse_selector_form
     data = Hash.new

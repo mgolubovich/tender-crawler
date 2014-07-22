@@ -16,3 +16,25 @@ table {
 thead {
     font-weight: bold;
 }
+
+.sorted_table tr {
+  cursor: pointer; }
+/* line 96, /Users/jonasvonandrian/jquery-sortable/source/css/application.css.sass */
+.sorted_table tr.placeholder {
+  display: block;
+  background: red;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  border: none; }
+  /* line 103, /Users/jonasvonandrian/jquery-sortable/source/css/application.css.sass */
+  .sorted_table tr.placeholder:before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border: 5px solid transparent;
+    border-left-color: red;
+    margin-top: -5px;
+    left: -5px;
+    border-right: none; }
