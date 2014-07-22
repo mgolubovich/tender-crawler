@@ -7,6 +7,7 @@ class Reaper
 
   def initialize(source, args = {}) # { :limit => 0, :cartridge_id => nil, :is_checking => false }
     @reaper_params = ReaperParams.new(source, args)
+    @current_tender = {}
     load_work_type_codes    
     log_started_parsing(@reaper_params.source.name)
   end
