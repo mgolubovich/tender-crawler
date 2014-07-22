@@ -24,5 +24,5 @@ every 30.minutes do
 end
 
 every 5.minutes do
-  rake "statistics:update_moderation_today"
+  rake "statistics:update_all"
 end
