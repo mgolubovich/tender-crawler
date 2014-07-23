@@ -7,7 +7,6 @@ class Reaper
 
   def initialize(source, args = {}) # { :limit => 0, :cartridge_id => nil, :is_checking => false }
     @reaper_params = ReaperParams.new(source, args)
-    @current_tender = {}
     load_work_type_codes    
     log_started_parsing(@reaper_params.source.name)
   end
@@ -16,7 +15,7 @@ class Reaper
     get_cartridges
     # debugger
     @cartridges.each do |cartridge|
-      @reaper_params[:reaped_tenders_count] = 0
+      @reaper_params.status[:reaped_tenders_count] = 0
       ids_set = []
       pagination = PaginationObserver.new(cartridge.page_managers.first)
 
@@ -33,6 +32,8 @@ class Reaper
       ids_set.each do |entity_id|
         break if @reaper_params.status[:reaped_tenders_count] >= @reaper_params.args[:limit]
         tender_status = Hash.new
+        tender_stub = EntityStub.new
+
         # HACK Fix later
         entity_id = entity_id.first if entity_id.is_a?(Array)
         #
@@ -46,7 +47,8 @@ class Reaper
           log_start_grappling(selector.value_type)
           value = Grappler.new(selector, entity_id).grapple 
           
-          tender[selector.value_type.to_sym] = value
+          tender_stub.insert(selector.value_type.to_sym, value)
+          #tender[selector.value_type.to_sym] = value
           apply_rules(value, selector)
           
           log_got_value(selector.value_type, value)
@@ -71,7 +73,9 @@ class Reaper
         end
 
         tender.status = tender_status
-        tender.save unless @reaper_params.args[:is_checking]
+        # debugger
+        tender.update_attributes!(tender_stub.attributes) unless @reaper_params.args[:is_checking]
+        #tender.save unless @reaper_params.args[:is_checking]
         @reaper_params.status[:result] << tender
 
         @reaper_params.status[:reaped_tenders_count] += 1
