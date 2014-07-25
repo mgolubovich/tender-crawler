@@ -44,7 +44,8 @@ class Tender
   field :external_region_id, type: Integer
 
   # Not used tight now
-  field :external_db_id, type: Integer
+  # field :external_db_id, type: Integer
+  auto_increment :external_db_id, :seed => 1952237
 
   field :status, type: Hash
 

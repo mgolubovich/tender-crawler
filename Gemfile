@@ -5,6 +5,7 @@ gem "rack-timeout"
 
 gem 'mongoid', '3.0.23'
 gem 'bson_ext'
+gem 'mongoid_auto_increment'
 
 gem 'whenever', :require => false
 gem 'resque'

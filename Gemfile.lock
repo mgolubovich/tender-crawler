@@ -52,6 +52,8 @@ GEM
       moped (~> 1.2)
       origin (~> 1.0)
       tzinfo (~> 0.3.22)
+    mongoid_auto_increment (0.1.2)
+      mongoid (>= 2.0)
     mono_logger (1.1.0)
     moped (1.5.2)
     multi_json (1.10.0)
@@ -156,6 +158,7 @@ DEPENDENCIES
   debugger
   haml
   mongoid (= 3.0.23)
+  mongoid_auto_increment
   mysql2
   rack-timeout
   redis
