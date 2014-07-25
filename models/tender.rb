@@ -50,4 +50,5 @@ class Tender
   field :status, type: Hash
 
   index({ source_id: 1, code_by_source: 1 }, { unique: true })
+  index({ external_db_id: 1 }, { unique: true })
 end
