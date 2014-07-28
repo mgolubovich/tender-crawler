@@ -1,5 +1,5 @@
 - @title = 'View tender'
-%h1 Просмотр тендера
+%h1 Просмотр тендера [#{@tenders._id}]
 .container-fluid
   %table.table.table-hover.table-condensed.table-bordered
     %tbody
@@ -36,6 +36,24 @@
         %td URL извещения
         %td
           %a{ href: "#{@tenders.source_link}"}= @tenders.source_link
+      %tr
+        %td id_by_source
+        %td= @tenders.id_by_source
+      %tr
+        %td group
+        %td= @tenders.group
+      %tr
+        %td external_work_type
+        %td= @tenders.external_work_type
+      %tr
+        %td external_db_id
+        %td= @tenders.external_db_id
+      %tr
+        %td external_region_id
+        %td= @tenders.external_region_id
+      %tr
+        %td external_city_id
+        %td= @tenders.external_city_id
       %tr
         %td created_at
         %td= @tenders.created_at
