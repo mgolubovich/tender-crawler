@@ -22,8 +22,10 @@
       left: -5px;
       border-right: none; }
 
-%h1{:id => @cartridge._id} Priority for #{@cartridge.name}
-%script{:type => 'text/javascript', :src => "http://johnny.github.io/jquery-sortable/js/jquery-sortable.js"}
+%h1{:id => @cartridge._id}
+  Priority for
+  %a{:href => "/cartridges/edit/#{@cartridge._id}"}= @cartridge.name
+
 .container-fluid
   %table.table.table-striped.table-bordered.sorted_table
     %thead
@@ -36,9 +38,13 @@
       - @selectors.each do |s|
         %tr.movable
           %td
-            #{s.value_type}
-            %input{:type => "hidden",:name => s._id, :value => s.priority}
+            = s.value_type
+            &nbsp;&nbsp;&nbsp;
+            %a.btn.btn-info.btn-xs{ id: "info", href: "#", "data-target" => ".selector-info", "data-toggle" => "modal", "data-selector-id" => s._id, "xpath" => s.xpath, "css" => s.css, "date_format" => s.date_format, "link_template" => s.link_template}
+              %span.glyphicon.glyphicon-info-sign
+          %input{:type => "hidden",:name => s._id, :value => s.priority}
           %td.priority-value{:style => "color: red;"}= s.priority
+
 
 .container-fluid
   %span.pull-right.glyphicon.glyphicon-ok.ok{:style => "color: green; display: none;"} Сохранено
@@ -48,4 +54,24 @@
     %a.btn.btn-primary.btn-lg{:href => env['HTTP_REFERER'], :method => "get"} Назад
 
 
+%script{:type => 'text/javascript', :src => "http://johnny.github.io/jquery-sortable/js/jquery-sortable.js"}
 %script{:type => 'text/javascript', :src => "http://10.0.105.15/javascripts/priority-sortable.js" }
+
+.container-fluid
+  .modal.fade.selector-info{"aria-hidden" => "true", role: "dialog", tabindex: "-1"}
+    .modal-dialog.modal-sm
+      .modal-content.form-horizontal
+        %table.table
+          %tr
+            %td Xpath
+            %td.xpath
+          %tr
+            %td CSS
+            %td.css
+          %tr
+            %td Date_format
+            %td.date_format
+          %tr
+            %td Link_template
+            %td.link_template
+
