@@ -2,7 +2,6 @@ require 'capybara'
 require 'capybara/dsl'
 require 'capybara/webkit'
 require 'date'
-#require 'debugger'
 
 class Grappler
 
