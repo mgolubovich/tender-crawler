@@ -73,7 +73,6 @@ class Reaper
         end
 
         tender.status = tender_status
-        # debugger
         tender.update_attributes!(tender_stub.attributes) unless @reaper_params.args[:is_checking]
         #tender.save unless @reaper_params.args[:is_checking]
         @reaper_params.status[:result] << tender
