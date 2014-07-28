@@ -30,4 +30,11 @@
                });
         }
     });
+    var infoButton = $('.movable #info');
+    infoButton.click(function() {
+        $('.css').html($(this).attr('css'));
+        $('.xpath').html($(this).attr('xpath'));
+        $('.date_format').html($(this).attr('date_format'));
+        $('.link_template').html($(this).attr('link_template'));
+    });
 })(jQuery);
