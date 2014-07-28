@@ -30,6 +30,7 @@ class Source
 
   # Statistic tenders count
   field :tenders_count, type: Integer
+  field :construction_tenders_count, type: Integer
 
   scope :active, where(:is_active => true)
 

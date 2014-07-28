@@ -3,6 +3,7 @@ namespace :statistics do
   task :update_statistic_for, :source_id do |t, args|
     source = Source.find args.source_id
     source.tenders_count = source.tenders.count
+    source.construction_tenders_count = source.tenders.where(:external_work_type.gt => 1).count
     source.save
     puts "[#{Time.now}] Statistic tenders count for #{source.name} updated to #{source.tenders_count}"
   end
@@ -30,8 +31,9 @@ namespace :statistics do
   task :update_all => [:update_global_statistics, :update_moderation_today] do
     Source.each do |source|
      source.tenders_count = source.tenders.count
+     source.construction_tenders_count = source.tenders.where(:external_work_type.gt => 1).count
      source.save
-     puts "[#{Time.now}] Statistic tenders count for #{source.name} updated to #{source.tenders_count}"
+     puts "[#{Time.now}] Statistic tenders count for #{source.name} updated to #{source.tenders_count} [#{ource.construction_tenders_count}]"
     end
   end
 end
