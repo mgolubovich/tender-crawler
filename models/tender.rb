@@ -4,7 +4,7 @@ class Tender
 
   belongs_to :source
   has_many :protocols
-  
+
   # Timestamps, created_at and updated_at included via mongoid
   field :start_at, type: Time
   field :published_at, type: Time
