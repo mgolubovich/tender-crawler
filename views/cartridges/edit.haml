@@ -32,6 +32,19 @@
             %option{:value => "223", :selected => @cartridge.tender_type == '223' ? true : false} 223
             %option{:value => "44", :selected => @cartridge.tender_type == '44' ? true : false} 44
       .form-group
+        %label.col-md-4.control-label{:for=> "cartridge_reaping_type"} reaping_type
+        .col-md-4
+          %select.form-control{ :id => "cartridge_reaping_type", :name => "cartridge_reaping_type"}
+            %option{:value => :page, :selected => @cartridge.reaping_type == :page ? true : false } page
+            %option{:value => :list, :selected => @cartridge.reaping_type == :list ? true : false} list
+            %option{:value => :mixed, :selected => @cartridge.reaping_type == :mixed ? true : false} mixed
+      .form-group
+        %label.col-md-4.control-label{:for => "list_offset"} list_offset
+        .col-md-2
+          %input.form-control{:id => "offset_start", :name => "offset_start", :type => "text", :size => 20, :value => @cartridge.list_offset.nil? ? 0 : @cartridge.list_offset["start"] }
+        .col-md-2
+          %input.form-control{:id => "offset_end", :name => "offset_end", :type => "text", :size => 20, :value => @cartridge.list_offset.nil? ? 0 : @cartridge.list_offset["end"] }
+      .form-group
         %label.col-md-4.control-label{:for=> "cartridge_activity"} Активность
         .col-md-4
           %select.form-control{ :id => "cartridge_activity", :name => "cartridge_activity"}

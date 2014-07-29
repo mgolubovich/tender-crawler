@@ -9,6 +9,10 @@ class Cartridge
   field :name, type: String
   field :base_link_template, type: String
   field :base_list_template, type: String
+  field :reaping_type, type: Symbol, default: :page # :page, :list, :mixed
+
+  # Parametres for list type of reaping
+  field :list_offset, type: Hash # Example: { "start" => 1, "end" => ''}
 
   field :tender_type, type: String
 

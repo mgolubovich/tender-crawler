@@ -29,6 +29,20 @@
             %option{:value => "223", :selected => true} 223
             %option{:value => "44"} 44
       .form-group
+        %label.col-md-4.control-label{:for=> "cartridge_reaping_type"} reaping_type
+        .col-md-4
+          %select.form-control{ :id => "cartridge_reaping_type", :name => "cartridge_reaping_type"}
+            %option{:value => :page, :selected => true} page
+            %option{:value => :list} list
+            %option{:value => :mixed} mixed
+      .form-group#list_offset
+        %label.col-md-4.control-label{:for => "list_offset"} list_offset
+        .col-md-2
+          %input.form-control{:id => "offset_start", :name => "offset_start", :type => "text", :size => 20, :placeholder => "start"}
+        .col-md-2
+          %input.form-control{:id => "offset_end", :name => "offset_end", :type => "text", :size => 20, :placeholder => "end"}
+
+      .form-group
         %label.col-md-4.control-label{:for=> "cartridge_activity"} Активность
         .col-md-4
           %select.form-control{ :id => "cartridge_activity", :name => "cartridge_activity"}
