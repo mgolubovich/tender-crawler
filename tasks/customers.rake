@@ -38,6 +38,7 @@ namespace :customers do
       csv << ["ID", "Полное наименование организации", "Сокращенное наименование организации", "ИНН", "Адрес (место нахождения)", "Почтовый адрес", "Адрес электронной почты для системных уведомлений", "Контактное лицо", "Телефон", "Факс", "Источник"]
       Customer.where(:source => args[:source].to_s).each do |c|
         csv << c.attributes.values
+        puts "[#{Time.now}] Customer id ##{c._id} exported."
       end
     end
   end
