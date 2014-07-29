@@ -75,11 +75,11 @@ namespace :parsing do
     region_mode = args[:region_mode].to_sym
 
     mode_filter = []
-    if city_mode != :off
+    unless city_mode == :off
       mode_filter.push({:external_city_id => nil})
       cities = City.all
     end
-    if region_mode != :off
+    unless region_mode == :off
       mode_filter.push({:external_region_id => nil})
       regions = Region.all
     end
@@ -91,8 +91,8 @@ namespace :parsing do
     tenders = tenders.or(mode_filter)
 
     tenders.each do |t|
-      cities.each {|c| t.external_city_id = c.external_id if t.customer_address.include? c.name} if city_mode != :off
-      regions.each {|r| t.external_region_id = r.external_id if t.customer_address.include? r.name} if region_mode != :off
+      cities.each {|c| t.external_city_id = c.external_id if t.customer_address.include? c.name} unless city_mode == :off
+      regions.each {|r| t.external_region_id = r.external_id if t.customer_address.include? r.name} unless region_mode == :off
       t.save
     end
   end
