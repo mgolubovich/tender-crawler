@@ -66,4 +66,34 @@ namespace :parsing do
       t.save
     end
   end
+
+  desc "Set cities and regions for tenders"
+  task :set_cities_and_regions_in_tenders, :source_id, :city_mode, :region_mode do |t, args|
+    args.with_defaults(:source_id => nil, :city_mode => :on, :region_mode => :on)
+
+    city_mode = args[:city_mode].to_sym
+    region_mode = args[:region_mode].to_sym
+
+    mode_filter = []
+    if city_mode != :off
+      mode_filter.push({:external_city_id => nil})
+      cities = City.all
+    end
+    if region_mode != :off
+      mode_filter.push({:external_region_id => nil})
+      regions = Region.all
+    end
+
+    abort("No mode") if mode_filter.empty?
+
+    tenders = Tender.where(:customer_address.ne => nil)
+    tenders = tenders.where(:source_id => args[:source_id]) unless args[:source_id].nil? || args[:source_id].empty?
+    tenders = tenders.or(mode_filter)
+
+    tenders.each do |t|
+      cities.each {|c| t.external_city_id = c.external_id if t.customer_address.include? c.name} if city_mode != :off
+      regions.each {|r| t.external_region_id = r.external_id if t.customer_address.include? r.name} if region_mode != :off
+      t.save
+    end
+  end
 end
