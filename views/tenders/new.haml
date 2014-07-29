@@ -4,29 +4,45 @@
   %form.form-horizontal{:action => "/tenders/new", :method => "post"}
     %fieldset
       .form-group
-        %label.col-md-4.control-label{:for => "tender_name"} Название тендера
+        %label.col-md-4.control-label{:for => "code_by_source"} code_by_source
         .col-md-5
-          %input.form-control.input-md{:id => "tender_name", :name => "tender_name", :type => "text", :required => "", :size => 20}
-
+          %input.form-control.input-md{:id => "code_by_source", :name => "code_by_source", :type => "text", :required => "", :size => 20}
       .form-group
-        %label.col-md-4.control-label{:for => "tender_form"} Форма тендера
+        %label.col-md-4.control-label{:for => "title"} title
+        .col-md-5
+          %input.form-control.input-md{:id => "title", :name => "title", :type => "text", :required => "", :size => 20}
+      .form-group
+        %label.col-md-4.control-label{:for => "tender_form"} tender_form
         .col-md-5
           %input.form-control.input-md{:id => "tender_form", :name => "tender_form", :type => "text", :required => "", :size => 20}
-
       .form-group
-        %label.col-md-4.control-label{:for=> "tender_work_type"} Вид работ
+        %label.col-md-4.control-label{:for=> "external_work_type"} external_work_type
         .col-md-5
-          %select.form-control{ :id => "tender_work_type", :name => "tender_work_type"}
+          %select.form-control{:id => "external_work_type", :name => "external_work_type"}
             %option{:value => "1"} Строительные
             %option{:value => "2"} Проектные
             %option{:value => "3"} Изыскательные
             %option{:value => "4"} Поставка
             %option{:value => "5"} Сервис и ТО
-
       .form-group
-        %label.col-md-4.control-label{:for => "source_external_site_id"} ID во внешней базе
+        %label.col-md-4.control-label{:for => "external_db_id"} external_db_id
         .col-md-5
-          %input.form-control.input-md{:id => "source_external_site_id", :name => "source_external_site_id", :type => "text", :placeholder => "", :size => 20}
+          %input.form-control.input-md{:id => "external_db_id", :name => "external_db_id", :type => "text", :placeholder => "", :size => 20}
+      .form-group
+        %label.col-md-4.control-label{:for => "customer_name"} customer_name
+        .col-md-5
+          %input.form-control.input-md{:id => "customer_name", :name => "customer_name", :type => "text", :placeholder => "", :size => 20}
+      .form-group
+        %label.col-md-4.control-label{:for => "customer_address"} customer_address
+        .col-md-5
+          %input.form-control.input-md{:id => "customer_address", :name => "customer_address", :type => "text", :placeholder => "", :size => 20}
+      .form-group
+        %label.col-md-4.control-label{:for => "customer_inn"} customer_inn
+        .col-md-5
+          %input.form-control.input-md{:id => "customer_inn", :name => "customer_inn", :type => "text", :placeholder => "", :size => 20}
+
+
+
 
       .form-group
         .col-md-5

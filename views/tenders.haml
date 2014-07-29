@@ -33,6 +33,13 @@
     %input.datepicker{:name => "end_date", :style => "width: 100px;", :type => "text", :value => @end_date}
     %input.btn.btn-primary{:name => "submint", :type => "submit", :value => "Искать" }
 .container-fluid
+  .col-lg-4.pull-right
+    %form{:action => "/tenders", :method => "get"}
+      .input-group
+        %input.form-control{:name => "search", :type => "text", :placeholder => "Search", :value => params[:search]}
+        %span.input-group-btn
+          %button.btn.btn-primary Искать
+.container-fluid
   %table.table.table-striped.table-condensed
     = will_paginate @tenders, renderer: BootstrapPagination::Sinatra
     %thead
