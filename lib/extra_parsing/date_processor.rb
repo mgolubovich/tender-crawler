@@ -27,8 +27,6 @@ class DateProcessor
   end
 
   def transliterate
-    @raw_data
-    # substitution happens here
     @@dictionary.each do |month, word|
       @raw_data.gsub!(word, "|#{month}|")
     end
