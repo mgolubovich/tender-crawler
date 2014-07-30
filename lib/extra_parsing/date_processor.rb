@@ -11,8 +11,8 @@ class DateProcessor
 
   def process
     @format.slice!('[RUSSIAN]') && transliterate
+    debugger
     parse
-    @date.to_time
   end
 
   private
@@ -21,6 +21,7 @@ class DateProcessor
     begin
       @date = @format ? DateTime.strptime(@raw_data, @format) : DateTime.parse(@raw_data)
       @date = @date.change(:offset => "+0400") if @date.offset == (0/1)
+      @date.to_time
     rescue ArgumentError
       nil
     end
