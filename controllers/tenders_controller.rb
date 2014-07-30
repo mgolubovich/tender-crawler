@@ -23,6 +23,29 @@ class TendersController < ApplicationController
     haml :'tenders/new'
   end
 
+  post '/new' do
+    tender = Tender.create(parse_tender_form)
+    redirect "tenders/edit/#{tender._id}"
+  end
+
+  get '/check' do
+    content_type :json
+    @tender = Tender.where(:source_id => params[:source_id]).where(:code_by_source => params[:code_by_source])
+    @tender.count > 0 ? { :result => @tender.first._id}.to_json : {:result => '0'}.to_json
+  end
+
+  get '/edit/:id' do
+    @tender = Tender.find params[:id]
+    @source = @tender.source_id
+    haml :'tenders/edit'
+  end
+
+  post '/edit/:id' do
+    tender = Tender.find params[:id]
+    tender.update_attributes!(parse_tender_form)
+    tender.save
+  end
+
   get '/show/:id' do
     @tenders = Tender.find params[:id]
     haml :'tenders/show'
@@ -50,5 +73,14 @@ class TendersController < ApplicationController
     t.moderated_at = Time.now
     t.save
     redirect "/moderation/push"
+  end
+private
+  def parse_tender_form
+    data = Hash.new
+    data = {:source_id => params[:code_by_source], :code_by_source => params[:code_by_source], :title => params[:title], :tender_form => params[:tender_form], :external_work_type => params[:external_work_type].to_i, :customer_inn => params[:customer_inn], :customer_name => params[:customer_name], :customer_address => params[:customer_address], :id_by_source => params[:id_by_source], :group => params[:group].to_sym}
+    data[:start_at] = Time.parse(params[:start_at]) if params[:start_at]
+    data[:published_at] = Time.parse(params[:published_at]) if params[:published_at]
+    #"doc_title"=>"doc_title", "doc_link"=>"doc_link"} #допилю
+    data
   end
 end

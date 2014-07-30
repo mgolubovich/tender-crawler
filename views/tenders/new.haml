@@ -4,17 +4,25 @@
   %form.form-horizontal{:action => "/tenders/new", :method => "post"}
     %fieldset
       .form-group
+        %label.col-md-4.control-label{:for=> "source"} Source
+        .col-md-4
+          %select.form-control{ :id => "source", :name => "source"}
+            - Source.each do |source|
+              %option{:value => source._id, :selected => source._id.to_s == params[:source_id] ? true : false}= source.name
+      .form-group
         %label.col-md-4.control-label{:for => "code_by_source"} code_by_source
         .col-md-5
           %input.form-control.input-md{:id => "code_by_source", :name => "code_by_source", :type => "text", :required => "", :size => 20}
+        .col-md-1
+          %button.btn.btn-info.btn-small#check{:type => "button"} Проверить
       .form-group
         %label.col-md-4.control-label{:for => "title"} title
         .col-md-5
-          %input.form-control.input-md{:id => "title", :name => "title", :type => "text", :required => "", :size => 20}
+          %input.form-control.input-md{:id => "title", :name => "title", :type => "text", :size => 20}
       .form-group
         %label.col-md-4.control-label{:for => "tender_form"} tender_form
         .col-md-5
-          %input.form-control.input-md{:id => "tender_form", :name => "tender_form", :type => "text", :required => "", :size => 20}
+          %input.form-control.input-md{:id => "tender_form", :name => "tender_form", :type => "text", :size => 20}
       .form-group
         %label.col-md-4.control-label{:for=> "external_work_type"} external_work_type
         .col-md-5
@@ -24,10 +32,11 @@
             %option{:value => "3"} Изыскательные
             %option{:value => "4"} Поставка
             %option{:value => "5"} Сервис и ТО
+
       .form-group
-        %label.col-md-4.control-label{:for => "external_db_id"} external_db_id
+        %label.col-md-4.control-label{:for => "customer_inn"} customer_inn
         .col-md-5
-          %input.form-control.input-md{:id => "external_db_id", :name => "external_db_id", :type => "text", :placeholder => "", :size => 20}
+          %input.form-control.input-md{:id => "customer_inn", :name => "customer_inn", :type => "text", :placeholder => "", :size => 20}
       .form-group
         %label.col-md-4.control-label{:for => "customer_name"} customer_name
         .col-md-5
@@ -37,13 +46,60 @@
         .col-md-5
           %input.form-control.input-md{:id => "customer_address", :name => "customer_address", :type => "text", :placeholder => "", :size => 20}
       .form-group
-        %label.col-md-4.control-label{:for => "customer_inn"} customer_inn
+        %label.col-md-4.control-label{:for => "id_by_source"} id_by_source
         .col-md-5
-          %input.form-control.input-md{:id => "customer_inn", :name => "customer_inn", :type => "text", :placeholder => "", :size => 20}
-
+          %input.form-control.input-md{:id => "id_by_source", :name => "id_by_source", :type => "text", :placeholder => "", :size => 20}
+      .form-group
+        %label.col-md-4.control-label{:for => "group"} group
+        .col-md-5
+          %select.form-control{ :id => "group", :name => "group"}
+            %option{:value => "223", :selected => true} 223
+            %option{:value => "44"} 44
+      .form-group
+        %label.col-md-4.control-label{:for => "start_at"} start_at
+        .col-md-5
+          %input.form-control.input-md.datepicker{:id => "start_at", :name => "start_at", :type => "text", :required => ""}
+      .form-group
+        %label.col-md-4.control-label{:for => "published_at"} published_at
+        .col-md-5
+          %input.form-control.input-md.datepicker{:id => "published_at", :name => "published_at", :type => "text", :required => ""}
+      .form-group
+        %label.col-md-4.control-label{:for => "group"} Documents
+        .col-md-2
+          %input.form-control.input-md{:id => "doc_title", :name => "doc_title", :type => "text", :placeholder => "doc_title", :size => 20}
+        .col-md-3
+          %input.form-control.input-md{:id => "doc_link", :name => "doc_link", :type => "text", :placeholder => "doc_link", :size => 20}
 
 
 
       .form-group
-        .col-md-5
-          %input.btn{:name => "submint", :type => "submit", :value => "Добавить"}
+        .col-xs-8.col-md-offset-3
+          %input.btn.btn-primary.btn-lg{:name => "submit", :type => "submit", :value => "Добавить"}
+
+:javascript
+  $('.datepicker').datepicker({
+    format: 'dd.mm.yyyy',
+    language: 'ru',
+    autoclose: true,
+    todayHighlight: true,
+    weekStart: 1
+  });
+  var button = $('#check')
+  button.click(function( event ) {
+      event.preventDefault();
+      var codeSource = $('#source').val();
+      var idSource = $('#code_by_source').val();
+      var url = 'check?source_id=' + codeSource + '&code_by_source=' + idSource;
+      $.getJSON(url, function(data) {
+          console.log(data);
+          if (data.result == '0') {
+              button.text('Тендера не существует');
+              button.removeClass('btn-info');
+              button.addClass('btn-success');
+          } else {
+          var editUrl = 'edit/' + data.result;
+          window.location.replace(editUrl);
+          };
+      });
+  });
+
