@@ -1,5 +1,8 @@
 # Rake file for storing parsing rake tasks
 namespace :parsing do
+
+  DEFAULT_CITY_ID = 1
+  DEFAULT_REGION_ID = 0
   
   desc "Test task for reaping zakupki"
   task :test_reap do
@@ -91,21 +94,33 @@ namespace :parsing do
     tenders = tenders.or(mode_filter)
 
     tenders.each do |t|
-      unless city_mode == :off
-        cities.each do |c|
-          if t.customer_address.include? c.name
-            t.external_city_id = c.external_id
-            break
-          end
-        end
-      end
-
       unless region_mode == :off
         regions.each do |r|
           if t.customer_address.include? r.name
             t.external_region_id = r.external_id
             break
           end
+        end
+      end
+
+      unless city_mode == :off
+
+        unless t.external_city_id.to_i > 0
+          t.external_city_id = DEFAULT_CITY_ID
+        end
+
+        last_region_id = 0
+
+        cities.each do |c|
+          if t.customer_address.include? c.name
+            t.external_city_id = c.external_id
+            last_region_id = c.region_id
+            break
+          end
+        end
+
+        if t.external_city_id > 0 && t.external_region_id.to_i < 1
+          t.external_region_id = last_region_id
         end
       end
       t.save
