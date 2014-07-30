@@ -58,7 +58,7 @@ class Grappler
 
   def apply_date_format(data)
     begin
-      data = DateTime.parse(data, @selector.date_format)
+      data = DateTime.strptime(data, @selector.date_format)
       data = data.change(:offset => "+0400") if data.offset == (0/1)
       data.to_time
     rescue Exception
