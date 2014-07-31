@@ -61,7 +61,6 @@ class Reaper
         tender.work_type = get_work_type(cartridge, entity_id) if cartridge.selectors.where(value_type: :work_type_code).count > 0
         tender.external_work_type = set_external_work_type_code(tender.work_type) unless tender.work_type.nil?
         tender.external_work_type = -1 if tender.work_type.nil?
-        tender.external_db_id = Tender.max(:external_db_id).to_i + 1 if tender.external_db_id.nil?
         
         @reaper_params.status[:fields_status].each_pair do |field, status|
           tender_status[:state] = status

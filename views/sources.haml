@@ -34,6 +34,7 @@
                 %b= source.name
           %td
             %a{ href: "/tenders?source_id=#{source.id}"}= source.tenders_count
+            %a.btn.btn-info.btn-xs.pull-right{ href: "/tenders/new?source_id=#{source.id}"} new
           %td= source.construction_tenders_count
           %td
             %a{ href: "/cartridges?source_id=#{source.id}", title: "Active: #{source.cartridges.active.count}"}= source.cartridges.count
