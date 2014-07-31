@@ -11,7 +11,6 @@ class DateProcessor
 
   def process
     @format.slice!('[RUSSIAN]') && transliterate
-    debugger
     parse
   end
 
