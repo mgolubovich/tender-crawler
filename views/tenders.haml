@@ -43,6 +43,10 @@
   %table.table.table-striped.table-condensed
     = will_paginate @tenders, renderer: BootstrapPagination::Sinatra
     %thead
+    - unless params[:source_id].nil?
+      %a.btn.btn-info.pull-right{href: "/tenders/new?source_id=#{@source._id}", style: "margin-bottom: 10px;"}
+        %b +
+        Add new tender
       %tr
         %td Code by source
         %td Source
