@@ -14,11 +14,14 @@ class Reaper
     end
 
     def next_page
+      @current_page += 1
+      next_page_number = @page_manager.leading_zero && (@current_page + 1) < 10 ? "0#{@current_page}" : "#{@current_page}"
       case @page_manager.action_type
       when :get
         next_page = @page_manager.cartridge.base_list_template.gsub('$page_number', next_page_number)
         visit next_page
       when :click
+        # debugger
         initial_visit unless @is_started
         find(:xpath, @page_manager.action_value).click
       when :js
@@ -36,9 +39,6 @@ class Reaper
       @is_started = true
     end
 
-    def next_page_number
-      @current_page += 1
-      @page_manager.leading_zero && @current_page < 10 ? "0#{@current_page}" : @current_page.to_s
-    end
+    def next_page_number; end
   end
 end

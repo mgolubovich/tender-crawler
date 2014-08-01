@@ -37,7 +37,6 @@ class Reaper
 
       unless ids_set.count > 0
         while @reaper_params.args[:limit] > ids_set.count
-          # debugger
           pagination.next_page if ids_set.count < @reaper_params.args[:limit]
           ids_set += get_ids(cartridge)
         end
@@ -46,12 +45,11 @@ class Reaper
       log_got_ids_set(ids_set.count)
 
       ids_set.each do |entity_id|
-        debugger
         break if @reaper_params.reaped_enough?
         tender_status = {}
         tender_stub = EntityStub.new
 
-        code = Grappler.new(cartridge.selectors.active.where(:value_type => :code_by_source).first, entity_id).grapple
+        code = Grappler.new(cartridge.load_selector(:code_by_source), entity_id).grapple
         log_got_code(code)
 
         tender = @reaper_params.source.tenders.find_or_create_by(code_by_source: code)
@@ -69,10 +67,9 @@ class Reaper
         tender.id_by_source = entity_id
         tender.source_link = cartridge.base_link_template.gsub('$entity_id', entity_id)
         tender.group = cartridge.tender_type
-        tender.documents = get_docs(cartridge, entity_id) if cartridge.selectors.where(value_type: :doc_title).count > 0
-        tender.work_type = get_work_type(cartridge, entity_id) if cartridge.selectors.where(value_type: :work_type_code).count > 0
-        tender.external_work_type = set_external_work_type_code(tender.work_type) unless tender.work_type.nil?
-        tender.external_work_type = -1 if tender.work_type.nil?
+        tender.documents = get_docs(cartridge, entity_id) if cartridge.selector?(:doc_title)
+        tender.work_type = get_work_type(cartridge, entity_id) if cartridge.selector?(:work_type_code)
+        tender.external_work_type = set_external_work_type_code(tender.work_type)
 
         @reaper_params.status[:fields_status].each_pair do |field, status|
           tender_status[:state] = status
@@ -84,7 +81,7 @@ class Reaper
         end
 
         tender.status = tender_status
-        tender.update_attributes!(tender_stub.attributes) unless @reaper_params.args[:is_checking]
+        tender.update_attributes!(tender_stub.attrs) || @reaper_params.args[:is_checking]
         @reaper_params.status[:result] << tender
 
         @reaper_params.status[:reaped_tenders_count] += 1
@@ -100,8 +97,8 @@ class Reaper
   private
 
   def get_cartridges
+    return Cartridge.find(@reaper_params.args[:cartridge_id]).to_a if @reaper_params.args[:cartridge_id]
     @cartridges = @reaper_params.source.cartridges.active
-    @cartridges = @cartridges.where(_id: @cartridge_id) if @reaper_params.args[:cartridge_id]
   end
 
   def apply_rules(value, selector)
@@ -116,33 +113,33 @@ class Reaper
 
   def get_docs(cartridge, entity_id)
     documents = []
-    doc_title_sl = cartridge.selectors.where(value_type: :doc_title).first
-    doc_link_sl = cartridge.selectors.where(value_type: :doc_link).first
+    doc_title_sl = cartridge.load_selector(:doc_title)
+    doc_link_sl = cartridge.load_selector(:doc_link)
 
-    if doc_title_sl && doc_link_sl
-      doc_titles = Grappler.new(doc_title_sl, entity_id.to_s).grapple_all
-      doc_links = Grappler.new(doc_link_sl, entity_id.to_s).grapple_all
+    return [] unless doc_title_sl && doc_link_sl
 
-      i = 0
-      doc_titles.each do |title|
-        documents << { doc_title: title, doc_link: doc_links[i] }
-        i += 1
-      end
+    doc_titles = Grappler.new(doc_title_sl, entity_id.to_s).grapple_all
+    doc_links = Grappler.new(doc_link_sl, entity_id.to_s).grapple_all
+
+    doc_titles.each_with_index do |title, i|
+      documents << { doc_title: title, doc_link: doc_links[i] }
     end
+
     documents
   end
 
   def get_work_type(cartridge, entity_id)
     work_types = []
 
-    work_type_codes = Grappler.new(cartridge.selectors.where(:value_type => :work_type_code).first, entity_id.to_s).grapple
-    work_type_titles = Grappler.new(cartridge.selectors.where(:value_type => :work_type_title).first, entity_id.to_s).grapple
+    code_selector = cartridge.load_selector(:work_type_code)
+    title_selector = cartridge.load_selector(:work_type_title)
 
-    i = 0
-    work_type_codes.each do |code|
+    wt_codes = Grappler.new(code_selector, entity_id).grapple
+    wt_titles = Grappler.new(title_selector, entity_id).grapple
+
+    wt_codes.each_with_index do |code, i|
       next if code.nil?
-      work_types << { 'code' =>  code, 'title' => work_type_titles[i] }
-      i += 1
+      work_types << { 'code' =>  code, 'title' => wt_titles[i] }
     end
 
     work_types
@@ -167,9 +164,9 @@ class Reaper
 
   def set_external_work_type_code(work_type)
     e_work_type = 0
-    return -1 unless work_type.count > 0
+    return -1 unless Array(work_type).count > 0
 
-    work_type.each do |w|
+    Array(work_type).each do |w|
       next if w['code'].blank?
 
       e_work_type = 1 if @construct_keys.include?(w['code'])

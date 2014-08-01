@@ -17,6 +17,10 @@ class EntityStub < Hash
     result
   end
 
+  def attrs
+    attributes
+  end
+
   private
 
   def best_of(values_set)

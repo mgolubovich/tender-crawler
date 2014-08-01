@@ -21,4 +21,22 @@ class Cartridge
   field :is_active, type: Boolean, default: true
 
   scope :active, where(is_active: true)
+
+  # Returns true if selector with provided
+  # value_type exists in cartridge
+  def selector?(value_type)
+    selectors.active.where(value_type: value_type).count.zero? ? false : true
+  end
+
+  # Returns scope of selectors with provided
+  # value_type.
+  def load_selectors(value_type)
+    selectors.active.where(value_type: value_type).to_a
+  end
+
+  # Returns single selector object with
+  # provided value_type.
+  def load_selector(value_type)
+    selectors.active.where(value_type: value_type).limit(1).first
+  end
 end
