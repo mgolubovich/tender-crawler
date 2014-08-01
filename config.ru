@@ -1,6 +1,7 @@
 require 'sinatra/base'
 require 'bundler'
-require "rack-timeout"
+require 'rack-timeout'
+require 'date'
 
 Bundler.require
 

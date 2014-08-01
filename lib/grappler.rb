@@ -15,6 +15,7 @@ class Grappler
     @mode = [:single, :multiple].include?(mode) ? mode : :single
     target_data = []
 
+    # Fix later, need to cut web-navigation from grappler
     if @selector.value_type != :ids_set
       visit @link unless current_url == @link
     end

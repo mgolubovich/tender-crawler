@@ -1,13 +1,12 @@
-require 'debugger'
-require 'capybara/dsl'
-require 'capybara/webkit'
-
+# Reaping is a main entity of parser
+# Parametres for initialization:
+# { :limit => 0, :cartridge_id => nil, :is_checking => false }
 class Reaper
   attr_reader :result
 
-  def initialize(source, args = {}) # { :limit => 0, :cartridge_id => nil, :is_checking => false }
+  def initialize(source, args = {})
     @reaper_params = ReaperParams.new(source, args)
-    load_work_type_codes    
+    load_work_type_codes
     log_started_parsing(@reaper_params.source.name)
   end
 
@@ -26,7 +25,7 @@ class Reaper
           ids_set += get_ids(cartridge)
         end
       end
-      
+
       log_got_ids_set(ids_set.count)
 
       ids_set.each do |entity_id|
@@ -34,9 +33,8 @@ class Reaper
         tender_status = Hash.new
         tender_stub = EntityStub.new
 
-        # HACK Fix later
+        # HACK: some bug with ids parsing.
         entity_id = entity_id.first if entity_id.is_a?(Array)
-        #
 
         code = Grappler.new(cartridge.selectors.active.where(:value_type => :code_by_source).first, entity_id).grapple
         log_got_code(code)
@@ -45,12 +43,11 @@ class Reaper
 
         cartridge.selectors.data_fields.order_by(priority: :desc).each do |selector|
           log_start_grappling(selector.value_type)
-          value = Grappler.new(selector, entity_id).grapple 
-          
+
+          value = Grappler.new(selector, entity_id).grapple
           tender_stub.insert(selector.value_type.to_sym, value)
-          #tender[selector.value_type.to_sym] = value
           apply_rules(value, selector)
-          
+
           log_got_value(selector.value_type, value)
         end
 
@@ -64,10 +61,10 @@ class Reaper
         
         @reaper_params.status[:fields_status].each_pair do |field, status|
           tender_status[:state] = status
-          tender_status[:failed_fields] = [] unless tender_status[:failed_fields].kind_of(Array)
+          tender_status[:failed_fields] ||= []
           tender_status[:failed_fields] << field if status == :failed
 
-          tender_status[:fields_for_moderation] = [] unless tender_status[:fields_for_moderation].kind_of(Array)
+          tender_status[:fields_for_moderation] ||= []
           tender_status[:fields_for_moderation] << field if status == :moderation
         end
 
@@ -90,11 +87,13 @@ class Reaper
 
   def get_cartridges
     @cartridges = @reaper_params.source.cartridges.active
-    @cartridges = @reaper_params.source.cartridges.where(_id: @cartridge_id) if @reaper_params.args[:cartridge_id]
+    @cartridges = @cartridges.where(_id: @cartridge_id) if @reaper_params.args[:cartridge_id]
   end
 
   def apply_rules(value, selector)
-    @reaper_params.status[:fields_status][selector.value_type.to_sym] = Arbiter.new(value, selector.rule.first).judge if selector.rules.count > 0
+    return nil if selector.rules.count.zero?
+    arbiter = Arbiter.new(value, selector.rule.first)
+    @reaper_params.status[:fields_status][selector.value_type] = arbiter.judge
   end
 
   def get_ids(cartridge)
@@ -103,20 +102,19 @@ class Reaper
 
   def get_docs(cartridge, entity_id)
     documents = []
-    doc_title_sl = cartridge.selectors.where(:value_type => :doc_title).first
-    doc_link_sl = cartridge.selectors.where(:value_type => :doc_link).first
-    doc_titles = []
-    doc_links = []
+    doc_title_sl = cartridge.selectors.where(value_type: :doc_title).first
+    doc_link_sl = cartridge.selectors.where(value_type: :doc_link).first
 
-    doc_titles = Grappler.new(doc_title_sl,entity_id.to_s).grapple_all
-    doc_links = Grappler.new(doc_link_sl, entity_id.to_s).grapple_all
+    if doc_title_sl && doc_link_sl
+      doc_titles = Grappler.new(doc_title_sl, entity_id.to_s).grapple_all
+      doc_links = Grappler.new(doc_link_sl, entity_id.to_s).grapple_all
 
-    i = 0;
-    doc_titles.each do |title|
-      documents << { doc_title: title, doc_link: doc_links[i] }
-      i += 1
+      i = 0
+      doc_titles.each do |title|
+        documents << { doc_title: title, doc_link: doc_links[i] }
+        i += 1
+      end
     end
-
     documents
   end
 
@@ -130,10 +128,9 @@ class Reaper
 
     i = 0
     work_type_codes.each do |code|
-      unless code.nil?
-        work_types << { "code" =>  code.to_s, "title" => work_type_titles[i].to_s}
-        i += 1
-      end
+      next if code.nil?
+      work_types << { 'code' =>  code, 'title' => work_type_titles[i] }
+      i += 1
     end
 
     work_types
@@ -188,23 +185,23 @@ class Reaper
       @args = args
       @status = {}
 
-      @args[:limit] = 500 unless @args.has_key? :limit
-      @args[:cartridge_id] = nil unless @args.has_key? :cartridge_id
-      @args[:is_checking] = false unless @args.has_key? :is_checking
+      @args[:limit] = 500 unless @args.key? :limit
+      @args[:cartridge_id] = nil unless @args.key? :cartridge_id
+      @args[:is_checking] = false unless @args.key? :is_checking
 
       @status[:result] = []
       @status[:reaped_tenders_count] = 0
-      @status[:fields_status] = Hash.new
+      @status[:fields_status] = {}
     end
   end
 
   class PaginationObserver
-    attr_accessor :current_page, :initial_visit, :page_manager
-    
     include Capybara::DSL
     Capybara.default_driver = :webkit
     Capybara.run_server = false
-    
+
+    attr_accessor :current_page, :initial_visit, :page_manager
+
     def initialize(page_manager)
       @page_manager = page_manager
       @current_page = page_manager.page_number_start_value
@@ -238,5 +235,4 @@ class Reaper
       @is_started = true
     end
   end
-
 end
