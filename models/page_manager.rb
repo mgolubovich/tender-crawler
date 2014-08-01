@@ -1,3 +1,4 @@
+# Set of params for PaginationObserver
 class PageManager
   include Mongoid::Document
   include Mongoid::Timestamps

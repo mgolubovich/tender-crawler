@@ -1,3 +1,4 @@
+# Basically - result of parsing
 class Tender
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -45,7 +46,7 @@ class Tender
 
   # Not used tight now
   # field :external_db_id, type: Integer
-  auto_increment :external_db_id, :seed => 1952237
+  auto_increment :external_db_id, seed: 1_952_237
 
   field :status, type: Hash
 

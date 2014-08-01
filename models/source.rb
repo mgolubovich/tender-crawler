@@ -1,3 +1,5 @@
+# Source of tenders, in simple - site
+# where tenders are published
 class Source
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -17,12 +19,17 @@ class Source
   field :last_imported_at, type: DateTime
 
   # Field used for invoking pre and post processing of data or parametres
-  # Example: { :class_name => 'ZakupkiTrigger', :before => false, :after => true}
+  # Example
+  # { :class_name => 'ZakupkiTrigger', :before => false, :after => true }
   field :trigger, type: Hash
 
   # Example of proxy_update_frequency field value
-  # This {"type":"hits","value":"100"} means what every 100 hits we must change proxy server
-  # Another form - {"type":"time", "value":"5.minutes"} means what every 5 minutes we also must change proxy server
+  # This
+  # {"type":"hits","value":"100"}
+  # means what every 100 hits we must change proxy server
+  # Another form
+  # {"type":"time", "value":"5.minutes"}
+  # means what every 5 minutes we also must change proxy server
   field :proxy_update_frequency, type: Hash
 
   field :external_site_id, type: Integer
@@ -32,6 +39,5 @@ class Source
   field :tenders_count, type: Integer
   field :construction_tenders_count, type: Integer
 
-  scope :active, where(:is_active => true)
-
+  scope :active, where(is_active: true)
 end

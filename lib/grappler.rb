@@ -24,11 +24,11 @@ class Grappler
 
     slice = @selector.css.empty? ? all(:xpath, @selector.xpath) : all(:css, @selector.css)
     slice.each do |item|
-      data = @selector.attr.empty? ? item.text.to_s.strip : item[@selector.attr.to_sym].to_s.strip
+      data = @selector.attr.empty? ? item.text.strip : item[@selector.attr.to_sym].strip
       data = apply_offset(data) unless @selector.offset.nil? || data.empty?
       data = apply_regexp(data) unless @selector.regexp["pattern"].empty? || data.to_s.empty?
       data = apply_date_format(data) unless @selector.date_format.to_s.empty? || data.to_s.empty?
-      data = apply_to_type(data) unless @selector.to_type.nil? || data.to_s.empty? || @selector.to_type.empty?
+      data = apply_to_type(data) unless @selector.to_type.nil? || data.to_s.empty?
       target_data << data
     end
 
