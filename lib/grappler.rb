@@ -1,8 +1,5 @@
-require 'capybara'
-require 'capybara/dsl'
-require 'capybara/webkit'
-require 'date'
-
+# Grappler is entity used for parsing
+# single or multiple values of same value_type
 class Grappler
   include Capybara::DSL
   Capybara.default_driver = :webkit
@@ -21,13 +18,10 @@ class Grappler
     if @selector.value_type != :ids_set
       visit @link unless current_url == @link
     end
-    
-    # ParserLog.logger.info("Visit - #{@link}")
 
     execute_script(@selector.js_code) unless @selector.js_code.nil?
 
     slice = @selector.css.empty? ? all(:xpath, @selector.xpath) : all(:css, @selector.css)
-    
     slice.each do |item|
       data = @selector.attr.empty? ? item.text.to_s.strip : item[@selector.attr.to_sym].to_s.strip
       data = apply_offset(data) unless @selector.offset.nil? || data.empty?
@@ -52,7 +46,7 @@ class Grappler
   end
 
   def apply_regexp(data)
-    @selector.regexp["mode"] == "gsub" ? data.gsub!(Regexp.new(@selector.regexp["pattern"]), '') : data.scan(Regexp.new(@selector.regexp["pattern"])).join
+    @selector.regexp['mode'] == 'gsub' ? data.gsub!(Regexp.new(@selector.regexp['pattern']), '') : data.scan(Regexp.new(@selector.regexp['pattern'])).join
   end
 
   def apply_date_format(data)
@@ -61,17 +55,14 @@ class Grappler
 
   def apply_to_type(data)
     case @selector.to_type
-      when :float
-        data.gsub!(',','.')
-        data = data.to_f
-      when :integer
-        data = data.to_i
-      when :symbol
-        data = data.to_sym
-      when :string
-      else
-        data
+    when :float
+      data.gsub!(',', '.').to_f
+    when :integer
+      data = data.to_i
+    when :symbol
+      data = data.to_sym
+    else
+      data
     end
-    data
   end
 end

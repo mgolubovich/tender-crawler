@@ -4,7 +4,7 @@ namespace :parsing do
   DEFAULT_CITY_ID = 1
   DEFAULT_REGION_ID = 0
   
-  desc "Test task for reaping zakupki"
+  desc 'Test task for reaping zakupki'
   task :test_reap do
     Reaper.new(Source.first, {:limit => 500}).reap
   end
