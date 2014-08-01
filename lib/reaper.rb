@@ -166,28 +166,28 @@ class Reaper
   end
 
   def set_external_work_type_code(work_type)
-    external_work_type = 0
+    e_work_type = 0
     return -1 unless work_type.count > 0
 
     work_type.each do |w|
       next if w['code'].blank?
 
-      external_work_type = 1 if @construct_keys.include?(w['code'])
-      external_work_type = 2 if @project_keys.include?(w['code'])
-      # external_work_type = 3 if @research_keys.include? w['code']
-      external_work_type = 4 if @supply_keys.include?(w['code'])
-      external_work_type = 5 if @service_keys.include?(w['code'])
+      e_work_type = 1 if @construct_keys.include?(w['code'])
+      e_work_type = 2 if @project_keys.include?(w['code'])
+      # e_work_type = 3 if @research_keys.include? w['code']
+      e_work_type = 4 if @supply_keys.include?(w['code'])
+      e_work_type = 5 if @service_keys.include?(w['code'])
 
       if w['code'].exclude?('.')
-        external_work_type = 1 if w['code'].start_with?('451') || w['code'].start_with?('452') || w['code'].start_with?('453') || w['code'].start_with?('454')
-        external_work_type = 2 if w['code'].start_with?('456')
-        external_work_type = 4 if w['code'].start_with?('455') || w['code'].start_with?('459')
+        e_work_type = 1 if w['code'].start_with?('451', '452', '453', '454')
+        e_work_type = 2 if w['code'].start_with?('456')
+        e_work_type = 4 if w['code'].start_with?('455', '459')
       else
-        external_work_type = 1 if w['code'].start_with?('45')
-        external_work_type = 2 if w['code'].start_with?('74.2')
+        e_work_type = 1 if w['code'].start_with?('45')
+        e_work_type = 2 if w['code'].start_with?('74.2')
       end
     end
 
-    external_work_type
+    e_work_type
   end
 end
