@@ -67,8 +67,8 @@ class Reaper
         tender.id_by_source = entity_id
         tender.source_link = cartridge.base_link_template.gsub('$entity_id', entity_id)
         tender.group = cartridge.tender_type
-        tender.documents = get_docs(cartridge, entity_id) if cartridge.selector?(:doc_title)
-        tender.work_type = get_work_type(cartridge, entity_id) if cartridge.selector?(:work_type_code)
+        tender.documents = get_docs(cartridge, entity_id)
+        tender.work_type = get_work_type(cartridge, entity_id)
         tender.external_work_type = set_external_work_type_code(tender.work_type)
 
         @reaper_params.status[:fields_status].each_pair do |field, status|
@@ -134,11 +134,12 @@ class Reaper
     code_selector = cartridge.load_selector(:work_type_code)
     title_selector = cartridge.load_selector(:work_type_title)
 
+    return [] unless code_selector && title_selector
+
     wt_codes = Grappler.new(code_selector, entity_id).grapple
     wt_titles = Grappler.new(title_selector, entity_id).grapple
 
     wt_codes.each_with_index do |code, i|
-      next if code.nil?
       work_types << { 'code' =>  code, 'title' => wt_titles[i] }
     end
 
