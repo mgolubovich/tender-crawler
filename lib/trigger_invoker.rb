@@ -1,13 +1,11 @@
+# Trigger Invoker
+# Invokes triggers before or after tender parsing
+# Can be used for processing specific cases
 class TriggerInvoker
-
-  def self.invoke(trigger,data)
-    if Object.const_defined?(trigger["class_name"])
-      trigger_class = trigger["class_name"].constantize
-      data = trigger["after"] ? trigger_class.invoke_after(data) : trigger_class.invoke_before(data)
-      data
-    else
-      puts 'Baaad'
+  def self.invoke(t, data)
+    if Object.const_defined?(t['class_name'])
+      t_class = t['class_name'].constantize
+      t['after'] ? t_class.invoke_after(data) : t_class.invoke_before(data)
     end
   end
-
 end

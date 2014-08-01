@@ -4,13 +4,12 @@ require 'capybara/webkit'
 require 'date'
 
 class Grappler
-
   include Capybara::DSL
   Capybara.default_driver = :webkit
   Capybara.run_server = false
   Capybara.default_wait_time = 5
 
-  def initialize(selector, entity_id='')
+  def initialize(selector, entity_id = '')
     @selector = selector
     @link = selector.link_template.gsub('$entity_id', entity_id.to_s)
   end
@@ -47,8 +46,8 @@ class Grappler
 
   private
 
-  def apply_offset(data) 
-    data = data[@selector.offset["start"]..@selector.offset["end"]] if @selector.offset["start"] != 0 && @selector.offset["end"] != 0
+  def apply_offset(data)
+    data = data[@selector.offset['start']..@selector.offset['end']] if @selector.offset['start'] != 0 && @selector.offset['end'] != 0
     data
   end
 
@@ -75,5 +74,4 @@ class Grappler
     end
     data
   end
-
 end
