@@ -116,7 +116,7 @@ class Reaper
     doc_title_sl = cartridge.load_selector(:doc_title)
     doc_link_sl = cartridge.load_selector(:doc_link)
 
-    return [] unless doc_title_sl && doc_link_sl
+    return nil unless doc_title_sl && doc_link_sl
 
     doc_titles = Grappler.new(doc_title_sl, entity_id.to_s).grapple_all
     doc_links = Grappler.new(doc_link_sl, entity_id.to_s).grapple_all
@@ -134,10 +134,10 @@ class Reaper
     code_selector = cartridge.load_selector(:work_type_code)
     title_selector = cartridge.load_selector(:work_type_title)
 
-    return [] unless code_selector && title_selector
+    return nil unless code_selector && title_selector
 
-    wt_codes = Grappler.new(code_selector, entity_id).grapple
-    wt_titles = Grappler.new(title_selector, entity_id).grapple
+    wt_codes = Grappler.new(code_selector, entity_id).grapple_all
+    wt_titles = Grappler.new(title_selector, entity_id).grapple_all
 
     wt_codes.each_with_index do |code, i|
       work_types << { 'code' =>  code, 'title' => wt_titles[i] }
