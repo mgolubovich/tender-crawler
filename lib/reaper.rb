@@ -54,14 +54,14 @@ class Reaper
 
         tender = @reaper_params.source.tenders.find_or_create_by(code_by_source: code)
 
-        cartridge.selectors.data_fields.order_by(priority: :desc).each do |selector|
-          log_start_grappling(selector.value_type)
+        cartridge.selectors.data_fields.order_by(priority: :desc).each do |s|
+          log_start_grappling(s.value_type)
 
-          value = Grappler.new(selector, entity_id).grapple
-          tender_stub.insert(selector.value_type.to_sym, value)
-          apply_rules(value, selector) if selector.got_rule?
+          value = Grappler.new(s, entity_id).grapple
+          tender_stub.insert(s.value_type.to_sym, value)
+          apply_rules(value, s) if s.got_rule?
 
-          log_got_value(selector.value_type, value)
+          log_got_value(s.value_type, value)
         end
 
         tender.id_by_source = entity_id

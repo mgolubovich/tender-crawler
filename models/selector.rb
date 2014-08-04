@@ -28,7 +28,7 @@ class Selector
   field :value_type, type: Symbol
 
   # Type of value in ruby terms.
-  # Xxample - :float, :integer, :string, :symbol, :time
+  # Example - :float, :integer, :string, :symbol, :time
   field :to_type, type: Symbol
 
   # Link where this selector must do it's work. Example: http://test.com/view?id=
