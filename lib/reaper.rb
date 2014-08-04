@@ -112,12 +112,12 @@ class Reaper
   end
 
   def get_docs(cartridge, entity_id)
-    documents = []
     doc_title_sl = cartridge.load_selector(:doc_title)
     doc_link_sl = cartridge.load_selector(:doc_link)
 
     return nil unless doc_title_sl && doc_link_sl
 
+    documents = []
     doc_titles = Grappler.new(doc_title_sl, entity_id.to_s).grapple_all
     doc_links = Grappler.new(doc_link_sl, entity_id.to_s).grapple_all
 
@@ -129,13 +129,12 @@ class Reaper
   end
 
   def get_work_type(cartridge, entity_id)
-    work_types = []
-
     code_selector = cartridge.load_selector(:work_type_code)
     title_selector = cartridge.load_selector(:work_type_title)
 
     return nil unless code_selector && title_selector
 
+    work_types = []
     wt_codes = Grappler.new(code_selector, entity_id).grapple_all
     wt_titles = Grappler.new(title_selector, entity_id).grapple_all
 
