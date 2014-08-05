@@ -59,7 +59,7 @@ class Grappler
   def apply_to_type(data)
     case @selector.to_type
     when :float
-      data.gsub!(',', '.').to_f
+      data.gsub!(',', '.').gsub(' ', '').to_f
     when :integer
       data = data.to_i
     when :symbol
