@@ -12,7 +12,7 @@ class Reaper
 
   def reap
     @cartridges = get_cartridges
-    # debugger
+
     @cartridges.each do |cartridge|
       @reaper_params.status[:reaped_tenders_count] = 0
       ids_set = []

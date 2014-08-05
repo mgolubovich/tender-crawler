@@ -1,4 +1,5 @@
-# Class used for processing work_type
+# Class used for processing work_type and
+# setting external_work_type
 class WorkTypeProcessor
   class << self
     attr_accessor :construct_fpath, :construct_okpd_fpath
@@ -50,7 +51,7 @@ class WorkTypeProcessor
   end
 
   def process
-    return -1 unless Array(@work_type).count > 0
+    return -1 if Array(@work_type).empty?
 
     Array(@work_type).each do |w|
       next if w['code'].blank?
