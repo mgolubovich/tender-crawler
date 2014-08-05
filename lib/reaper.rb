@@ -28,7 +28,7 @@ class Reaper
   end
 
   def reap
-    get_cartridges
+    @cartridges = get_cartridges
     # debugger
     @cartridges.each do |cartridge|
       @reaper_params.status[:reaped_tenders_count] = 0
@@ -71,13 +71,13 @@ class Reaper
         tender.work_type = get_work_type(cartridge, entity_id)
         tender.external_work_type = set_external_work_type_code(tender.work_type)
 
-        @reaper_params.status[:fields_status].each_pair do |field, status|
+        @reaper_params.status[:fields_status].each_pair do |f, status|
           tender_status[:state] = status
           tender_status[:failed_fields] ||= []
-          tender_status[:failed_fields] << field if status == :failed
+          tender_status[:failed_fields] << f if status == :failed
 
           tender_status[:fields_for_moderation] ||= []
-          tender_status[:fields_for_moderation] << field if status == :moderation
+          tender_status[:fields_for_moderation] << f if status == :moderation
         end
 
         tender.status = tender_status
@@ -98,7 +98,7 @@ class Reaper
 
   def get_cartridges
     return Cartridge.find(@reaper_params.args[:cartridge_id]).to_a if @reaper_params.args[:cartridge_id]
-    @cartridges = @reaper_params.source.cartridges.active
+    @reaper_params.source.cartridges.active.to_a
   end
 
   def apply_rules(value, selector)

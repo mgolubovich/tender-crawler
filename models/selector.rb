@@ -84,4 +84,12 @@ class Selector
   def got_rule?
     rules.count.zero? ? false : true
   end
+
+  def regexp_mode?(mode)
+    regexp['mode'].to_sym == mode
+  end
+
+  def offset_valid?
+    offset['start'].zero? && offset['end'].zero? ? false : true
+  end
 end

@@ -42,12 +42,14 @@ class Grappler
   private
 
   def apply_offset(data)
-    data = data[@selector.offset['start']..@selector.offset['end']] if @selector.offset['start'] != 0 && @selector.offset['end'] != 0
-    data
+    return data unless @selector.offset_valid?
+    data[@selector.offset['start']..@selector.offset['end']]
   end
 
   def apply_regexp(data)
-    @selector.regexp['mode'] == 'gsub' ? data.gsub!(Regexp.new(@selector.regexp['pattern']), '') : data.scan(Regexp.new(@selector.regexp['pattern'])).join
+    pattern = /"#{@selector.regexp['pattern']}"/
+    return data.gsub(pattern, '') if @selector.regexp_mode?(:gsub)
+    data.scan(pattern).join
   end
 
   def apply_date_format(data)
