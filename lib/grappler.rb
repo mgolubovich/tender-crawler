@@ -47,7 +47,7 @@ class Grappler
   end
 
   def apply_regexp(data)
-    pattern = /"#{@selector.regexp['pattern']}"/
+    pattern = Regexp.new(@selector.regexp['pattern'])
     return data.gsub(pattern, '') if @selector.regexp_mode?(:gsub)
     data.scan(pattern).join
   end
