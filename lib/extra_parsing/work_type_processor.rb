@@ -10,9 +10,9 @@ class WorkTypeProcessor
 
     attr_accessor :construct_keys, :project_keys
     attr_accessor :supply_keys, :service_keys
+    # attr_accessor :research_keys
 
     attr_accessor :exceptions
-    # attr_accessor :research_keys
   end
 
   @construct_fpath = 'config/work_type_codes/construct.yml'
