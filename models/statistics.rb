@@ -1,3 +1,4 @@
+# Store for statistics purposes
 class Statistics
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -22,7 +23,4 @@ class Statistics
     self.yandex_request_count += count
     save
   end
-
-
-
 end
