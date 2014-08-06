@@ -24,7 +24,6 @@ class Reaper
           ids_set += get_ids(cartridge)
         end
       end
-
       log_got_ids_set(ids_set.count)
 
       ids_set.each do |entity_id|
