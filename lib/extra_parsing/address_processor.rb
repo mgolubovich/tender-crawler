@@ -1,4 +1,6 @@
 class AddressProcessor
+  require 'open-uri'
+  
   MIN_WORD_COUNT = 2
   YANDEX_API_URI = "http://geocode-maps.yandex.ru/1.x/?"
   LIMIT_YANDEX_COUNTER = 22000
@@ -48,8 +50,6 @@ class AddressProcessor
   end
 
   def yandex_json_parse
-    require 'open-uri'
-
     cities = ["Москва", "Санкт-Петербург"]
     area, city = nil
 
@@ -62,9 +62,9 @@ class AddressProcessor
     @statistics.increment_yandex_counter
 
     unless geocode.empty?
-      area = AREA_PATH.split(".").inject(geocode[0]) { |hash, key| hash[key] }
-      subarea = SUBAREA_PATH.split(".").inject(geocode[0]) { |hash, key| hash[key] }
-      city = CITY_PATH.split(".").inject(geocode[0]) { |hash, key| hash[key] }
+      area = geocode[0].at(AREA_PATH, false)
+      subarea = geocode[0].at(SUBAREA_PATH, false)
+      city = geocode[0].at(CITY_PATH, false)
 
       area = subarea if cities.include?(subarea)
     end
