@@ -33,7 +33,7 @@ namespace :statistics do
      source.tenders_count = source.tenders.count
      source.construction_tenders_count = source.tenders.where(:external_work_type.gt => 1).count
      source.save
-     puts "[#{Time.now}] Statistic tenders count for #{source.name} updated to #{source.tenders_count} [#{ource.construction_tenders_count}]"
+     puts "[#{Time.now}] Statistic tenders count for #{source.name} updated to #{source.tenders_count} [#{source.construction_tenders_count}]"
     end
   end
 

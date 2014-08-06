@@ -84,4 +84,27 @@ class Selector
   def got_rule?
     rules.count.zero? ? false : true
   end
+
+  # Regexp methods
+  def regexp_mode?(mode)
+    regexp['mode'].to_sym == mode
+  end
+
+  def regexp_valid?
+    regexp['pattern'].empty? ? false : true
+  end
+
+  # Offset methods
+  def offset_valid?
+    offset['start'].zero? && offset['end'].zero? ? false : true
+  end
+
+  # General methods
+  def field_valid?(field)
+    self[field].to_s.blank? ? false : true
+  end
+
+  def value_type?(field)
+    self[:value_type] == field ? true : false
+  end
 end

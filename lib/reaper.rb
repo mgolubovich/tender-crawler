@@ -4,32 +4,15 @@
 class Reaper
   attr_reader :result
 
-  class << self
-    attr_accessor :construct_fpath, :construct_okpd_fpath
-    attr_accessor :project_fpath, :project_okpd_fpath
-    attr_accessor :supply_fpath, :supply_okdp_fpath
-    attr_accessor :service_fpath
-    # attr_accessor :research_fpath
-  end
-
-  @construct_fpath = 'config/work_type_codes/construct.yml'
-  @construct_okpd_fpath = 'config/work_type_codes/construct_okpd.yml'
-  @project_fpath = 'config/work_type_codes/project.yml'
-  @project_okpd_fpath = 'config/work_type_codes/project_okpd.yml'
-  @supply_fpath = 'config/work_type_codes/supply.yml'
-  @supply_okdp_fpath = 'config/work_type_codes/supply_okpd.yml'
-  @service_fpath = 'config/work_type_codes/service_okdp.yml'
-  # @research_fpath = 'config/work_type_codes/research.yml'
-
   def initialize(source, args = {})
     @reaper_params = ReaperParams.new(source, args)
-    load_work_type_codes
+
     log_started_parsing(@reaper_params.source.name)
   end
 
   def reap
-    get_cartridges
-    # debugger
+    @cartridges = get_cartridges
+
     @cartridges.each do |cartridge|
       @reaper_params.status[:reaped_tenders_count] = 0
       ids_set = []
@@ -41,7 +24,6 @@ class Reaper
           ids_set += get_ids(cartridge)
         end
       end
-
       log_got_ids_set(ids_set.count)
 
       ids_set.each do |entity_id|
@@ -69,15 +51,15 @@ class Reaper
         tender.group = cartridge.tender_type
         tender.documents = get_docs(cartridge, entity_id)
         tender.work_type = get_work_type(cartridge, entity_id)
-        tender.external_work_type = set_external_work_type_code(tender.work_type)
+        tender.external_work_type = WorkTypeProcessor.new(tender.work_type).process
 
-        @reaper_params.status[:fields_status].each_pair do |field, status|
+        @reaper_params.status[:fields_status].each_pair do |f, status|
           tender_status[:state] = status
           tender_status[:failed_fields] ||= []
-          tender_status[:failed_fields] << field if status == :failed
+          tender_status[:failed_fields] << f if status == :failed
 
           tender_status[:fields_for_moderation] ||= []
-          tender_status[:fields_for_moderation] << field if status == :moderation
+          tender_status[:fields_for_moderation] << f if status == :moderation
         end
 
         tender.status = tender_status
@@ -98,7 +80,7 @@ class Reaper
 
   def get_cartridges
     return Cartridge.find(@reaper_params.args[:cartridge_id]).to_a if @reaper_params.args[:cartridge_id]
-    @cartridges = @reaper_params.source.cartridges.active
+    @reaper_params.source.cartridges.active.to_a
   end
 
   def apply_rules(value, selector)
@@ -143,48 +125,5 @@ class Reaper
     end
 
     work_types
-  end
-
-  def load_work_type_codes
-    # @construct_keys 1
-    # @project_keys 2
-    # @research_keys 3
-    # @supply_keys 4
-    # @service_keys 5
-
-    @construct_keys = YAML.load_file(Reaper.construct_fpath).keys
-    @construct_keys += YAML.load_file(Reaper.construct_okpd_fpath).keys
-    @project_keys = YAML.load_file(Reaper.project_fpath).keys
-    @project_keys += YAML.load_file(Reaper.project_okpd_fpath).keys
-    # @research_keys = YAML.load_file(Reaper.research_fpath).keys
-    @supply_keys = YAML.load_file(Reaper.supply_fpath).keys
-    @supply_keys += YAML.load_file(Reaper.supply_okdp_fpath).keys
-    @service_keys = YAML.load_file(Reaper.service_fpath).keys
-  end
-
-  def set_external_work_type_code(work_type)
-    e_work_type = 0
-    return -1 unless Array(work_type).count > 0
-
-    Array(work_type).each do |w|
-      next if w['code'].blank?
-
-      e_work_type = 1 if @construct_keys.include?(w['code'])
-      e_work_type = 2 if @project_keys.include?(w['code'])
-      # e_work_type = 3 if @research_keys.include? w['code']
-      e_work_type = 4 if @supply_keys.include?(w['code'])
-      e_work_type = 5 if @service_keys.include?(w['code'])
-
-      if w['code'].exclude?('.')
-        e_work_type = 1 if w['code'].start_with?('451', '452', '453', '454')
-        e_work_type = 2 if w['code'].start_with?('456')
-        e_work_type = 4 if w['code'].start_with?('455', '459')
-      else
-        e_work_type = 1 if w['code'].start_with?('45')
-        e_work_type = 2 if w['code'].start_with?('74.2')
-      end
-    end
-
-    e_work_type
   end
 end

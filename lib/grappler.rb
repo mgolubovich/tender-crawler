@@ -16,38 +16,54 @@ class Grappler
     target_data = []
 
     # Fix later, need to cut web-navigation from grappler
-    if @selector.value_type != :ids_set
+    unless @selector.value_type?(:ids_set)
       visit @link unless current_url == @link
     end
+    # visit(@link) unless current_url == @link || @selector.value_type?(:ids_set)
 
-    execute_script(@selector.js_code) unless @selector.js_code.nil?
+    execute_script(@selector.js_code)
 
-    slice = @selector.css.empty? ? all(:xpath, @selector.xpath) : all(:css, @selector.css)
-    slice.each do |item|
-      data = @selector.attr.empty? ? item.text.strip : item[@selector.attr.to_sym].strip
-      data = apply_offset(data) unless @selector.offset.nil? || data.empty?
-      data = apply_regexp(data) unless @selector.regexp["pattern"].empty? || data.to_s.empty?
-      data = apply_date_format(data) unless @selector.date_format.to_s.empty? || data.to_s.empty?
-      data = apply_to_type(data) unless @selector.to_type.nil? || data.to_s.empty?
-      target_data << data
-    end
+    selecting_type = @selector.field_valid?(:css) ? :css : :xpath
+    slice = all(selecting_type, @selector[selecting_type])
+
+    slice.each { |item| target_data << process(item) }
 
     @mode == :single ? target_data.first : target_data
   end
 
   def grapple_all
-    grapple :multiple
+    grapple(:multiple)
   end
 
   private
 
-  def apply_offset(data)
-    data = data[@selector.offset['start']..@selector.offset['end']] if @selector.offset['start'] != 0 && @selector.offset['end'] != 0
+  def process(item)
+    data = get_raw_data(item)
+    data.strip
+
+    return '' if data.empty?
+
+    data = apply_offset(data) if @selector.offset_valid?
+    data = apply_regexp(data) if @selector.regexp_valid?
+    data = apply_date_format(data) if @selector.field_valid?(:date_format)
+    data = apply_to_type(data) if @selector.field_valid?(:to_type)
+
     data
   end
 
+  def get_raw_data(item)
+    @selector.field_valid?(:attr) ? item[@selector.attr.to_sym] : item.text
+  end
+
+  def apply_offset(data)
+    return data unless @selector.offset_valid?
+    data[@selector.offset['start']..@selector.offset['end']]
+  end
+
   def apply_regexp(data)
-    @selector.regexp['mode'] == 'gsub' ? data.gsub!(Regexp.new(@selector.regexp['pattern']), '') : data.scan(Regexp.new(@selector.regexp['pattern'])).join
+    pattern = Regexp.new(@selector.regexp['pattern'])
+    return data.gsub(pattern, '') if @selector.regexp_mode?(:gsub)
+    data.scan(pattern).join
   end
 
   def apply_date_format(data)
@@ -57,11 +73,11 @@ class Grappler
   def apply_to_type(data)
     case @selector.to_type
     when :float
-      data.gsub!(',', '.').to_f
+      data.gsub(',', '.').gsub(' ', '').to_f
     when :integer
-      data = data.to_i
+      data.to_i
     when :symbol
-      data = data.to_sym
+      data.to_sym
     else
       data
     end
