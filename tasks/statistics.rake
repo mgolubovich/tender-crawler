@@ -36,4 +36,10 @@ namespace :statistics do
      puts "[#{Time.now}] Statistic tenders count for #{source.name} updated to #{source.tenders_count} [#{source.construction_tenders_count}]"
     end
   end
+
+  task :reset_yandex_counter do
+    stat = Statistics.last
+    stat.reset_yandex_counter
+  end
+
 end

@@ -11,4 +11,18 @@ class Statistics
   field :global_cities_count, type: Integer
   field :global_regions_count, type: Integer
   field :moderation_today_count, type: Integer
+  field :yandex_request_count, type: Integer
+
+  def reset_yandex_counter
+    self.yandex_request_count = 0
+    save
+  end
+
+  def increment_yandex_counter(count = 1)
+    self.yandex_request_count += count
+    save
+  end
+
+
+
 end

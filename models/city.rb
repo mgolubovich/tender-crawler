@@ -6,5 +6,6 @@ class City
 
   field :name, type: String
   field :external_id, type: Integer
+  field :region_id, type: Integer
 
 end
