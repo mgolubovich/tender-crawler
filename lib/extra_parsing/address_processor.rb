@@ -13,7 +13,7 @@ class AddressProcessor
 
   def process(address)
     @address = address
-    @result = {:external_region_id => nil, :external_city_id => nil}
+    @result = { external_region_id: nil, external_city_id: nil }
 
     puts @address
 
@@ -36,12 +36,12 @@ class AddressProcessor
 
     puts region_name, city_name
     abort("exit")
-    unless region_name.empty?
+    unless region_name.nil? && region_name.empty?
       region = Region.where(:name => region_name).first
       @result[:external_region_id] = region.external_id
     end
 
-    unless city_name.empty?
+    unless city_name.nil? && city_name.empty?
       city = City.where(:region_id => region.external_id, :name => city).first
       @result[:external_city_id] = city.external_id unless city.nil?
     end
@@ -53,7 +53,10 @@ class AddressProcessor
     cities = ["Москва", "Санкт-Петербург"]
     area, city = nil
 
-    geocode = JSON.parse(open(URI.escape(YANDEX_API_URI + get_yandex_params.map{|k,v| "#{k}=#{v}"}.join('&'))).read)
+    params = get_yandex_params.map{|k,v| "#{k}=#{v}"}.join('&')
+    uri = URI.escape(YANDEX_API_URI + params)
+
+    geocode = JSON.parse(open(uri).read)
     geocode = geocode["response"]["GeoObjectCollection"]["featureMember"]
 
     @statistics.increment_yandex_counter
