@@ -47,14 +47,14 @@ class AddressProcessor
 
     puts region_name, city_name
     abort('exit')
-    unless region_name.nil? && region_name.empty?
+    unless region_name.to_s.empty?
       region = Region.where(name: region_name).first
       @result[:external_region_id] = region.external_id
-    end
 
-    unless city_name.nil? && city_name.empty?
-      city = City.where(region_id: region.external_id, name: city).first
-      @result[:external_city_id] = city.external_id unless city.nil?
+      unless city_name.to_s.empty?
+        city = City.where(region_id: region.external_id, name: city).first
+        @result[:external_city_id] = city.external_id unless city.nil?
+      end
     end
   end
 
