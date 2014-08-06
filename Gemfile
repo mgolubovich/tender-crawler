@@ -21,7 +21,7 @@ gem "will_paginate_mongoid"
 gem "will_paginate-bootstrap"
 gem 'activerecord'
 gem 'mysql2'
-
+gem 'ruby-progressbar'
 
 platforms :ruby do # linux
   gem 'unicorn'
