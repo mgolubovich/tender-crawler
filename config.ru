@@ -2,6 +2,7 @@ require 'sinatra/base'
 require 'bundler'
 require 'rack-timeout'
 require 'date'
+require 'open-uri'
 
 Bundler.require
 

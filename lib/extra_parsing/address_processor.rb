@@ -1,25 +1,34 @@
+# encoding: UTF-8
+# Class used for processing address string
+# and setting external city and region
 class AddressProcessor
-  require 'open-uri'
-  
-  MIN_WORD_COUNT = 2
-  YANDEX_API_URI = "http://geocode-maps.yandex.ru/1.x/?"
-  LIMIT_YANDEX_COUNTER = 22000
-  AREA_PATH = "GeoObject.metaDataProperty.GeocoderMetaData.AddressDetails.Country.AdministrativeArea.AdministrativeAreaName"
-  SUBAREA_PATH = "GeoObject.metaDataProperty.GeocoderMetaData.AddressDetails.Country.AdministrativeArea.SubAdministrativeArea.SubAdministrativeAreaName"
-  CITY_PATH = "GeoObject.metaDataProperty.GeocoderMetaData.AddressDetails.Country.AdministrativeArea.SubAdministrativeArea.Locality.LocalityName"
+  class << self
+    attr_accessor :min_word_count
+    attr_accessor :yandex_api_uri
+    attr_accessor :request_limit
+    attr_accessor :query_fpath
+    attr_accessor :yandex_queries
+    attr_accessor :city_regions
+  end
+
+  @min_word_count = 2
+  @yandex_api_uri = 'http://geocode-maps.yandex.ru/1.x/?'
+  @request_limit = 22_000
+  @query_fpath = 'config/dictionaries/yandex_response_queries.yml'
+  @yandex_queries = YAML.load_file(@query_fpath).symbolize_keys!
+  @city_regions = ['Москва', 'Санкт-Петербург']
 
   def initialize(address = nil)
-    @address ||= ''
+    @address = address
     @statistics = Statistics.last
   end
 
-  def process(address)
-    @address = address
+  def process
     @result = { external_region_id: nil, external_city_id: nil }
 
     puts @address
 
-    yandex_process if @statistics.yandex_request_count <= LIMIT_YANDEX_COUNTER && check_word_count
+    yandex_process if able_to_proceed?
 
     @result
   end
@@ -27,7 +36,7 @@ class AddressProcessor
   private
 
   def check_word_count
-    @address.split(' ').count >= MIN_WORD_COUNT
+    @address.split(' ').count >= AddressProcessor.min_word_count
   end
 
   def yandex_process
@@ -37,50 +46,53 @@ class AddressProcessor
     region_name, city_name = yandex_json_parse
 
     puts region_name, city_name
-    abort("exit")
+    abort('exit')
     unless region_name.nil? && region_name.empty?
-      region = Region.where(:name => region_name).first
+      region = Region.where(name: region_name).first
       @result[:external_region_id] = region.external_id
     end
 
     unless city_name.nil? && city_name.empty?
-      city = City.where(:region_id => region.external_id, :name => city).first
+      city = City.where(region_id: region.external_id, name: city).first
       @result[:external_city_id] = city.external_id unless city.nil?
     end
   end
 
   def yandex_json_parse
-    cities = ["Москва", "Санкт-Петербург"]
     area, city = nil
 
-    params = get_yandex_params.map{|k,v| "#{k}=#{v}"}.join('&')
-    uri = URI.escape(YANDEX_API_URI + params)
+    params = yandex_params.map { |k, v| "#{k}=#{v}" }.join('&')
+    uri = URI.escape(AddressProcessor.yandex_api_uri + params)
 
-    geocode = JSON.parse(open(uri).read)
-    geocode = geocode["response"]["GeoObjectCollection"]["featureMember"]
-
+    response = JSON.parse(open(uri).read)
     @statistics.increment_yandex_counter
 
-    unless geocode.empty?
-      area = geocode[0].at(AREA_PATH, false)
-      subarea = geocode[0].at(SUBAREA_PATH, false)
-      city = geocode[0].at(CITY_PATH, false)
+    geocode = response['response']['GeoObjectCollection']['featureMember']
 
-      area = subarea if cities.include?(subarea)
-    end
+    return [area, city] if geocode.empty?
+
+    area = geocode[0].at(AddressProcessor.yandex_queries[:area_path], nil)
+    subarea = geocode[0].at(AddressProcessor.yandex_queries[:subarea_path], nil)
+    city = geocode[0].at(AddressProcessor.yandex_queries[:city_path], nil)
+
+    area = subarea if AddressProcessor.city_regions.include?(subarea)
 
     [area, city]
   end
 
-  def get_yandex_params
+  def yandex_params
     {
-      :format => 'json',
-      :results => 1,
-      :geocode => get_address_for_uri
+      format: 'json',
+      results: 1,
+      geocode: address_for_uri
     }
   end
 
-  def get_address_for_uri
+  def address_for_uri
     @address.gsub(/[ ]+/, ' ').gsub(/[ ]/, '+')
+  end
+
+  def able_to_proceed?
+    @statistics.yandex_request_count <= AddressProcessor.request_limit && check_word_count
   end
 end
