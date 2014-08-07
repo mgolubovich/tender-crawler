@@ -26,9 +26,10 @@ class AddressProcessor
   def process
     @result = { external_region_id: nil, external_city_id: nil }
 
+    # DEBUG: remove later
     puts @address
 
-    yandex_process if able_to_proceed?
+    @result = yandex_process if able_to_proceed?
 
     @result
   end
@@ -40,27 +41,28 @@ class AddressProcessor
   end
 
   def yandex_process
-    @result[:external_region_id] = -1
-    @result[:external_city_id] = -1
+    result = { external_region_id: -1, external_city_id: -1 }
 
     region_name, city_name = yandex_json_parse
 
+    # DEBUG: remove later
     puts region_name, city_name
     abort('exit')
-    unless region_name.to_s.empty?
-      region = Region.where(name: region_name).first
-      @result[:external_region_id] = region.external_id
 
-      unless city_name.to_s.empty?
-        city = City.where(region_id: region.external_id, name: city).first
-        @result[:external_city_id] = city.external_id unless city.nil?
-      end
-    end
+    return result if region_name.to_s.empty?
+
+    region = Region.where(name: region_name).first
+    result[:external_region_id] = region.external_id
+
+    return result if city_name.to_s.empty?
+
+    city = City.where(region_id: region.external_id, name: city).first
+    result[:external_city_id] = city.external_id unless city.nil?
+
+    result
   end
 
   def yandex_json_parse
-    area, city = nil
-
     params = yandex_params.map { |k, v| "#{k}=#{v}" }.join('&')
     uri = URI.escape(AddressProcessor.yandex_api_uri + params)
 
@@ -69,7 +71,7 @@ class AddressProcessor
 
     geocode = response['response']['GeoObjectCollection']['featureMember']
 
-    return [area, city] if geocode.empty?
+    return [nil, nil] if geocode.empty?
 
     area = geocode[0].at(AddressProcessor.yandex_queries[:area_path], nil)
     subarea = geocode[0].at(AddressProcessor.yandex_queries[:subarea_path], nil)
