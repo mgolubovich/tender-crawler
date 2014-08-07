@@ -106,10 +106,9 @@ class CartridgesController < ApplicationController
   post '/edit/:cart_id/selector/:id' do
     selector = Selector.find params[:selector_id]
     attributes = parse_selector_form
-    # attributes[:cartridge_id] = selector.cartridge_id
-    # attributes[:source_id] = selector.source_id
+    debugger
     selector.update_attributes!(attributes)
-    selector.save
+
     redirect "/cartridges/edit/#{selector.cartridge_id}"
   end
 
@@ -122,7 +121,7 @@ class CartridgesController < ApplicationController
 
   get '/check/:cartridge_id' do
     @cartridge = Cartridge.find params[:cartridge_id]
-    @check_tender = Reaper.new(Source.find(@cartridge.source_id), 1, @cartridge._id, true).reap
+    @check_tender = Reaper.new(Source.find(@cartridge.source_id), {limit: 1, is_checking: true, cartridge_id: @cartridge}).reap
     #@check_tender = Tender.find '53749ae21d0aab0c75000001'
     #@cartridge = Cartridge.where(source_id: @check_tender.source_id, tender_type: @check_tender.group).first
 
@@ -198,10 +197,21 @@ class CartridgesController < ApplicationController
 
 private
   def parse_selector_form
-    data = { value_type: params[:selector_value].to_sym, link_template: params[:selector_link], xpath: params[:selector_xpath], css: params[:selector_css], attr: params[:selector_attr], delimiter: params[:selector_delimiter], date_format: params[:selector_date_format], js_code: params[:selector_js_code], priority: params[:selector_priority].to_i, to_type: params[:selector_to_type] }
+    data = { value_type: params[:selector_value],
+        link_template: params[:selector_link],
+        xpath: params[:selector_xpath],
+        css: params[:selector_css],
+        attr: params[:selector_attr],
+        delimiter: params[:selector_delimiter],
+        date_format: params[:selector_date_format],
+        js_code: params[:selector_js_code],
+        priority: params[:selector_priority],
+        to_type: params[:selector_to_type]
+    }
     data[:offset] = { start: params[:selector_offset_start].to_i, end: params[:selector_offset_end].to_i }
-    data[:regexp] = {"mode" => params[:selector_mode_reg], "pattern" => params[:selector_pat_reg]}
+    data[:regexp] = { mode:params[:selector_mode_reg], pattern: params[:selector_pat_reg]}
     data[:is_active] = params[:selector_activity] == 'active' ? true : false
+    debugger
     data
   end
 
