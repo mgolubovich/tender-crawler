@@ -1,7 +1,7 @@
-source "https://rubygems.org/"
+source 'https://rubygems.org/'
 
 gem 'sinatra'
-gem "rack-timeout"
+gem 'rack-timeout'
 
 gem 'mongoid', '3.0.23'
 gem 'bson_ext'
@@ -16,9 +16,9 @@ gem 'haml'
 gem 'capybara', '2.2.1'
 gem 'capybara-webkit', '1.1.0'
 gem 'activesupport', '3.2.17'
-gem "will_paginate"
-gem "will_paginate_mongoid"
-gem "will_paginate-bootstrap"
+gem 'will_paginate'
+gem 'will_paginate_mongoid'
+gem 'will_paginate-bootstrap'
 gem 'activerecord'
 gem 'mysql2'
 gem 'ruby-progressbar'

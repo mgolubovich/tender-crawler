@@ -198,10 +198,8 @@ class CartridgesController < ApplicationController
 
 private
   def parse_selector_form
-    data = Hash.new
-    debugger
-    data = {:value_type => params[:selector_value].to_sym, :link_template => params[:selector_link], :xpath => params[:selector_xpath], :css => params[:selector_css], :attr => params[:selector_attr], :delimiter => params[:selector_delimiter], :date_format => params[:selector_date_format], :js_code => params[:selector_js_code], :priority => params[:selector_priority].to_i, :to_type => params[:selector_to_type]}
-    data[:offset] = {"start" => params[:selector_offset_start].to_i, "end" => params[:selector_offset_end].to_i}
+    data = { value_type: params[:selector_value].to_sym, link_template: params[:selector_link], xpath: params[:selector_xpath], css: params[:selector_css], attr: params[:selector_attr], delimiter: params[:selector_delimiter], date_format: params[:selector_date_format], js_code: params[:selector_js_code], priority: params[:selector_priority].to_i, to_type: params[:selector_to_type] }
+    data[:offset] = { start: params[:selector_offset_start].to_i, end: params[:selector_offset_end].to_i }
     data[:regexp] = {"mode" => params[:selector_mode_reg], "pattern" => params[:selector_pat_reg]}
     data[:is_active] = params[:selector_activity] == 'active' ? true : false
     data
