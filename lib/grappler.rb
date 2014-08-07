@@ -52,7 +52,9 @@ class Grappler
   end
 
   def get_raw_data(item)
-    @selector.field_valid?(:attr) ? item[@selector.attr.to_sym] : item.text
+    return item[@selector.attr.to_sym] if @selector.field_valid?(:attr)
+    return item.text unless @selector.field_valid?(:delimiter)
+    item.all(:css, '*').map { |c| c.text }.join(@selector.delimiter)
   end
 
   def apply_offset(data)

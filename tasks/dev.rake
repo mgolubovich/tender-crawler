@@ -47,8 +47,12 @@ namespace :dev do
 
     Tender.skip(100).limit(10).each do |t|
       puts '*'*30
-      puts address_processor.process(t.customer_address)
+      #puts address_processor.process(t.customer_address)
       puts '*'*30
     end
+  end
+
+  task :show_selector do
+    Grappler.new(Selector.find('538c67e690c043fa4d00000b'), '1858403').grapple
   end
 end

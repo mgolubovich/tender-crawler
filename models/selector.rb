@@ -45,6 +45,9 @@ class Selector
   # Can be empty.
   field :attr, type: Symbol
 
+  # Need to be set if target data must be joined using delimiter
+  field :delimiter, type: String
+
   # Need to be set if we need to move cursor to get target data.
   # Example: {start: 0, end: 15}. Can be empty.
   field :offset, type: Hash
