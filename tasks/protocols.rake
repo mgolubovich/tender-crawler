@@ -1,8 +1,10 @@
 namespace :parsing do
   namespace :protocols do
     desc 'Parsing protocols from zakupki.gov.ru'
-    task :zakupki, :protocols_count do |t, args|
-      args.with_defaults(:protocols_count => 100)
+    task :zakupki, :protocols_count, :proxy_url, :proxy_port do |t, args|
+      args.with_defaults(protocols_count: 100,
+        proxy_url: nil,
+        proxy_port: nil)
 
       tenders = Tender
                       .where(:source_id => '5339108d1d0aab8c0a000001')
