@@ -14,4 +14,9 @@ namespace :utils do
   task :export_tasks_to_crontab do
     %x(whenever -w)
   end
+
+  desc 'Load proxies from hide.me'
+  task :load_proxies do
+    # Stub
+  end
 end
