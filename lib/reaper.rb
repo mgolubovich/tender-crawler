@@ -71,7 +71,6 @@ class Reaper
         log_tender_saved(tender[:_id])
 
       end
-      ids_set = []
     end
     @reaper_params.status[:result].first
   end
@@ -79,8 +78,8 @@ class Reaper
   private
 
   def get_cartridges
-    return Cartridge.find(@reaper_params.args[:cartridge_id]).to_a if @reaper_params.args[:cartridge_id]
-    @reaper_params.source.cartridges.active.to_a
+    return @reaper_params.source.load_cartridges unless @reaper_params.args[:cartridge_id]
+    Cartridge.find(@reaper_params.args[:cartridge_id]).to_a
   end
 
   def apply_rules(value, selector)

@@ -40,4 +40,8 @@ class Source
   field :construction_tenders_count, type: Integer
 
   scope :active, where(is_active: true)
+
+  def load_cartridges
+    cartridges.active.to_a
+  end
 end
