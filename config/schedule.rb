@@ -26,3 +26,7 @@ end
 every 5.minutes do
   rake "statistics:update_all"
 end
+
+every :day, :at => '12:05am' do
+  rake "statistics:reset_yandex_counter"
+end

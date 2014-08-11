@@ -1,0 +1,23 @@
+templates:
+  default: "%{name} %{reduction}"
+  reverse: "%{reduction} %{name}"
+  only_fullname: "%{fullname}"
+  only_name: "%{name}"
+rules:
+  Респ:
+    template: reverse
+    regions:
+      07: default
+      09: default
+      18: default
+      20: default
+  г:
+    template: only_name
+    regions:
+  Чувашия:
+    template: only_fullname
+    regions:
+  АО:
+    template: default
+    regions:
+      86: only_name
