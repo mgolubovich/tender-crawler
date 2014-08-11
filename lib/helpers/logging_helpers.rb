@@ -33,11 +33,11 @@ def log_rule_failed(rule, value)
 end
 
 def log_start_import(entity)
-	ImportLog.logger.info "[#{Time.now}] - started import for #{entity}"
+  ImportLog.logger.info "[#{Time.now}] - started import for #{entity}"
 end
 
 def log_started_import(records_count, slice_size)
-	ImportLog.logger.info "[#{Time.now}] - started import with LIMIT #{records_count} OFFSET #{slice_size}"
+  ImportLog.logger.info "[#{Time.now}] - started import with LIMIT #{records_count} OFFSET #{slice_size}"
 end
 
 def log_import_id(id, code)
@@ -45,11 +45,11 @@ def log_import_id(id, code)
 end
 
 def log_import_source_id(source_id, source_name)
-	ImportLog.logger.info "[#{Time.now}] - source is #{source_name} (#{source_id})"
+  ImportLog.logger.info "[#{Time.now}] - source is #{source_name} (#{source_id})"
 end
 
 def log_import_group(group, site_id)
-	ImportLog.logger.info "[#{Time.now}] - site_id is #{site_id}, group = #{group}"
+  ImportLog.logger.info "[#{Time.now}] - site_id is #{site_id}, group = #{group}"
 end
 
 def log_import_badgroup

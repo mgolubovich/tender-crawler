@@ -1,11 +1,3 @@
-require 'sinatra/base'
-require 'bundler/setup'
-require 'will_paginate'
-require 'will_paginate_mongoid'
-require 'will_paginate-bootstrap'
-require 'will_paginate/view_helpers/sinatra'
-
-
 class ApplicationController < Sinatra::Base
   enable :sessions, :method_override
   set :views, File.expand_path('../../views', __FILE__)

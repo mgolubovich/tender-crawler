@@ -19,7 +19,8 @@ class Grappler
     unless @selector.value_type?(:ids_set)
       visit @link unless current_url == @link
     end
-    # visit(@link) unless current_url == @link || @selector.value_type?(:ids_set)
+    # visit(@link) unless current_url == @link
+    # || @selector.value_type?(:ids_set)
 
     execute_script(@selector.js_code)
 
