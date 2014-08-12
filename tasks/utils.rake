@@ -17,11 +17,14 @@ namespace :utils do
 
   desc 'Load proxies from hide.me'
   task :load_proxies do
-    raw_data = open('http://hideme.ru/api/proxylist.php?out=js&country=RU&maxtime=500&code=1565406105').read
+    hm_config = YAML.load_file('config/hideme_params.yml')
+    hm_url = hm_config['base_url'] + hm_config.map { |k, v| "#{k}=#{v}" unless k == 'base_url'}.join('&')
+
+    raw_data = open(hm_url).read
     data = JSON.parse(raw_data)
 
     data.each do |p|
-      
+      Proxy.create(address: p['host'], port: p['port'], latency: p['delay'])
     end
   end
 end
