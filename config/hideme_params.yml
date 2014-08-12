@@ -1,0 +1,10 @@
+base_url:
+  'http://hideme.ru/api/proxylist.php?'
+out:
+  'js'
+country:
+  'RU'
+maxtime:
+  '500'
+code:
+  '1565406105'

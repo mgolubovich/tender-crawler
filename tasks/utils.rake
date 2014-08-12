@@ -17,6 +17,11 @@ namespace :utils do
 
   desc 'Load proxies from hide.me'
   task :load_proxies do
-    # Stub
+    raw_data = open('http://hideme.ru/api/proxylist.php?out=js&country=RU&maxtime=500&code=1565406105').read
+    data = JSON.parse(raw_data)
+
+    data.each do |p|
+      
+    end
   end
 end
