@@ -49,6 +49,7 @@ class Tender
   auto_increment :external_db_id, seed: 1_952_237
 
   field :status, type: Hash
+  field :created_by, type: Symbol, default: :parser
 
   index({ source_id: 1, code_by_source: 1 }, { unique: true })
   index({ external_db_id: 1 }, { unique: true })

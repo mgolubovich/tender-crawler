@@ -80,6 +80,7 @@ private
     data = {:source_id => params[:code_by_source], :code_by_source => params[:code_by_source], :title => params[:title], :tender_form => params[:tender_form], :external_work_type => params[:external_work_type].to_i, :customer_inn => params[:customer_inn], :customer_name => params[:customer_name], :customer_address => params[:customer_address], :id_by_source => params[:id_by_source], :group => params[:group].to_sym}
     data[:start_at] = Time.parse(params[:start_at]) if params[:start_at]
     data[:published_at] = Time.parse(params[:published_at]) if params[:published_at]
+    data[:created_by] = :human
     #"doc_title"=>"doc_title", "doc_link"=>"doc_link"} #допилю
     data
   end
