@@ -1,21 +1,30 @@
 class TendersController < ApplicationController
 
   get '/' do
-    @tenders = Tender.order_by(created_at: :desc)
+
+    @filter = params[:filter]
+    @filter = {} if @filter.nil?
+
     @tender_counter = params[:page].nil? ? 1 : params[:page].to_i * 25 - 25
+
+    @tenders = Tender.order_by(created_at: :desc)
     @tenders = @tenders.where(source_id: params[:source_id]) if params[:source_id]
     @source = Source.find(params[:source_id]) if params[:source_id]
 
-    unless params[:start_date].nil? && params[:end_date].nil?
-      @start_date = params[:start_date]
-      @end_date = params[:end_date]
-      @start_date_db = Time.parse(@start_date)
-      @end_date_db = Time.parse(@end_date) + 23.hours + 59.minutes + 59.seconds
-      @tenders = @tenders.where(created_at: @start_date_db..@end_date_db)
+    unless @filter[:start_date].to_s.empty?
+      @tenders = @tenders.where(:created_at.gte => Time.parse(@filter[:start_date]).at_beginning_of_day)
     end
-    @tenders = @tenders.where(code_by_source: params[:search]) if params[:search]
+
+    unless @filter[:end_date].to_s.empty?
+      @tenders = @tenders.where(:created_at.lte => Time.parse(@filter[:end_date]).end_of_day)
+    end
+
+    @tenders = @tenders.where(code_by_source: @filter[:search]) unless @filter[:search].to_s.empty?
+    @tenders = @tenders.where(created_by: @filter[:created_by].to_sym) unless @filter[:created_by].to_s.empty?
+
     @tenders_count = Statistics.first.global_tenders_count
     @tenders = @tenders.paginate(page: params[:page], per_page: 25)
+
     haml :tenders
   end
 
@@ -77,7 +86,7 @@ class TendersController < ApplicationController
 private
   def parse_tender_form
     data = Hash.new
-    data = {:source_id => params[:code_by_source], :code_by_source => params[:code_by_source], :title => params[:title], :tender_form => params[:tender_form], :external_work_type => params[:external_work_type].to_i, :customer_inn => params[:customer_inn], :customer_name => params[:customer_name], :customer_address => params[:customer_address], :id_by_source => params[:id_by_source], :group => params[:group].to_sym}
+    data = {:source_id => params[:source], :code_by_source => params[:code_by_source], :title => params[:title], :tender_form => params[:tender_form], :external_work_type => params[:external_work_type].to_i, :customer_inn => params[:customer_inn], :customer_name => params[:customer_name], :customer_address => params[:customer_address], :id_by_source => params[:id_by_source], :group => params[:group].to_sym}
     data[:start_at] = Time.parse(params[:start_at]) if params[:start_at]
     data[:published_at] = Time.parse(params[:published_at]) if params[:published_at]
     data[:created_by] = :human

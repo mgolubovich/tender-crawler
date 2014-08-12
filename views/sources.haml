@@ -3,8 +3,14 @@
 .container-fluid
   .col-lg-4.pull-right
     %form{:action => "/sources", :method => "get"}
-      .input-group
+      .form-group
         %input.form-control{:name => "search", :type => "text", :placeholder => "Search", :value => params[:search]}
+      .form-group
+        %select.form-control{:name => "created_by", :id => "filter_created_by"}
+          %option{ :value => '' } Все
+          %option{:value => :parser, :selected => params[:created_by].to_sym == :parser} Автоматическое
+          %option{:value => :human, :selected => params[:created_by].to_sym == :human} Ручное
+      .form-group
         %span.input-group-btn
           %button.btn.btn-primary Искать
 .container-fluid
