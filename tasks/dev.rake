@@ -11,44 +11,19 @@ namespace :dev do
 
   task :show_cities do
     total = 0
-    City.all.each do |c|
-      if c.name.length <= 3
-        p c.name
-        total += 1
-      end
+    City.where({:region_code => 0}).each do |c|
+      puts "#{c.name}: "
+      total += 1
     end
 
     p "Total: " + total.to_s
   end
 
-  desc "Update cities collection from mysql"
-  task :update_cities_from_mysql do
-    puts "Deleting all documents from collection"
-    City.delete_all
-
-    puts "Load cities from mysql"
-    query = "SELECT c.id, c.name, d.`id_region` FROM `altasib_kladr_cities` c LEFT JOIN `altasib_kladr_districts` d ON c.`ID_DISTRICT` = d.`CODE`"
-    records = ActiveRecord::Base.connection.exec_query(query)
-
-    progressbar = ProgressBar.create(:title => "Progress", :starting_at => 0, :total => records.count)
-    records.each do |record|
-      city = City.new
-      city.external_id = record["id"].to_i
-      city.name = record["name"]
-      city.region_id = record["id_region"].to_i
-      city.save
-
-      progressbar.increment
-    end
-  end
-
   task :test_address_processor do
-    address_processor = AddressProcessor.new
-
-    Tender.skip(100).limit(10).each do |t|
-      puts '*'*30
-      #puts address_processor.process(t.customer_address)
-      puts '*'*30
+    Tender.skip(100).limit(1000).each do |t|
+      address_processor = AddressProcessor.new(t.customer_address)
+      puts address_processor.process
+      puts "-"*20
     end
   end
 

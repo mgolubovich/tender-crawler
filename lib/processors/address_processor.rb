@@ -2,6 +2,7 @@
 # Class used for processing address string
 # and setting external city and region
 class AddressProcessor
+  require 'open-uri'
   class << self
     attr_accessor :min_word_count
     attr_accessor :yandex_api_uri
@@ -16,7 +17,9 @@ class AddressProcessor
   @request_limit = 22_000
   @query_fpath = 'config/dictionaries/yandex_response_queries.yml'
   @yandex_queries = YAML.load_file(@query_fpath).symbolize_keys!
-  @city_regions = ['Москва', 'Санкт-Петербург']
+  @yandex_requests_counter = 0
+  @max_yandex_requests = 5
+
 
   def initialize(address = nil)
     @address = address
@@ -25,61 +28,54 @@ class AddressProcessor
 
   def process
     @result = { external_region_id: nil, external_city_id: nil }
-
-    # DEBUG: remove later
-    puts @address
-
-    @result = yandex_process if able_to_proceed?
-
+    yandex_process if able_to_proceed?
     @result
   end
 
   private
 
   def check_word_count
-    @address.split(' ').count >= AddressProcessor.min_word_count
+    @address.to_s.split(' ').count >= AddressProcessor.min_word_count
   end
 
   def yandex_process
-    result = { external_region_id: -1, external_city_id: -1 }
+    area_name, subarea_name, city_name = yandex_json_parse
+    puts @address
+    puts "#{area_name}, #{subarea_name}, #{city_name}"
 
-    region_name, city_name = yandex_json_parse
+    return -1 if area_name.to_s.empty?
 
-    # DEBUG: remove later
-    puts region_name, city_name
-    abort('exit')
+    region = Region.or({:name => area_name.mb_chars.downcase}, {:alt_name => area_name.mb_chars.downcase},).first
+    region = Region.or({:name => subarea_name.mb_chars.downcase},{:alt_name => subarea_name.mb_chars.downcase}).first if region.nil?
 
-    return result if region_name.to_s.empty?
+    unless region.nil?
+      @result[:external_region_id] = region.region_code
+      return 0 if city_name.to_s.empty?
 
-    region = Region.where(name: region_name).first
-    result[:external_region_id] = region.external_id
-
-    return result if city_name.to_s.empty?
-
-    city = City.where(region_id: region.external_id, name: city).first
-    result[:external_city_id] = city.external_id unless city.nil?
-
-    result
+      city = City.where(region_code: region.region_code, name: city_name.mb_chars.downcase).first
+      @result[:external_city_id] = city.city_code unless city.nil?
+    end
   end
 
   def yandex_json_parse
     params = yandex_params.map { |k, v| "#{k}=#{v}" }.join('&')
     uri = URI.escape(AddressProcessor.yandex_api_uri + params)
+    json = yandex_request_process(uri)
 
-    response = JSON.parse(open(uri).read)
+    return nil if json.nil?
+
+    @result = { external_region_id: -1, external_city_id: -1 }
+    response = JSON.parse(json)
     @statistics.increment_yandex_counter
-
     geocode = response['response']['GeoObjectCollection']['featureMember']
 
-    return [nil, nil] if geocode.empty?
+    return nil if geocode.empty?
 
     area = geocode[0].at(AddressProcessor.yandex_queries[:area_path], nil)
     subarea = geocode[0].at(AddressProcessor.yandex_queries[:subarea_path], nil)
     city = geocode[0].at(AddressProcessor.yandex_queries[:city_path], nil)
 
-    area = subarea if AddressProcessor.city_regions.include?(subarea)
-
-    [area, city]
+    [area, subarea, city]
   end
 
   def yandex_params
@@ -91,10 +87,18 @@ class AddressProcessor
   end
 
   def address_for_uri
-    @address.gsub(/[ ]+/, ' ').gsub(/[ ]/, '+')
+    @address.gsub(/[ ]+/, ' ').gsub(/[ ]/, '+').gsub(/[;]/, '')
   end
 
   def able_to_proceed?
     @statistics.yandex_request_count <= AddressProcessor.request_limit && check_word_count
+  end
+
+  def yandex_request_process(uri)
+    open(uri).read
+  rescue
+    @yandex_requests_counter += 1
+    sleep 1
+    @yandex_requests_counter <= @max_yandex_requests ? yandex_request_process(uri) : nil
   end
 end

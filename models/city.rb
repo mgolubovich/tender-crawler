@@ -5,7 +5,7 @@ class City
   belongs_to :region
 
   field :name, type: String
-  field :external_id, type: Integer
-  field :region_id, type: Integer
+  field :city_code, type: Integer
+  field :region_code, type: Integer
 
 end
