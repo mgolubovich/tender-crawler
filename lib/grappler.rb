@@ -1,7 +1,6 @@
 # Grappler is entity used for parsing
 # single or multiple values of same value_type
 class Grappler
-  include Capybara::DSL
   Capybara.default_driver = :webkit
   Capybara.run_server = false
   Capybara.default_wait_time = 5
@@ -15,17 +14,10 @@ class Grappler
     @mode = [:single, :multiple].include?(mode) ? mode : :single
     target_data = []
 
-    # Fix later, need to cut web-navigation from grappler
-    unless @selector.value_type?(:ids_set)
-      visit @link unless current_url == @link
-    end
-    # visit(@link) unless current_url == @link
-    # || @selector.value_type?(:ids_set)
-
-    execute_script(@selector.js_code)
+    Capybara.execute_script(@selector.js_code)
 
     selecting_type = @selector.field_valid?(:css) ? :css : :xpath
-    slice = all(selecting_type, @selector[selecting_type])
+    slice = Capybara.all(selecting_type, @selector[selecting_type])
 
     slice.each { |item| target_data << process(item) }
 
