@@ -1,7 +1,7 @@
 - @title = 'New tender'
 %h1 Новый тендер
 .container-fluid
-  %form.form-horizontal{:action => "/tenders/new", :method => "post"}
+  %form.form-horizontal{:action => "/tenders/new", :method => "post", :id => "new_tender"}
     %fieldset
       .form-group
         %label.col-md-4.control-label{:for=> "source"} Source
@@ -89,22 +89,31 @@
     todayHighlight: true,
     weekStart: 1
   });
-  var button = $('#check')
-  button.click(function( event ) {
-      event.preventDefault();
-      var codeSource = $('#source').val();
-      var idSource = $('#code_by_source').val();
-      var url = 'check?source_id=' + codeSource + '&code_by_source=' + idSource;
-      $.getJSON(url, function(data) {
-          console.log(data);
-          if (data.result == '0') {
-              button.text('Тендера не существует');
-              button.removeClass('btn-info');
-              button.addClass('btn-success');
-          } else {
-          var editUrl = 'edit/' + data.result;
-          window.location.replace(editUrl);
-          };
-      });
-  });
 
+  $('#check').click(function( event ) { event.preventDefault(); return CheckSourceCode(); });
+  $('#new_tender').submit(function( event ) { if (!CheckSourceCode(true)) {event.preventDefault()}; });
+
+  function CheckSourceCode(submit = false) {
+    url = 'check?source_id=' + $('#source').val() + '&code_by_source=' + $('#code_by_source').val();
+
+    $.ajaxSetup({
+        async: false
+    });
+
+    result = false;
+
+    t = $.getJSON(url, function(data) {
+      if (data.result != '0') {
+        window.location.replace('edit/' + data.result);
+      } else if (submit == false) {
+        $('#check').text('Тендера не существует').removeClass('btn-info').addClass('btn-success');
+        setTimeout(function(){
+          $('#check').text('Проверить').delay( 3000 ).removeClass('btn-success').addClass('btn-info');
+        }, 2000);
+      } else {
+        result = true;
+      }
+    });
+
+    return result;
+  }

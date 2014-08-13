@@ -35,7 +35,7 @@ class TendersController < ApplicationController
 
   post '/new' do
     tender = Tender.create(parse_tender_form)
-    redirect "tenders/edit/#{tender._id}"
+    redirect "tenders?source_id=#{tender.source_id}"
   end
 
   get '/check' do
