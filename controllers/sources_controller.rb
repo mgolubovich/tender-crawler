@@ -19,7 +19,7 @@ class SourcesController < ApplicationController
     end
 
 
-    @sources = @sources.paginate(page: params[:page], per_page: 25)git 
+    @sources = @sources.paginate(page: params[:page], per_page: 25)
     @source_counter = params[:page].nil? ? 0 : params[:page].to_i * 25 - 25
     haml :sources
   end
