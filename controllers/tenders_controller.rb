@@ -4,6 +4,7 @@ class TendersController < ApplicationController
 
     @filter = params[:filter]
     @filter = {} if @filter.nil?
+    @filter[:created_by] = '' if @filter[:created_by].nil?
 
     @tender_counter = params[:page].nil? ? 1 : params[:page].to_i * 25 - 25
 

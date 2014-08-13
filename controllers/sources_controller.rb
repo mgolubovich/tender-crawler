@@ -5,20 +5,21 @@ class SourcesController < ApplicationController
     #@sources = @sources.where(name: Regexp.new(params[:search], Regexp::IGNORECASE)) if params[:search]
     @sources = @sources.any_of({name: Regexp.new(params[:search], Regexp::IGNORECASE)}, {url: Regexp.new(params[:search], Regexp::IGNORECASE)}) unless params[:search].to_s.empty?
 
-    unless params[:created_by].to_s.empty?
-      case  params[:created_by].to_sym
-        when :human
-          @sources = @sources.select { |source| source.cartridges.count  == 0 }
-          ids = @sources.map{ |source| source._id}
-          @sources = Source.where(:_id.in => ids)
-        when :parser
-          @sources = @sources.select { |source| source.cartridges.count  > 0 }
-          ids = @sources.map{ |source| source._id}
-          @sources = Source.where(:_id.in => ids)
-      end
+    params[:created_by] = '' if params[:created_by].nil?
+
+    case  params[:created_by].to_sym
+      when :human
+        @sources = @sources.select { |source| source.cartridges.count  == 0 }
+        ids = @sources.map{ |source| source._id}
+        @sources = Source.where(:_id.in => ids)
+      when :parser
+        @sources = @sources.select { |source| source.cartridges.count  > 0 }
+        ids = @sources.map{ |source| source._id}
+        @sources = Source.where(:_id.in => ids)
     end
 
-    @sources = @sources.paginate(page: params[:page], per_page: 25)
+
+    @sources = @sources.paginate(page: params[:page], per_page: 25)git 
     @source_counter = params[:page].nil? ? 0 : params[:page].to_i * 25 - 25
     haml :sources
   end
