@@ -5,6 +5,7 @@ class SourcesController < ApplicationController
     #@sources = @sources.where(name: Regexp.new(params[:search], Regexp::IGNORECASE)) if params[:search]
     @sources = @sources.any_of({name: Regexp.new(params[:search], Regexp::IGNORECASE)}, {url: Regexp.new(params[:search], Regexp::IGNORECASE)}) unless params[:search].to_s.empty?
 
+    params[:created_by] = '' if params[:created_by].nil?
     unless params[:created_by].to_s.empty?
       case  params[:created_by].to_sym
         when :human

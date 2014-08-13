@@ -4,6 +4,7 @@ class TendersController < ApplicationController
 
     @filter = params[:filter]
     @filter = {} if @filter.nil?
+    @filter[:created_by] = '' if @filter[:created_by].nil?
 
     @tender_counter = params[:page].nil? ? 1 : params[:page].to_i * 25 - 25
 
@@ -19,7 +20,7 @@ class TendersController < ApplicationController
       @tenders = @tenders.where(:created_at.lte => Time.parse(@filter[:end_date]).end_of_day)
     end
 
-    @tenders = @tenders.where(code_by_source: @filter[:search]) unless @filter[:search].to_s.empty?
+    @tenders = @tenders.where(code_by_source: @filter[:seagit rch]) unless @filter[:search].to_s.empty?
     @tenders = @tenders.where(created_by: @filter[:created_by].to_sym) unless @filter[:created_by].to_s.empty?
 
     @tenders_count = Statistics.first.global_tenders_count
