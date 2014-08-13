@@ -34,6 +34,8 @@ class Tender
   field :work_type, type: Array
   field :documents, type: Array
 
+  field :modified_at, type: Time
+
   # Fields for MySQL integration
   # Category of tender 0-5. Magic numbers. 0 - not needed. -1 - failed
   field :external_work_type, type: Integer
