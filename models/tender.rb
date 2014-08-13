@@ -76,6 +76,7 @@ class Tender
     tmp_attr = attributes.symbolize_keys
     tmp = tmp_attr.select { |k| Tender.data_fields_list.include?(k) }
     tmp[:documents].map!{|d| d.symbolize_keys} unless tmp[:documents].to_s.empty?
+    tmp[:work_type].map!{|d| d.symbolize_keys} unless tmp[:work_type].to_s.empty?
     tmp
   end
 end
