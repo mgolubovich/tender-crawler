@@ -37,7 +37,7 @@ class Reaper
         tender = @reaper_params.source.tenders.find_or_create_by(code_by_source: code)
 
         #Used to compare models before and after parsing. Mark modify.
-        md5_tender = tender_fields_to_md5(tender)
+        md5_tender = Digest::MD5.hexdigest(tender.data_attr.to_s)
 
         cartridge.selectors.data_fields.order_by(priority: :desc).each do |s|
           log_start_grappling(s.value_type)
@@ -69,7 +69,8 @@ class Reaper
         unless @reaper_params.args[:is_checking]
           tender.update_attributes(tender_stub.attrs)
           #Mark modify
-          tender.modified_at = Time.now unless md5_tender == tender_fields_to_md5(tender)
+          tender.modified_at = Time.now unless md5_tender == Digest::MD5.hexdigest(tender.data_attr.to_s)
+          
           tender.save
         end
         @reaper_params.status[:result] << tender
@@ -132,23 +133,5 @@ class Reaper
     end
 
     work_types
-  end
-
-  def tender_fields_to_md5(tender)
-    fields = [
-      tender.code_by_source,
-      tender.id_by_source,
-      tender.title,
-      tender.start_price,
-      tender.tender_form,
-      tender.customer_name,
-      tender.customer_address,
-      tender.customer_inn
-    ]
-
-    fields.append(tender.work_type) unless tender.work_type.to_s.empty?
-    fields.append(tender.documents.map{|d| d.symbolize_keys}) unless tender.documents.to_s.empty?
-
-    Digest::MD5.hexdigest(fields.to_s)
   end
 end

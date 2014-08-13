@@ -55,4 +55,27 @@ class Tender
 
   index({ source_id: 1, code_by_source: 1 }, { unique: true })
   index({ external_db_id: 1 }, { unique: true })
+
+  class << self
+    attr_accessor :data_fields_list
+  end
+
+  @data_fields_list = [
+      :id_by_source,
+      :code_by_source,
+      :title,
+      :start_price,
+      :tender_form,
+      :customer_name,
+      :customer_inn,
+      :work_type,
+      :documents
+  ]
+
+  def data_attr
+    tmp_attr = attributes.symbolize_keys
+    tmp = tmp_attr.select { |k| Tender.data_fields_list.include?(k) }
+    tmp[:documents].map!{|d| d.symbolize_keys} unless tmp[:documents].to_s.empty?
+    tmp
+  end
 end
