@@ -32,6 +32,10 @@
             %option{:value => "5", :selected => @tender.external_work_type == 5 ? true : false } Сервис и ТО
 
       .form-group
+        %label.col-md-4.control-label{:for => "source_link"} source_link
+        .col-md-5
+          %input.form-control.input-md{:id => "source_link", :name => "source_link", :type => "text", :size => 20, :value => @tender.source_link}
+      .form-group
         %label.col-md-4.control-label{:for => "customer_inn"} customer_inn
         .col-md-5
           %input.form-control.input-md{:id => "customer_inn", :name => "customer_inn", :type => "text", :placeholder => "", :size => 20, :value => @tender.customer_inn}
