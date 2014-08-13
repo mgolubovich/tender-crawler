@@ -6,6 +6,22 @@ class Tender
   belongs_to :source
   has_many :protocols
 
+  class << self
+    attr_accessor :data_fields_list
+  end
+
+  @data_fields_list = [
+    :id_by_source,
+    :code_by_source,
+    :title,
+    :start_price,
+    :tender_form,
+    :customer_name,
+    :customer_inn,
+    :work_type,
+    :documents
+  ]
+
   # Timestamps, created_at and updated_at included via mongoid
   field :start_at, type: Time
   field :published_at, type: Time
@@ -52,4 +68,15 @@ class Tender
 
   index({ source_id: 1, code_by_source: 1 }, { unique: true })
   index({ external_db_id: 1 }, { unique: true })
+
+  def data_attr
+    attrs = attributes.symbolize_keys
+    attrs[:documents].map! { |d| w.symbolize_keys! } unless attrs[:documents].nil?
+    attrs[:work_type].map! { |w| w.symbolize_keys! } unless attrs[:work_type].nil?
+    attrs.select { |k| Tender.data_fields_list.include?(k) }
+  end
+
+  def md5
+    Digest::MD5.hexdigest(data_attr.to_s)
+  end
 end

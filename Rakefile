@@ -1,5 +1,7 @@
 require 'sinatra/base'
 require 'bundler'
+require 'date'
+require 'open-uri'
 
 Bundler.require
 Dir.glob('./{models,lib,controllers,triggers}/*.rb').sort.each { |file| require file }

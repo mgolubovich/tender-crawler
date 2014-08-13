@@ -4,6 +4,7 @@ class NavigationManager
   Capybara.run_server = false
 
   def initialize
+    @proxy_manager = ProxyManager.new
   end
 
   def load(pm)
@@ -15,6 +16,8 @@ class NavigationManager
 
   def go(url)
     Capybara.visit(url) unless url == location
+  rescue Capybara::Webkit::InvalidResponseError
+    @proxy_manager.switch_proxy
   end
 
   def location
@@ -28,10 +31,10 @@ class NavigationManager
       go(@list_link.gsub('$page_number', next_page_number))
     when :click
       initial_visit unless @is_started
-      find(:xpath, @pm.action_value).click
+      Capybara.find(:xpath, @pm.action_value).click
     when :js
       initial_visit unless @is_started
-      execute_script(@pm.action_value.gsub('$page_number', next_page_number))
+      Capybara.execute_script(@pm.action_value.gsub('$page_number', next_page_number))
     end
     sleep @pm.delay_between_pages
   end

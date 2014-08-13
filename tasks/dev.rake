@@ -30,7 +30,7 @@ namespace :dev do
     query = "SELECT c.id, c.name, d.`id_region` FROM `altasib_kladr_cities` c LEFT JOIN `altasib_kladr_districts` d ON c.`ID_DISTRICT` = d.`CODE`"
     records = ActiveRecord::Base.connection.exec_query(query)
 
-    progressbar = ProgressBar.create(:title => "Progress", :starting_at => 0, :total => records.count)
+    progress_bar = ProgressBar.create(:title => "Progress", :starting_at => 0, :total => records.count)
     records.each do |record|
       city = City.new
       city.external_id = record["id"].to_i
@@ -38,7 +38,7 @@ namespace :dev do
       city.region_id = record["id_region"].to_i
       city.save
 
-      progressbar.increment
+      progress_bar.increment
     end
   end
 
