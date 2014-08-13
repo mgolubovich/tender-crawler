@@ -135,7 +135,7 @@ class Reaper
   end
 
   def tender_fields_to_md5(tender)
-    Digest::MD5.hexdigest([
+    fields = [
       tender.code_by_source,
       tender.id_by_source,
       tender.title,
@@ -143,9 +143,12 @@ class Reaper
       tender.tender_form,
       tender.customer_name,
       tender.customer_address,
-      tender.customer_inn,
-      tender.work_type,
-      tender.documents.map{|d| d.symbolize_keys}
-    ].to_s)
+      tender.customer_inn
+    ]
+
+    fields.append(tender.work_type) unless tender.work_type.to_s.empty?
+    fields.append(tender.documents.map{|d| d.symbolize_keys}) unless tender.documents.to_s.empty?
+
+    Digest::MD5.hexdigest(fields.to_s)
   end
 end
