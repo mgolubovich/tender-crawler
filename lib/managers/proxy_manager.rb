@@ -6,8 +6,7 @@ class ProxyManager
   end
 
   def switch_proxy
-    proxy = next_proxy
-    Capybara.page.driver.browser.set_proxy(proxy)
+    Capybara.page.driver.browser.set_proxy(next_proxy)
   end
 
   def reset_proxy
