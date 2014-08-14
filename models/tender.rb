@@ -2,6 +2,7 @@
 class Tender
   include Mongoid::Document
   include Mongoid::Timestamps
+  include ActiveSupport::Callbacks
 
   belongs_to :source
   has_many :protocols
@@ -53,4 +54,11 @@ class Tender
 
   index({ source_id: 1, code_by_source: 1 }, { unique: true })
   index({ external_db_id: 1 }, { unique: true })
+
+  set_callback :save, :before, :before_save
+
+  def before_save
+    self.code_by_source = self.id_by_source if self.code_by_source.to_s.empty?
+  end
+
 end
