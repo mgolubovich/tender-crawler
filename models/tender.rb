@@ -42,9 +42,11 @@ class Tender
 
   # ID based on altasib_kladr_cities table
   field :external_city_id, type: Integer
+  field :city_code, type: Integer
 
   # ID based on altasib_kladr_region
   field :external_region_id, type: Integer
+  field :region_code, type: Integer
 
   # Not used tight now
   # field :external_db_id, type: Integer
