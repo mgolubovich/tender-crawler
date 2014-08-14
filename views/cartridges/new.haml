@@ -48,6 +48,10 @@
           %select.form-control{ :id => "cartridge_activity", :name => "cartridge_activity"}
             %option{:value => "active", :selected => true} Включен
             %option{:value => "blocked"} Выключен
+      .form-group
+        %label.col-md-4.control-label{:for => "delay_between_tenders"} Задержка между парсингом(сек)
+        .col-md-4
+          %input.form-control.input-md{:id => "delay_between_tenders", :name => "delay_between_tenders", :type => "text", :size => 20, :value => 0}
     %fieldset
       %h1 Page Manager
       .form-group
@@ -81,3 +85,4 @@
           %input.btn.btn-primary.btn-lg{:name => "submint", :type => "submit", :value => "Добавить"}
 
 %script{:type => 'text/javascript', :src => "http://10.0.105.15/javascripts/cartridge-hide-offset.js" }
+
