@@ -18,6 +18,7 @@ class Tender
     :tender_form,
     :customer_name,
     :customer_inn,
+    :customer_address,
     :work_type,
     :documents
   ]

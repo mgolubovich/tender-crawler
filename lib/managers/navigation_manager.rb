@@ -54,7 +54,11 @@ class NavigationManager
   end
 
   def save_the_day
-    @proxy_manager.switch_proxy if @proxy_manager.proxy?
-    @proxy_manager.reset_proxy unless @proxy_manager.proxy?
+    if @proxy_manager.proxies_left?
+      @is_proxified = true
+      @proxy_manager.switch_proxy
+    else
+      fail(ConnectionError, 'Used all proxies', caller)
+    end
   end
 end

@@ -9,4 +9,5 @@ log/*
 *.DS_Store
 Gemfile.lock
 .rvmrc
-.tags
+*.tags
+*.tags_sorted_by_file

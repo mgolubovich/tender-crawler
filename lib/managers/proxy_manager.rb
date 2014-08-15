@@ -13,7 +13,7 @@ class ProxyManager
     Capybara.page.driver.browser.set_proxy(no_proxy)
   end
 
-  def proxy?
+  def proxies_left?
     @proxies.count > 0 ? true : false
   end
 
