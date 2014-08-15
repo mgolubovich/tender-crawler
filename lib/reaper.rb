@@ -59,9 +59,9 @@ class Reaper
         tender.work_type = get_work_type(cartridge, entity_id)
         tender.external_work_type = WorkTypeProcessor.new(tender.work_type).process
 
-        tender.status = tender_status
+        # tender.status = tender_status
 
-        unless @reaper_params.args[:is_checking]
+        unless @params.args[:is_checking]
           tender.update_attributes(tender_stub.attrs)
 
           tender.modified_at = Time.now unless old_md5 == tender.md5
@@ -69,7 +69,7 @@ class Reaper
           tender.save
         end
 
-        @reaper_params.status[:result] << tender
+        @params.status[:result] << tender
 
         @params.status[:reaped_tenders_count] += 1
 

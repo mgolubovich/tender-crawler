@@ -26,10 +26,11 @@ class Tender
     :documents
   ]
 
-  # Timestamps, created_at and updated_at included via mongoid
+  # Timestamps, created_at and updated_at included via Mongoid::Timestamps
   field :start_at, type: Time
   field :published_at, type: Time
   field :moderated_at, type: Time
+  field :modified_at, type: Time
 
   # Source info
   # Code of tender based on source
@@ -53,8 +54,6 @@ class Tender
   field :customer_inn, type: String
   field :work_type, type: Array
   field :documents, type: Array
-
-  field :modified_at, type: Time
 
   # Fields for MySQL integration
   # Category of tender 0-5. Magic numbers. 0 - not needed. -1 - failed
@@ -80,7 +79,7 @@ class Tender
 
   def data_attr
     attrs = attributes.symbolize_keys
-    attrs[:documents].map! { |d| w.symbolize_keys! } unless attrs[:documents].nil?
+    attrs[:documents].map! { |d| d.symbolize_keys! } unless attrs[:documents].nil?
     attrs[:work_type].map! { |w| w.symbolize_keys! } unless attrs[:work_type].nil?
     attrs.select { |k| Tender.data_fields_list.include?(k) }
   end
