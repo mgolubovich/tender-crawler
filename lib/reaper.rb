@@ -130,7 +130,7 @@ class Reaper
     wt_titles = Grappler.new(title_selector, entity_id).grapple_all
 
     wt_codes.each_with_index do |code, i|
-      work_types << { 'code' =>  code, 'title' => wt_titles[i] }
+      work_types << { code: code, title: wt_titles[i] }
     end
 
     work_types

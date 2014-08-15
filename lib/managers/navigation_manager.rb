@@ -5,6 +5,7 @@ class NavigationManager
 
   def initialize
     @proxy_manager = ProxyManager.new
+    @is_proxified = false
   end
 
   def load(pm)
@@ -17,7 +18,8 @@ class NavigationManager
   def go(url)
     Capybara.visit(url) unless url == location
   rescue Capybara::Webkit::InvalidResponseError
-    @proxy_manager.switch_proxy
+    save_the_day
+    go(url)
   end
 
   def location
@@ -49,5 +51,10 @@ class NavigationManager
   def next_page_number
     return "0#{@current_page}" if @pm.leading_zero && @current_page < 10
     "#{@current_page}"
+  end
+
+  def save_the_day
+    @proxy_manager.switch_proxy if @proxy_manager.proxy?
+    @proxy_manager.reset_proxy unless @proxy_manager.proxy?
   end
 end

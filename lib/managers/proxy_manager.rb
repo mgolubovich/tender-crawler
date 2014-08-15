@@ -10,6 +10,11 @@ class ProxyManager
   end
 
   def reset_proxy
+    Capybara.page.driver.browser.set_proxy(no_proxy)
+  end
+
+  def proxy?
+    @proxies.count > 0 ? true : false
   end
 
   private
@@ -17,5 +22,9 @@ class ProxyManager
   def next_proxy
     proxy = @proxies.pop
     { host: proxy.address, port: proxy.port }
+  end
+
+  def no_proxy
+    { host: '', port: '' }
   end
 end
