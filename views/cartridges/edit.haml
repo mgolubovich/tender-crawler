@@ -50,6 +50,10 @@
           %select.form-control{ :id => "cartridge_activity", :name => "cartridge_activity"}
             %option{:value => "active", :selected => @cartridge.is_active? ? true : false } Включен
             %option{:value => "blocked", :selected => @cartridge.is_active? ? false : true } Выключен
+      .form-group
+        %label.col-md-4.control-label{:for => "delay_between_tenders"} Задержка между парсингом(сек)
+        .col-md-4
+          %input.form-control.input-md{:id => "delay_between_tenders", :name => "delay_between_tenders", :type => "text", :size => 20, :value => @cartridge.delay_between_tenders}
     %fieldset
       %h1 Page Manager
       .form-group

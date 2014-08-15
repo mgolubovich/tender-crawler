@@ -79,6 +79,8 @@ class Reaper
 
         log_tender_saved(tender[:_id])
 
+        #Delay parsing between tenders
+        sleep(cartridge.delay_between_tenders) if cartridge.delay_between_tenders > 0
       end
     end
     @reaper_params.status[:result].first
