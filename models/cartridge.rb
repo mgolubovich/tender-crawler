@@ -20,6 +20,8 @@ class Cartridge
 
   field :is_active, type: Boolean, default: true
 
+  field :delay_between_tenders, type: Integer, default: 0
+
   scope :active, where(is_active: true)
 
   # Returns true if selector with provided
@@ -42,5 +44,9 @@ class Cartridge
 
   def load_pm
     page_managers.first
+  end
+
+  def need_to_sleep?
+    delay_between_tenders > 0
   end
 end

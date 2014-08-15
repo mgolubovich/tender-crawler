@@ -2,9 +2,12 @@
 class Tender
   include Mongoid::Document
   include Mongoid::Timestamps
+  include ActiveSupport::Callbacks
 
   belongs_to :source
   has_many :protocols
+
+  set_callback :save, :before, :before_save
 
   class << self
     attr_accessor :data_fields_list
@@ -51,21 +54,26 @@ class Tender
   field :work_type, type: Array
   field :documents, type: Array
 
+  field :modified_at, type: Time
+
   # Fields for MySQL integration
   # Category of tender 0-5. Magic numbers. 0 - not needed. -1 - failed
   field :external_work_type, type: Integer
 
   # ID based on altasib_kladr_cities table
   field :external_city_id, type: Integer
+  field :city_code, type: Integer
 
   # ID based on altasib_kladr_region
   field :external_region_id, type: Integer
+  field :region_code, type: Integer
 
   # Not used tight now
   # field :external_db_id, type: Integer
   auto_increment :external_db_id, seed: 1_952_237
 
   field :status, type: Hash
+  field :created_by, type: Symbol, default: :parser
 
   index({ source_id: 1, code_by_source: 1 }, { unique: true })
   index({ external_db_id: 1 }, { unique: true })
@@ -79,5 +87,9 @@ class Tender
 
   def md5
     Digest::MD5.hexdigest(data_attr.to_s)
+  end
+
+  def before_save
+    self.code_by_source = self.id_by_source if self.code_by_source.to_s.empty?
   end
 end

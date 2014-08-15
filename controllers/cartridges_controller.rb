@@ -219,6 +219,7 @@ private
     data = Hash.new
     data[:cartridge] = {:name => params[:cartridge_name], :source_id => params[:cartridge_source], :base_link_template => params[:cartridge_base_link], :base_list_template => params[:cartridge_base_list], :tender_type => params[:cartridge_tender_type], :reaping_type => params[:cartridge_reaping_type].to_sym, :list_offset => {"start" => params[:offset_start], "end" => params[:offset_end]}}
     data[:cartridge][:is_active] = params[:cartridge_activity] == 'active' ? true : false
+    data[:cartridge][:delay_between_tenders] = params[:delay_between_tenders].to_i
     data[:pm] = {:action_type => params[:pm_type].to_sym, :action_value => params[:pm_value], :page_number_start_value => params[:pm_num_start].to_i, :delay_between_pages => params[:pm_delay].to_i}
     data[:pm][:leading_zero] = params[:leading_zero] == 'on' ? true : false
     data

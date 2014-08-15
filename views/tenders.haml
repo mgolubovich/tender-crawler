@@ -1,44 +1,47 @@
-- @title = 'Tenders list'
-- if params[:source_id].nil?
-  %h1
-    Tenders list.
-    %br
-    Total count - [
-    %b
-      #{@tenders_count}
-    ]
-  .container-fluid
-  %form{:action => "/tenders", :method => "get"}
-    .form-group
-    С
-    %input.datepicker{:name => "start_date", :style => "width: 100px;", :type => "text", :value => @start_date}
-    по
-    %input.datepicker{:name => "end_date", :style => "width: 100px;", :type => "text", :value => @end_date}
-    %input.btn.btn-primary{:name => "submint", :type => "submit", :value => "Искать" }
-- else
-  %h1
-    Tender list of
+- title = "Tenders list" + (params[:source_id].nil? ? "." : " of ")
+
+%h1
+  #{title}
+  - unless params[:source_id].nil?
     %a{ href: "/sources/edit/#{@source._id}"}= @source.name
-    %br
-    Count - [
-    %b
-      #{@tenders_count}
-    ]
-  .container-fluid
-  %form{:action => "/tenders", :method => "get"}
-    %input{ :name => "source_id", :type => "hidden", :value => @source._id}
-    С
-    %input.datepicker{:name => "start_date", :style => "width: 100px;", :type => "text", :value => @start_date}
-    по
-    %input.datepicker{:name => "end_date", :style => "width: 100px;", :type => "text", :value => @end_date}
-    %input.btn.btn-primary{:name => "submint", :type => "submit", :value => "Искать" }
+  %br
+  Total count -
+  %b [ #{@tenders_count} ]
+
 .container-fluid
-  .col-lg-4.pull-right
-    %form{:action => "/tenders", :method => "get"}
-      .input-group
-        %input.form-control{:name => "search", :type => "text", :placeholder => "Search", :value => params[:search]}
-        %span.input-group-btn
-          %button.btn.btn-primary Искать
+  %hr
+  %form.form-horizontal{:action => "/tenders", :method => "get"}
+    - unless params[:source_id].nil?
+      %input{ :name => "source_id", :type => "hidden", :value => @source._id}
+    .form-group
+      .col-sm-3
+      %label.col-sm-2.control-label{ :for => 'filter_start_date'} Начало периода
+      .col-sm-4
+        %input.form-control.datepicker{:name => "filter[start_date]", :id => "filter_start_date", :type => "text", :value => @filter[:start_date], :placeholder => 'dd.mm.yyyy'}
+    .form-group
+      .col-sm-3
+      %label.col-sm-2.control-label{ :for => 'filter_end_date'} Конец периода
+      .col-sm-4
+        %input.form-control.datepicker{:name => "filter[end_date]", :id => "filter_end_date", :type => "text", :value => @filter[:end_date], :placeholder => 'dd.mm.yyyy'}
+    .form-group
+      .col-sm-3
+      %label.col-sm-2.control-label{ :for => 'filter_search'} Code by source
+      .col-sm-4
+        %input.form-control{:name => "filter[search]", :id => "filter_search", :type => "text", :placeholder => "00000000000", :value => @filter[:search]}
+    .form-group
+      .col-sm-3
+      %label.col-sm-2.control-label{ :for => 'filter_created_by'} Тип добавления
+      .col-sm-4
+        %select.form-control{:name => "filter[created_by]", :id => "filter_created_by"}
+          %option{ :value => '' } Все
+          %option{:value => :parser, :selected => @filter[:created_by].to_sym == :parser} Автоматическое
+          %option{:value => :human, :selected => @filter[:created_by].to_sym == :human} Ручное
+    .form-group
+      .col-sm-3
+      .col-sm-4
+        %input.btn.btn-primary{:type => "submit", :value => "Искать" }
+  %hr
+
 .container-fluid
   %table.table.table-striped.table-condensed
     = will_paginate @tenders, renderer: BootstrapPagination::Sinatra

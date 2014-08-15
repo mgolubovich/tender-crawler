@@ -6,14 +6,13 @@ require 'debugger'
 
 
 ActiveRecord::Base.establish_connection(
-  adapter:  'mysql2',
-  encoding: 'utf8',
-  database: 'zakazrf',
-  username: 'auktion',
-  password: 'Je8tja$wPmn[kR93',
-  host:     '10.0.105.17'
+    adapter:  'mysql2',
+    encoding: 'utf8',
+    database: 'zakazrf',
+    username: 'tester',
+    password: 'Qwerty777',
+    host:     '10.0.104.205'
 )
-
 namespace :db do
   desc "Import tenders from MySQL db"
   task :import_from_mysql, :records_count, :slice_size do |t, args|
@@ -106,5 +105,82 @@ namespace :db do
       end
     end
     puts "[#{Time.now}] Was changed #{i} tenders."
+  end
+
+  desc "Update city collection from mysql"
+  task :update_cities_from_mysql do
+    puts "Deleting all documents from collection"
+    City.delete_all
+
+    puts "Load cities from mysql"
+    query = <<-SQL
+      SELECT c.code, c.name, c.id_district, d.id_region
+      FROM altasib_kladr_cities c
+      LEFT JOIN altasib_kladr_districts d ON c.ID_DISTRICT = d.CODE
+      WHERE c.status > 0
+    SQL
+
+    records = ActiveRecord::Base.connection.exec_query(query)
+
+    progressbar = ProgressBar.create(:format => '%a %B %p%% %t %c/%C', :starting_at => 0, :total => records.count)
+    records.each do |record|
+      record["id_region"] = record["id_district"][0, 2] if record["id_region"].to_i == 0
+
+      city = City.new
+      city.city_code = record["code"].to_i
+      city.name = record["name"].mb_chars.downcase
+      city.region_code = record["id_region"].to_i
+      city.save
+
+      progressbar.increment
+    end
+  end
+
+  desc "Update region collection from mysql"
+  task :update_regions_from_mysql do
+    Region.delete_all
+
+    reductions = YAML.load_file("config/dictionaries/region_reduction.yml").symbolize_keys!
+    reduction_rules = YAML.load_file("config/dictionaries/region_reduction_rule.yml").symbolize_keys!
+    region_alt_names = YAML.load_file("config/dictionaries/region_alt_names.yml").symbolize_keys!
+
+    query = "SELECT code, name, full_name, socr FROM altasib_kladr_region"
+    records = ActiveRecord::Base.connection.exec_query(query)
+
+    progressbar = ProgressBar.create(:format => '%a %B %p%% %t %c/%C', :starting_at => 0, :total => records.count)
+    records.each do |record|
+
+      region_code = record["code"].to_i
+      reduction = record["socr"]
+
+      template = reduction_rules[:templates]["default"]
+      unless reduction_rules[:rules][reduction].to_s.empty?
+        alias_template = reduction_rules[:rules][reduction]["template"]
+
+        unless reduction_rules[:rules][reduction]["regions"].nil?
+          if reduction_rules[:rules][reduction]["regions"].has_key?(region_code)
+            alias_template = reduction_rules[:rules][reduction]["regions"][region_code]
+          end
+        end
+        template = reduction_rules[:templates][alias_template]
+      end
+
+      template_values = {
+          :name => record["name"],
+          :fullname => record["full_name"],
+          :reduction => reductions[reduction.to_sym]
+      }
+
+      #Replace the values in the template
+      name = template % template_values
+
+      region = Region.new
+      region.name = name.mb_chars.downcase
+      region.alt_name = region_alt_names[region_code] if region_alt_names.include?(region_code)
+      region.region_code = region_code
+      region.save
+
+      progressbar.increment
+    end
   end
 end

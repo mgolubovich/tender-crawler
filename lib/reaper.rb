@@ -16,7 +16,7 @@ class Reaper
   end
 
   def reap
-    @cartridges = get_cartridges
+    @cartridges = load_cartridges
 
     @cartridges.each do |cartridge|
       ids_set = []
@@ -32,13 +32,14 @@ class Reaper
 
       ids_set.each do |entity_id|
         break if @params.reaped_enough?
-        tender_status = {}
         tender_stub = EntityStub.new
 
         code = Grappler.new(cartridge.load_selector(:code_by_source), entity_id).grapple
         log_got_code(code)
 
         tender = @params.source.tenders.find_or_create_by(code_by_source: code)
+
+        old_md5 = tender.md5
 
         cartridge.selectors.data_fields.order_by(priority: :desc).each do |s|
           log_start_grappling(s.value_type)
@@ -47,7 +48,6 @@ class Reaper
 
           value = Grappler.new(s, entity_id).grapple
           tender_stub.insert(s.value_type.to_sym, value)
-          apply_rules(value, s) if s.got_rule?
 
           log_got_value(s.value_type, value)
         end
@@ -59,23 +59,23 @@ class Reaper
         tender.work_type = get_work_type(cartridge, entity_id)
         tender.external_work_type = WorkTypeProcessor.new(tender.work_type).process
 
-        @params.status[:fields_status].each_pair do |f, status|
-          tender_status[:state] = status
-          tender_status[:failed_fields] ||= []
-          tender_status[:failed_fields] << f if status == :failed
+        tender.status = tender_status
 
-          tender_status[:fields_for_moderation] ||= []
-          tender_status[:fields_for_moderation] << f if status == :moderation
+        unless @reaper_params.args[:is_checking]
+          tender.update_attributes(tender_stub.attrs)
+
+          tender.modified_at = Time.now unless old_md5 == tender.md5
+
+          tender.save
         end
 
-        tender.status = tender_status
-        tender.update_attributes!(tender_stub.attrs) unless @params.args[:is_checking]
-        @params.status[:result] << tender
+        @reaper_params.status[:result] << tender
 
         @params.status[:reaped_tenders_count] += 1
 
         log_tender_saved(tender[:_id])
 
+        sleep(cartridge.delay_between_tenders) if cartridge.need_to_sleep?
       end
     end
     @params.status[:result].first
@@ -83,7 +83,7 @@ class Reaper
 
   private
 
-  def get_cartridges
+  def load_cartridges
     return @params.source.load_cartridges unless @params.args[:cartridge_id]
     Cartridge.find(@params.args[:cartridge_id]).to_a
   end

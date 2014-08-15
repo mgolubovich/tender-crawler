@@ -4,5 +4,7 @@ class Region
 
   has_many :cities
   field :name, type: String
-  field :external_id, type: Integer
+  field :alt_name, type: String
+  field :region_code, type: Integer
+
 end
