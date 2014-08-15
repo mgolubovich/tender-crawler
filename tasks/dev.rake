@@ -20,10 +20,26 @@ namespace :dev do
   end
 
   task :test_address_processor do
-    Tender.skip(100).limit(1000).each do |t|
+    tenders = Tender.where(:external_work_type.gt => 0).limit(10000).order_by(created_at: :desc).to_a
+    progressbar = ProgressBar.create(:format => '%a %B %p%% %t %c/%C', :starting_at => 0, :total => tenders.count)
+    tenders.each do |t|
       address_processor = AddressProcessor.new(t.customer_address)
-      puts address_processor.process
-      puts "-"*20
+      codes = address_processor.process
+      t.region_code = codes[:region_code]
+      t.city_code = codes[:city_code]
+      t.save
+      progressbar.increment
+      #puts "-"*20
+    end
+  end
+
+  task :test_progressbar do
+    progressbar = ProgressBar.create(:format => '%a %B %p%% %t %c / %C', :starting_at => 0, :total => 30)
+    i = 0
+    while i < 30 do
+      progressbar.increment
+      sleep 1
+      i += 1
     end
   end
 

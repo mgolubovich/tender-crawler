@@ -122,7 +122,7 @@ namespace :db do
 
     records = ActiveRecord::Base.connection.exec_query(query)
 
-    progressbar = ProgressBar.create(:title => "Progress", :starting_at => 0, :total => records.count)
+    progressbar = ProgressBar.create(:format => '%a %B %p%% %t %c/%C', :starting_at => 0, :total => records.count)
     records.each do |record|
       record["id_region"] = record["id_district"][0, 2] if record["id_region"].to_i == 0
 
@@ -147,7 +147,7 @@ namespace :db do
     query = "SELECT code, name, full_name, socr FROM altasib_kladr_region"
     records = ActiveRecord::Base.connection.exec_query(query)
 
-    progressbar = ProgressBar.create(:title => "Progress", :starting_at => 0, :total => records.count)
+    progressbar = ProgressBar.create(:format => '%a %B %p%% %t %c/%C', :starting_at => 0, :total => records.count)
     records.each do |record|
 
       region_code = record["code"].to_i
