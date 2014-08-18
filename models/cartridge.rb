@@ -22,6 +22,8 @@ class Cartridge
 
   field :delay_between_tenders, type: Integer, default: 0
 
+  field :default_tender_values, type: Hash
+
   scope :active, where(is_active: true)
 
   # Returns true if selector with provided

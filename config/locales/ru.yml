@@ -1,0 +1,5 @@
+ru:
+  mongoid:
+    attributes:
+      cartridge:
+        cartrige_name: 'Test ru name'

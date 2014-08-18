@@ -85,7 +85,12 @@
             .checkbox
               %label.pull-left
                 %input{:id => "leading_zero", :name => "leading_zero", :type => "checkbox", :checked => @pm.leading_zero ? true : false} enabled
-
+    %fieldset
+      %h1 Default values
+      .form-group#default_values
+        - unless @cartridge.default_tender_values.to_s.empty?
+          - @cartridge.default_tender_values.each do |field, value|
+            %input{ :type => "hidden", :name => "#{field}", :value => "#{value}", :class => "default_values"}
       .form-group
         .col-xs-5.col-md-offset-3
           %input.btn.btn-primary.btn-lg{:name => "submint", :type => "submit", :value => "Сохранить"}
@@ -127,3 +132,6 @@
     %a{ href: "/cartridges/edit/#{@cartridge.id}/add_s"} Add new selector
     |
     %a{ href: "/cartridges/priority/#{@cartridge.id}"} Priority
+
+
+%script{:type => 'text/javascript', :src => "/javascripts/cartridge-default-values.js" }
