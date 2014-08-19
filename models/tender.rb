@@ -11,6 +11,7 @@ class Tender
 
   class << self
     attr_accessor :data_fields_list
+    attr_accessor :default_values_fields_list
   end
 
   @data_fields_list = [
@@ -26,7 +27,18 @@ class Tender
     :documents
   ]
 
-  # Timestamps, created_at and updated_at included via Mongoid::Timestamps
+  @default_values_fields_list = [
+    :title,
+    :start_price,
+    :tender_form,
+    :customer_name,
+    :customer_inn,
+    :customer_address,
+    :work_type
+  ]
+
+
+  # Timestamps, created_at and updated_at included via mongoid
   field :start_at, type: Time
   field :published_at, type: Time
   field :moderated_at, type: Time
@@ -90,5 +102,14 @@ class Tender
 
   def before_save
     self.code_by_source = self.id_by_source if self.code_by_source.to_s.empty?
+    default_values
+  end
+
+  def default_values
+    cartridge = source.cartridges.where(tender_type: group).first
+    return nil if cartridge.default_tender_values.to_s.empty?
+    cartridge.default_tender_values.each do |field, value|
+      attributes[field] = value if attributes[field].to_s.empty?
+    end
   end
 end

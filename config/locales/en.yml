@@ -1,0 +1,17 @@
+en:
+  hello: "Test hello"
+
+  mongoid:
+    models:
+      cartridge: "Ololo"
+    attributes:
+      cartridge:
+        name: "Test en name"
+      tender:
+        title: "Название"
+        start_price: "Стартовая цена"
+        tender_form: "Форма тендера"
+        customer_name: "Заказчик"
+        customer_inn: "ИНН заказчика"
+        customer_address: "Адрес заказчика"
+        work_type: "Тип работ"

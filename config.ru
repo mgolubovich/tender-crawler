@@ -4,10 +4,12 @@ require 'rack-timeout'
 require 'date'
 require 'open-uri'
 
+
 Bundler.require
 
 use Rack::Timeout
 
+require './controllers/application_contoller.rb'
 Dir.glob('./{models,lib,controllers}/*.rb').sort.each { |file| require file }
 Dir.glob('./lib/reaper/*.rb').each { |file| require file }
 Dir.glob('./lib/managers/*.rb').each { |file| require file}
@@ -23,3 +25,4 @@ map('/sources') { run SourcesController }
 map('/controls') { run ManagementController }
 map('/rules') { run RulesController }
 map('/cartridges') { run CartridgesController }
+map('/api') { run ApiController }
