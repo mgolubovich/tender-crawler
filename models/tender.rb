@@ -22,18 +22,19 @@ class Tender
     :tender_form,
     :customer_name,
     :customer_inn,
+    :customer_address,
     :work_type,
     :documents
   ]
 
   @default_values_fields_list = [
-      :title,
-      :start_price,
-      :tender_form,
-      :customer_name,
-      :customer_inn,
-      :customer_address,
-      :work_type
+    :title,
+    :start_price,
+    :tender_form,
+    :customer_name,
+    :customer_inn,
+    :customer_address,
+    :work_type
   ]
 
 
@@ -41,6 +42,7 @@ class Tender
   field :start_at, type: Time
   field :published_at, type: Time
   field :moderated_at, type: Time
+  field :modified_at, type: Time
 
   # Source info
   # Code of tender based on source
@@ -65,8 +67,6 @@ class Tender
   field :work_type, type: Array
   field :documents, type: Array
 
-  field :modified_at, type: Time
-
   # Fields for MySQL integration
   # Category of tender 0-5. Magic numbers. 0 - not needed. -1 - failed
   field :external_work_type, type: Integer
@@ -90,22 +90,26 @@ class Tender
   index({ external_db_id: 1 }, { unique: true })
 
   def data_attr
-    tmp_attr = attributes.symbolize_keys
-    tmp = tmp_attr.select { |k| Tender.data_fields_list.include?(k) }
-    tmp[:documents].map!{|d| d.symbolize_keys} unless tmp[:documents].to_s.empty?
-    tmp[:work_type].map!{|d| d.symbolize_keys} unless tmp[:work_type].to_s.empty?
-    tmp
+    attrs = attributes.symbolize_keys
+    attrs[:documents].map! { |d| d.symbolize_keys! } unless attrs[:documents].nil?
+    attrs[:work_type].map! { |w| w.symbolize_keys! } unless attrs[:work_type].nil?
+    attrs.select { |k| Tender.data_fields_list.include?(k) }
+  end
+
+  def md5
+    Digest::MD5.hexdigest(data_attr.to_s)
   end
 
   def before_save
     self.code_by_source = self.id_by_source if self.code_by_source.to_s.empty?
+    default_values
+  end
 
-    cartridge = self.source.cartridges.where(:tender_type => self.group).first
-    unless cartridge.default_tender_values.to_s.empty?
-      cartridge.default_tender_values.each do |field, value|
-          self.attributes[field] = value if self.attributes[field].to_s.empty?
-      end
+  def default_values
+    cartridge = source.cartridges.where(tender_type: group).first
+    return nil if cartridge.default_tender_values.to_s.empty?
+    cartridge.default_tender_values.each do |field, value|
+      attributes[field] = value if attributes[field].to_s.empty?
     end
-
   end
 end

@@ -43,4 +43,12 @@ class Cartridge
   def load_selector(value_type)
     selectors.active.where(value_type: value_type).limit(1).first
   end
+
+  def load_pm
+    page_managers.first
+  end
+
+  def need_to_sleep?
+    delay_between_tenders > 0
+  end
 end

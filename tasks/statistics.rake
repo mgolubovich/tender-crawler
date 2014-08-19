@@ -33,7 +33,7 @@ namespace :statistics do
   end
 
   desc 'Update all statistics'
-  task update_all: [:update_global_statistics, :update_moderation_today] do
+  task update_all: [:update_global_statistics, :update_moderated_today] do
     Source.each do |source|
       source.tenders_count = source.tenders.count
       source.construction_tenders_count = source.tenders.where(:external_work_type.gt => 1).count
