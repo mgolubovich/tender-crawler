@@ -41,7 +41,7 @@ namespace :dev do
   end
 
   task :test_address_processor do
-    tenders = Tender.where(:external_work_type.gt => 0).limit(10000).order_by(created_at: :desc).to_a
+    tenders = Tender.where(:external_work_type.gt => 0, city_code: nil).limit(10000).order_by(created_at: :desc).to_a
     progressbar = ProgressBar.create(:format => '%a %B %p%% %t %c/%C', :starting_at => 0, :total => tenders.count)
     tenders.each do |t|
       address_processor = AddressProcessor.new(t.customer_address)

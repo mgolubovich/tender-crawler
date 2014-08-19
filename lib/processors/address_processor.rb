@@ -67,9 +67,10 @@ class AddressProcessor
     @result = { region_code: -1, city_code: -1 }
     response = JSON.parse(json)
     @statistics.increment_yandex_counter
+
     geocode = response['response']['GeoObjectCollection']['featureMember']
 
-    return nil if geocode.empty?
+    return nil if geocode.to_s.empty?
 
     area = geocode[0].at(AddressProcessor.yandex_queries[:area_path], nil)
     subarea = geocode[0].at(AddressProcessor.yandex_queries[:subarea_path], nil)
