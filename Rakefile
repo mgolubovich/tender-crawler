@@ -4,7 +4,7 @@ require 'date'
 require 'open-uri'
 
 Bundler.require
-Dir.glob('./{models,lib,controllers,triggers}/*.rb').sort.each { |file| require file }
+Dir.glob('./{models,lib,triggers}/*.rb').sort.each { |file| require file }
 Dir.glob('./lib/reaper/*.rb').each { |file| require file}
 Dir.glob('./lib/managers/*.rb').each { |file| require file}
 Dir.glob('./lib/processors/*.rb').each { |file| require file}
