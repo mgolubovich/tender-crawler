@@ -108,7 +108,8 @@ class Tender
   def default_values
     return nil if group.nil?
     cartridge = source.cartridges.where(tender_type: group).first
-    return nil if cartridge.default_tender_values.to_s.empty?
+    return nil if cartridge.nil? || cartridge.default_tender_values.to_s.empty?
+    
     cartridge.default_tender_values.each do |field, value|
       attributes[field] = value if attributes[field].to_s.empty?
     end
