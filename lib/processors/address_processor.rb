@@ -70,7 +70,7 @@ class AddressProcessor
 
     geocode = response['response']['GeoObjectCollection']['featureMember']
 
-    return nil if geocode.to_s.empty?
+    return nil if geocode.to_s.empty? || geocode.count == 0
 
     area = geocode[0].at(AddressProcessor.yandex_queries[:area_path], nil)
     subarea = geocode[0].at(AddressProcessor.yandex_queries[:subarea_path], nil)
