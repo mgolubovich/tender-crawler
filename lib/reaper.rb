@@ -34,13 +34,6 @@ class Reaper
         break if @params.reaped_enough?
         tender_stub = EntityStub.new
 
-        code = Grappler.new(cartridge.load_selector(:code_by_source), entity_id).grapple
-        log_got_code(code)
-
-        tender = @params.source.tenders.find_or_create_by(code_by_source: code)
-
-        old_md5 = tender.md5
-
         cartridge.selectors.data_fields.order_by(priority: :desc).each do |s|
           log_start_grappling(s.value_type)
 
@@ -51,6 +44,10 @@ class Reaper
 
           log_got_value(s.value_type, value)
         end
+
+        code = tender_stub.attributes[:code_by_source]
+        tender = @params.source.tenders.find_or_create_by(code_by_source: code)
+        old_md5 = tender.md5
 
         tender.id_by_source = entity_id
         tender.source_link = cartridge.base_link_template.gsub('$entity_id', entity_id)
