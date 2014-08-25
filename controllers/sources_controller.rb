@@ -63,8 +63,12 @@ class SourcesController < ApplicationController
 
 private
   def parse_source_form
-    data = Hash.new
     data = {:name => params[:source_name], :url => params[:source_url], :external_site_id => params[:source_external_site_id], :comment => params[:source_comment]}
+
+    data[:resque_frequency] = params[:resque_frequency].to_i
+    data[:deep_level] = params[:deep_level].to_i
+    data[:priority] = params[:priority].to_sym
+
     data[:is_active] = params[:source_activity] == 'active' ? true : false
     data
   end

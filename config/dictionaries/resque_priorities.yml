@@ -1,0 +1,12 @@
+top:
+  name: Вне очереди
+  type: manual
+high:
+  name: Высокий
+  type: auto
+normal:
+  name: Нормальный
+  type: auto
+low:
+  name: Низкий
+  type: auto

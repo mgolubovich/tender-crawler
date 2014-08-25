@@ -13,10 +13,14 @@ class Source
   field :url, type: String
   field :comment, type: String
 
-  # Service parametres
-  field :tenders_update_frequency, type: Time
+  # Service parameters
   field :is_active, type: Boolean
   field :last_imported_at, type: DateTime
+
+  #Resque parameters
+  field :resque_frequency, type: Integer
+  field :deep_level, type: Integer, default: 100
+  field :priority, type: Symbol, default: :middle
 
   # Field used for invoking pre and post processing of data or parametres
   # Example
