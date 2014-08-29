@@ -18,7 +18,7 @@ class NavigationManager
   def go(url)
     Capybara.visit(url) unless url == location
   rescue Capybara::Webkit::InvalidResponseError
-    save_the_day
+    # save_the_day
     go(url)
   end
 
