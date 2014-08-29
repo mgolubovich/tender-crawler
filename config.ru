@@ -27,3 +27,4 @@ map('/controls') { run ManagementController }
 map('/rules') { run RulesController }
 map('/cartridges') { run CartridgesController }
 map('/api') { run ApiController }
+map('/dev') { run DevController }

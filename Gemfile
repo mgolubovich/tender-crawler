@@ -17,6 +17,9 @@ gem 'resque'
 gem 'redis'
 gem 'resque-scheduler'
 
+gem 'dbf'
+gem 'zip'
+
 gem 'haml'
 gem 'will_paginate'
 gem 'will_paginate_mongoid'
