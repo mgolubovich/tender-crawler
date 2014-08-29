@@ -33,6 +33,6 @@ namespace :resque do
 
 
   task :manual_reap, :source_id, :deep_level do |t, args|
-    Resque.enqueue( ReapJob, args.source_id, args.deep_level )
+    Resque.enqueue(ReapJob, args.source_id, args.deep_level)
   end
 end
