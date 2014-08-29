@@ -77,5 +77,4 @@ class Grappler
       data
     end
   end
-
 end
