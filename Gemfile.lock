@@ -33,6 +33,8 @@ GEM
       json
     chronic (0.10.2)
     columnize (0.8.9)
+    dbf (2.0.7)
+      fastercsv (~> 1.5.4)
     debugger (1.6.6)
       columnize (>= 0.3.1)
       debugger-linecache (~> 1.2.0)
@@ -40,6 +42,7 @@ GEM
     debugger-linecache (1.2.0)
     debugger-ruby_core_source (1.3.4)
     diff-lcs (1.2.5)
+    fastercsv (1.5.5)
     haml (4.0.5)
       tilt
     headless (1.0.2)
@@ -145,6 +148,7 @@ GEM
       will_paginate (~> 3.0)
     xpath (2.0.0)
       nokogiri (~> 1.3)
+    zip (2.0.2)
 
 PLATFORMS
   ruby
@@ -157,6 +161,7 @@ DEPENDENCIES
   capistrano
   capybara (= 2.2.1)
   capybara-webkit (= 1.1.0)
+  dbf
   debugger
   haml
   headless
@@ -177,3 +182,4 @@ DEPENDENCIES
   will_paginate
   will_paginate-bootstrap
   will_paginate_mongoid
+  zip

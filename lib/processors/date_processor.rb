@@ -1,5 +1,9 @@
 # Class used for processing and parsing date from strings
 class DateProcessor
+  class << self
+    attr_accessor :dictionary
+  end
+
   @dictionary = YAML.load_file('config/dictionaries/russian_dates_dict.yml')
 
   def initialize(raw_data, format = nil)

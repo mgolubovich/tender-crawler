@@ -1,0 +1,38 @@
+h1. Test
+.container-fluid
+  %table.table.table-striped.table-condensed
+    = will_paginate @tenders, renderer: BootstrapPagination::Sinatra
+    %thead
+      %tr
+        %td Tender ID
+        %td Customer address
+        %td Region Code
+        %td Region Name
+        %td City Code
+        %td City Name
+    %tbody
+      - @tenders.each do |tender|
+        - case true
+        - when !tender.region_code.to_s.empty? && !tender.city_code.to_s.empty? && tender.region_code == @cities[tender.city_code][:region_code]
+          - @tr_class = "success"
+        - when !tender.region_code.to_s.empty? && !tender.city_code.to_s.empty? && tender.region_code != @cities[tender.city_code][:region_code]
+          - @tr_class = "danger"
+        - else
+          - @tr_class = "warning"
+        %tr{:class => @tr_class}
+          %td= tender._id
+          %td= tender.customer_address
+          %td
+            - unless tender.region_code.to_s.empty?
+              #{tender.region_code}
+          %td
+            - unless tender.region_code.to_s.empty?
+              #{@regions[tender.region_code]}
+          %td
+            - unless tender.city_code.to_s.empty?
+              #{tender.city_code}
+          %td
+            - unless tender.city_code.to_s.empty?
+              #{@cities[tender.city_code][:name]}
+
+= will_paginate @tenders, renderer: BootstrapPagination::Sinatra
