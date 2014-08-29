@@ -25,6 +25,22 @@
         %label.col-md-4.control-label{:for => "source_comment"} Комментарий источника
         .col-md-5
           %textarea.form-control.input-md{:id => "source_comment", :name => "source_comment", :type => "text", :raws => 15}
+      .form-group
+        %label.col-md-4.control-label{:for => "resque_frequency"} Кол-во минут между запуском
+        .col-md-5
+          %input.form-control.input-md{:id => "resque_frequency", :name => "resque_frequency", :type => "text", :value => "0", :size => 20}
+      .form-group
+        %label.col-md-4.control-label{:for => "deep_level"} Количество парсиуемых тендеров
+        .col-md-5
+          %input.form-control.input-md{:id => "deep_level", :name => "deep_level", :type => "text", :value => "0", :size => 20}
+      .form-group
+        %label.col-md-4.control-label{:for => "priority"} Приоритет
+        .col-md-5
+          %select.form-control{:id => "priority", :name => "priority"}
+            - YAML.load_file('config/dictionaries/resque_priorities.yml').symbolize_keys!.each do |priority, params|
+              - if params["type"] == "auto"
+                %option{ :value => priority, :selected => priority == :normal }
+                  #{params["name"]}
 
       .form-group
         .col-xs-5.col-md-offset-3

@@ -3,7 +3,7 @@ require 'bundler'
 require 'rack-timeout'
 require 'date'
 require 'open-uri'
-
+require 'resque/server'
 
 Bundler.require
 
@@ -27,4 +27,5 @@ map('/controls') { run ManagementController }
 map('/rules') { run RulesController }
 map('/cartridges') { run CartridgesController }
 map('/api') { run ApiController }
+map('/resque') { run Resque::Server.new }
 map('/dev') { run DevController }
