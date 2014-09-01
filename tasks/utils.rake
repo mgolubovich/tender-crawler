@@ -35,4 +35,22 @@ namespace :utils do
       progress_bar.increment
     end
   end
+
+  desc 'Setting external_work_type for tenders with ewt = 0'
+  task :set_external_work_type do
+    tenders = Tender.where(external_work_type: 0)
+
+    progress_bar = ProgressBar.create(
+      title: 'Processing tenders',
+      format: '%a %B %p%% %t %c/%C',
+      starting_at: 0,
+      total: tenders.count
+      )
+
+    tenders.each do |t|
+      t.external_work_type = WorkTypeProcessor.new(t.work_type).process
+      t.save
+      progress_bar.increment
+    end
+  end
 end
