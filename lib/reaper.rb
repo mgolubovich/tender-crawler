@@ -96,19 +96,25 @@ class Reaper
     Selector.complex_fields.each do |field, set|
       data = {}
       selector = nil
+      master = set.keys.first
+      slave = set.keys.last
+      stub = EntityStub.new
 
       set.each do |struct_key, selector_type|
-        selector = cartridge.load_selector(selector_type)
-        continue unless selector
+        selectors = cartridge.load_selectors(selector_type)
+        continue unless selectors.empty?
 
-        @nav_manager.go(selector.link_template.gsub('$entity_id', entity_id))
+        selectors.each do |s|
+          @nav_manager.go(s.link_template.gsub('$entity_id', entity_id))
+          stub.insert(struct_key, Grappler.new(selector, entity_id).grapple_all)
+        end
 
-        data[struct_key] = Grappler.new(selector, entity_id).grapple_all
+        data[struct_key] = stub.attrs[struct_key]
       end
 
       result[field] = []
-      data[set.keys.first].each_with_index do |v, i|
-        result[field] << { set.keys.first => v, set.keys.last => data[set.keys.last][i] }
+      data[master].each_with_index do |v, i|
+        result[field] << { master => v, slave => data[slave][i] }
       end
     end
     result
