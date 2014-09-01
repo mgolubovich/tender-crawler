@@ -18,4 +18,9 @@ namespace :dev do
       i += 1
     end
   end
+
+  task :test_wt_proc do
+    t = Tender.find('54047cb090c0432d8e00016d')
+    puts WorkTypeProcessor.new(t.work_type).process
+  end
 end
