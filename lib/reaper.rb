@@ -55,7 +55,6 @@ class Reaper
         tender.external_work_type = WorkTypeProcessor.new(tender.work_type).process
         tender.update_attributes(emit_complex_selectors(cartridge, entity_id))
 
-        debugger
         unless @params.args[:is_checking]
           tender.update_attributes(tender_stub.attrs)
           tender.modified_at = Time.now unless old_md5 == tender.md5
@@ -95,18 +94,18 @@ class Reaper
 
     Selector.complex_fields.each do |field, set|
       data = {}
-      selector = nil
+      selectors = nil
       master = set.keys.first
       slave = set.keys.last
       stub = EntityStub.new
 
       set.each do |struct_key, selector_type|
         selectors = cartridge.load_selectors(selector_type)
-        continue unless selectors.empty?
+        next if selectors.empty?
 
         selectors.each do |s|
           @nav_manager.go(s.link_template.gsub('$entity_id', entity_id))
-          stub.insert(struct_key, Grappler.new(selector, entity_id).grapple_all)
+          stub.insert(struct_key, Grappler.new(s, entity_id).grapple_all)
         end
 
         data[struct_key] = stub.attrs[struct_key]
