@@ -1,8 +1,5 @@
 # Class that handles web-navigation
 class NavigationManager
-  Capybara.default_driver = :webkit
-  Capybara.run_server = false
-
   def initialize
     @proxy_manager = ProxyManager.new
     @is_proxified = false
