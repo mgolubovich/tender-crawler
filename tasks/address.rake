@@ -376,7 +376,7 @@ namespace :address do
     progressbar = ProgressBar.create(:format => '%a %B %p%% %t %c/%C', :starting_at => 0, :total => regions.count)
 
     regions.each do |region|
-      tenders = Tenders
+      tenders = Tender
       tenders = tenders.where(source_id: args.source_id) unless args.source_id == :none
       tenders = tenders.any_of({:customer_address => /(^|.*[^а-я])#{region.name}([^а-я].*|$)/i})
 
