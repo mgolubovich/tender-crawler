@@ -4,6 +4,7 @@
 .idea
 config/unicorn.rb
 config/mongoid.yml
+config/deploy/*.rb
 tmp/*
 log/*
 *.DS_Store
