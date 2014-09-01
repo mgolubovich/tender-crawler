@@ -6,10 +6,12 @@
       .form-group
         %input.form-control{:name => "search", :type => "text", :placeholder => "Search", :value => params[:search]}
       .form-group
-        %select.form-control{:name => "created_by", :id => "filter_created_by"}
+        %select.form-control{:name => "source_type", :id => "filter_source_type"}
           %option{ :value => '' } Все
-          %option{:value => :parser, :selected => params[:created_by].to_sym == :parser} Автоматическое
-          %option{:value => :human, :selected => params[:created_by].to_sym == :human} Ручное
+          %option{:value => :auto, :selected => params[:source_type].to_sym == :auto} Автоматическое
+          %option{:value => :manual, :selected => params[:source_type].to_sym == :manual} Ручное
+      .form-group
+        %span Count sources: #{@total}
       .form-group
         %span.input-group-btn
           %button.btn.btn-primary Искать

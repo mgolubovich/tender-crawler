@@ -16,6 +16,7 @@ class Source
   # Service parameters
   field :is_active, type: Boolean
   field :last_imported_at, type: DateTime
+  field :source_type, type: Symbol, default: :auto
 
   #Resque parameters
   field :resque_frequency, type: Integer

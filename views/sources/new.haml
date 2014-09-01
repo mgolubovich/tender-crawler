@@ -26,7 +26,7 @@
         .col-md-5
           %textarea.form-control.input-md{:id => "source_comment", :name => "source_comment", :type => "text", :raws => 15}
       .form-group
-        %label.col-md-4.control-label{:for => "resque_frequency"} Кол-во минут между запуском
+        %label.col-md-4.control-label{:for => "resque_frequency"} Частота запуска в минутах
         .col-md-5
           %input.form-control.input-md{:id => "resque_frequency", :name => "resque_frequency", :type => "text", :value => "0", :size => 20}
       .form-group
@@ -41,6 +41,12 @@
               - if params["type"] == "auto"
                 %option{ :value => priority, :selected => priority == :normal }
                   #{params["name"]}
+      .form-group
+        %label.col-md-4.control-label{:for => "source_type"} Тип источника
+        .col-md-5
+          %select.form-control{:id => "source_type", :name => "source_type"}
+            %option{ :value => "auto"} Auto
+            %option{ :value => "manual"} Manual
 
       .form-group
         .col-xs-5.col-md-offset-3

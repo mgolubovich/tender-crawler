@@ -18,11 +18,11 @@
       .form-group
         %label.col-md-4.control-label{:for => "title"} title
         .col-md-5
-          %input.form-control.input-md{:id => "title", :name => "title", :type => "text", :size => 20}
+          %input.form-control.input-md{ id: "title", name: "title", type: "text", size: 20, value: @tender.title }
       .form-group
         %label.col-md-4.control-label{:for => "tender_form"} tender_form
         .col-md-5
-          %input.form-control.input-md{:id => "tender_form", :name => "tender_form", :type => "text", :size => 20}
+          %input.form-control.input-md{ id: "tender_form", name: "tender_form", type: "text", size: 20, value: @tender.tender_form }
       .form-group
         %label.col-md-4.control-label{:for=> "external_work_type"} external_work_type
         .col-md-5
@@ -41,15 +41,19 @@
       .form-group
         %label.col-md-4.control-label{:for => "customer_inn"} customer_inn
         .col-md-5
-          %input.form-control.input-md{:id => "customer_inn", :name => "customer_inn", :type => "text", :placeholder => "", :size => 20}
+          %input.form-control.input-md{ id: "customer_inn", name: "customer_inn", type: "text", placeholder: "", size: 20, value: @tender.customer_inn }
       .form-group
         %label.col-md-4.control-label{:for => "customer_name"} customer_name
         .col-md-5
-          %input.form-control.input-md{:id => "customer_name", :name => "customer_name", :type => "text", :placeholder => "", :size => 20}
+          %input.form-control.input-md{ id: "customer_name", name: "customer_name", type: "text", placeholder: "", size: 20, value: @tender.customer_name }
       .form-group
         %label.col-md-4.control-label{:for => "customer_address"} customer_address
         .col-md-5
-          %input.form-control.input-md{:id => "customer_address", :name => "customer_address", :type => "text", :placeholder => "", :size => 20}
+          %input.form-control.input-md{ id: "customer_address", name: "customer_address", type: "text", placeholder: "", size: 20, value: @tender.customer_address }
+      .form-group
+        %label.col-md-4.control-label{:for => "start_price"} start_price
+        .col-md-5
+          %input.form-control.input-md{ id: "start_price", name: "start_price", type: "text", placeholder: "", size: 20, value: @tender.start_price }
       .form-group
         %label.col-md-4.control-label{:for => "id_by_source"} id_by_source
         .col-md-5

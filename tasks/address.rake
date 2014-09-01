@@ -229,7 +229,7 @@ namespace :address do
 
   desc "Set regions and cities for tenders by postcode; source_id=none for all tenders; modes: new(region code is null, default), indefinite(region code equally -1), all"
   task :set_region_code_for_tenders_by_postcode, :source_id, :mode do |t, args|
-    args.with_defaults(:source_id => :none, :mode => :all)
+    args.with_defaults(:source_id => :none, :mode => :new)
 
     tenders = Tender
     tenders = tenders.where(source_id: args.source_id) unless args.source_id.to_sym == :none
@@ -370,7 +370,7 @@ namespace :address do
 
   desc "[REVERSE VERSION] Set regions for tenders; source_id=none for all tenders; modes: new(region code is null, default), indefinite(region code equally -1), all"
   task :set_region_and_city_codes_for_tender_reverse, :source_id, :mode do |t, args|
-    args.with_defaults(:source_id => :none, :mode => :all)
+    args.with_defaults(:source_id => :none, :mode => :new)
 
     regions = Region.all.to_a
     progressbar = ProgressBar.create(:format => '%a %B %p%% %t %c/%C', :starting_at => 0, :total => regions.count)

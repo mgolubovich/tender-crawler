@@ -30,6 +30,17 @@ class TendersController < ApplicationController
   end
 
   get '/new' do
+    @tender = Tender.new
+
+    unless params[:source_id].nil?
+      source = Source.find(params[:source_id])
+
+      unless source.nil?
+        @tender.source = source
+        @tender.load_default_values
+      end
+    end
+
     haml :'tenders/new'
   end
 

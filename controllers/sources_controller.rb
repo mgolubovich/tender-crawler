@@ -1,24 +1,26 @@
 class SourcesController < ApplicationController
 
   get '/' do
-    @sources = Source.order_by(is_active: :desc).order_by(created_at: :asc)
-    #@sources = @sources.where(name: Regexp.new(params[:search], Regexp::IGNORECASE)) if params[:search]
-    @sources = @sources.any_of({name: Regexp.new(params[:search], Regexp::IGNORECASE)}, {url: Regexp.new(params[:search], Regexp::IGNORECASE)}) unless params[:search].to_s.empty?
 
-    params[:created_by] = '' if params[:created_by].nil?
+    params[:source_type] = :all if params[:source_type].nil?
 
-    case  params[:created_by].to_sym
-      when :human
-        @sources = @sources.select { |source| source.cartridges.count  == 0 }
-        ids = @sources.map{ |source| source._id}
-        @sources = Source.where(:_id.in => ids)
-      when :parser
-        @sources = @sources.select { |source| source.cartridges.count  > 0 }
-        ids = @sources.map{ |source| source._id}
-        @sources = Source.where(:_id.in => ids)
+    case  params[:source_type].to_sym
+      when :auto
+        @sources = Source.or({source_type: :auto}, {source_type: nil})
+      when :manual
+        @sources = Source.where(source_type: :manual)
+      else
+        @sources = Source
     end
 
+    @sources = @sources.order_by(is_active: :desc).order_by(created_at: :asc)
 
+    unless params[:search].to_s.empty?
+      regexp = Regexp.new(params[:search], Regexp::IGNORECASE)
+      @sources = @sources.any_of({name: regexp}, {url: regexp})
+    end
+
+    @total = @sources.count
     @sources = @sources.paginate(page: params[:page], per_page: 25)
     @source_counter = params[:page].nil? ? 0 : params[:page].to_i * 25 - 25
     haml :sources
@@ -68,6 +70,7 @@ private
     data[:resque_frequency] = params[:resque_frequency].to_i
     data[:deep_level] = params[:deep_level].to_i
     data[:priority] = params[:priority].to_sym
+    data[:source_type] = params[:source_type].to_sym
 
     data[:is_active] = params[:source_activity] == 'active' ? true : false
     data

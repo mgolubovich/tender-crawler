@@ -48,6 +48,12 @@
                 %option{:value => priority, :selected => @sources.priority == priority}
                   #{params["name"]}
       .form-group
+        %label.col-md-4.control-label{:for => "source_type"} Тип источника
+        .col-md-5
+          %select.form-control{:id => "source_type", :name => "source_type"}
+            %option{ :value => "auto", :selected => @sources.source_type == :auto} Auto
+            %option{ :value => "manual", :selected => @sources.source_type == :manual} Manual
+      .form-group
         .col-xs-5.col-md-offset-3
           %input.btn.btn-primary.btn-lg{:name => "submint", :type => "submit", :value => "Сохранить"}
           %a.btn.btn-danger.btn-lg{:href => "/sources/destroy/#{@sources.id}", :name => "delete", :type => "submit", :value => "Удалить", :method => "get", :onclick => "return ORLY();"} Удалить

@@ -113,4 +113,14 @@ class Tender
       self[field.to_sym] = value if attributes[field.to_sym].to_s.empty?
     end
   end
+
+  def load_default_values
+    cartridge = source.cartridges.first
+    return nil if cartridge.nil? || cartridge.default_tender_values.to_s.empty?
+
+    cartridge.default_tender_values.each do |field, value|
+      self[field.to_sym] = value if attributes[field.to_sym].to_s.empty?
+    end
+  end
+
 end
