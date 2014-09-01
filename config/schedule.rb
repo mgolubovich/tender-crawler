@@ -18,11 +18,6 @@
 # end
 
 # Learn more: http://github.com/javan/whenever
-
-every 30.minutes do
-  rake 'parsing:reap[5339108d1d0aab8c0a000001,1000]'
-end
-
 every 5.minutes do
   rake 'statistics:update_all'
 end
