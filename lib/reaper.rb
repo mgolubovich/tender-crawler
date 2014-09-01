@@ -55,6 +55,7 @@ class Reaper
         tender.external_work_type = WorkTypeProcessor.new(tender.work_type).process
         tender.update_attributes(emit_complex_selectors(cartridge, entity_id))
 
+        debugger
         unless @params.args[:is_checking]
           tender.update_attributes(tender_stub.attrs)
           tender.modified_at = Time.now unless old_md5 == tender.md5

@@ -34,7 +34,8 @@ class Tender
     :customer_name,
     :customer_inn,
     :customer_address,
-    :work_type
+    :external_work_type,
+    :group
   ]
 
 
@@ -110,7 +111,7 @@ class Tender
     return nil if cartridge.nil? || cartridge.default_tender_values.to_s.empty?
 
     cartridge.default_tender_values.each do |field, value|
-      self[field.to_sym] = value if attributes[field.to_sym].to_s.empty?
+      self[field.to_sym] = value if attributes[field].to_s.empty?
     end
   end
 end

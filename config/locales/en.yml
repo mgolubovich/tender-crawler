@@ -14,4 +14,5 @@ en:
         customer_name: "Заказчик"
         customer_inn: "ИНН заказчика"
         customer_address: "Адрес заказчика"
-        work_type: "Тип работ"
+        external_work_type: "Тип работ"
+        group: "Закон"
