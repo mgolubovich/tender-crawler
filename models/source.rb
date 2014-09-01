@@ -17,7 +17,7 @@ class Source
   field :is_active, type: Boolean
   field :last_imported_at, type: DateTime
 
-  #Resque parameters
+  # Resque parameters
   field :resque_frequency, type: Integer
   field :deep_level, type: Integer, default: 100
   field :priority, type: Symbol, default: :middle
@@ -29,10 +29,10 @@ class Source
 
   # Example of proxy_update_frequency field value
   # This
-  # {"type":"hits","value":"100"}
+  # { "type":"hits","value":"100" }
   # means what every 100 hits we must change proxy server
   # Another form
-  # {"type":"time", "value":"5.minutes"}
+  # { "type":"time", "value":"5.minutes" }
   # means what every 5 minutes we also must change proxy server
   field :proxy_update_frequency, type: Hash
 
