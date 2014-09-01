@@ -52,22 +52,16 @@ class Reaper
         tender.id_by_source = entity_id
         tender.source_link = cartridge.base_link_template.gsub('$entity_id', entity_id)
         tender.group = cartridge.tender_type
-        tender.documents = get_docs(cartridge, entity_id)
-        tender.work_type = get_work_type(cartridge, entity_id)
         tender.external_work_type = WorkTypeProcessor.new(tender.work_type).process
-
-        # tender.status = tender_status
+        tender.update_attributes(emit_complex_selectors(cartridge, entity_id))
 
         unless @params.args[:is_checking]
           tender.update_attributes(tender_stub.attrs)
-
           tender.modified_at = Time.now unless old_md5 == tender.md5
-
           tender.save
         end
 
         @params.status[:result] << tender
-
         @params.status[:reaped_tenders_count] += 1
 
         log_tender_saved(tender[:_id])
@@ -95,41 +89,27 @@ class Reaper
     Grappler.new(cartridge.selectors.active.ids_set.first).grapple_all.uniq
   end
 
-  def get_docs(cartridge, entity_id)
-    doc_title_sl = cartridge.load_selector(:doc_title)
-    doc_link_sl = cartridge.load_selector(:doc_link)
+  def emit_complex_selectors(cartridge, entity_id)
+    result = {}
 
-    return nil unless doc_title_sl && doc_link_sl
+    Selector.complex_fields.each do |field, set|
+      data = {}
+      selector = nil
 
-    documents = []
-    @nav_manager.go(doc_title_sl.link_template.gsub('$entity_id', entity_id))
+      set.each do |struct_key, selector_type|
+        selector = cartridge.load_selector(selector_type)
+        continue unless selector
 
-    doc_titles = Grappler.new(doc_title_sl, entity_id.to_s).grapple_all
-    doc_links = Grappler.new(doc_link_sl, entity_id.to_s).grapple_all
+        @nav_manager.go(selector.link_template.gsub('$entity_id', entity_id))
 
-    doc_titles.each_with_index do |title, i|
-      documents << { doc_title: title, doc_link: doc_links[i] }
+        data[struct_key] = Grappler.new(selector, entity_id).grapple_all
+      end
+
+      result[field] = []
+      data[set.keys.first].each_with_index do |v, i|
+        result[field] << { set.keys.first => v, set.keys.last => data[set.keys.last][i] }
+      end
     end
-
-    documents
-  end
-
-  def get_work_type(cartridge, entity_id)
-    code_selector = cartridge.load_selector(:work_type_code)
-    title_selector = cartridge.load_selector(:work_type_title)
-
-    return nil unless code_selector && title_selector
-
-    work_types = []
-    @nav_manager.go(code_selector.link_template.gsub('$entity_id', entity_id))
-
-    wt_codes = Grappler.new(code_selector, entity_id).grapple_all
-    wt_titles = Grappler.new(title_selector, entity_id).grapple_all
-
-    wt_codes.each_with_index do |code, i|
-      work_types << { code: code, title: wt_titles[i] }
-    end
-
-    work_types
+    result
   end
 end

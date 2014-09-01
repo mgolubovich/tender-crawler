@@ -11,6 +11,7 @@ class Selector
 
   class << self
     attr_accessor :data_fields_list
+    attr_accessor :complex_fields
   end
 
   @data_fields_list = [
@@ -20,6 +21,17 @@ class Selector
     :work_type_code,
     :work_type_title
   ]
+
+  @complex_fields = {
+    documents: {
+      doc_title: :doc_title,
+      doc_link: :doc_link
+    },
+    work_type: {
+      code: :work_type_code,
+      title: :work_type_title
+    }
+  }
 
   # Type of field what this selector must extract.
   # Example: title, start_price etc
