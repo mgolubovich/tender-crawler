@@ -14,7 +14,6 @@ class ApplicationController < Sinatra::Base
       :method_override,
       :dump_errors, :run
     )
-    Mongoid.load!(File.expand_path(File.join('config', 'mongoid.yml')))
   end
 
   configure :test do
@@ -28,7 +27,6 @@ class ApplicationController < Sinatra::Base
       :raise_errors
     )
     disable :run, :dump_errors, :logging
-    Mongoid.load!(File.expand_path(File.join('config', 'mongoid.yml')))
   end
 
   configure :production do
@@ -43,7 +41,6 @@ class ApplicationController < Sinatra::Base
       :dump_errors,
       :run
     )
-    Mongoid.load!(File.expand_path(File.join('config', 'mongoid.yml')))
   end
 
   helpers WillPaginate::Sinatra::Helpers

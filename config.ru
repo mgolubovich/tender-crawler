@@ -9,7 +9,7 @@ Bundler.require
 
 use Rack::Timeout
 
-require './controllers/application_contoller.rb'
+require './controllers/application_controller.rb'
 Dir.glob('./{models,lib,controllers}/*.rb').sort.each { |file| require file }
 Dir.glob('./lib/reaper/*.rb').each { |file| require file }
 Dir.glob('./lib/managers/*.rb').each { |file| require file}
