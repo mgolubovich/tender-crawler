@@ -15,3 +15,5 @@ Gemfile.lock
 tags
 data/postcodes/*.zip
 data/postcodes/tmp/*.DBF
+config/deploy/develop.rb
+config/deploy/production.rb
