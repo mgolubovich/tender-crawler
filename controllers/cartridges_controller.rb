@@ -1,5 +1,4 @@
 class CartridgesController < ApplicationController
-  require 'debugger'
   get '/' do
     @cartridges = Cartridge.order_by(source_id: :asc).order_by(created_at: :asc)
     @cartridges = @cartridges.where(source_id: params[:source_id]) if params[:source_id] #cartridges in some source
@@ -33,9 +32,8 @@ class CartridgesController < ApplicationController
     @selectors = @cartridge.selectors
     @sources = Source.order_by(created_at: :asc)
     @value_types = YAML.load_file('config/value_types.yml')
-    @value_types = @value_types.map {|v| v.to_sym}
+    @value_types = @value_types.map { |v| v.to_sym }
     @used_keys = @selectors.distinct(:value_type)
-
     haml :'cartridges/edit'
   end
 
@@ -106,7 +104,6 @@ class CartridgesController < ApplicationController
   post '/edit/:cart_id/selector/:id' do
     selector = Selector.find params[:selector_id]
     attributes = parse_selector_form
-    debugger
     selector.update_attributes!(attributes)
 
     redirect "/cartridges/edit/#{selector.cartridge_id}"
@@ -197,21 +194,21 @@ class CartridgesController < ApplicationController
 
 private
   def parse_selector_form
-    data = { value_type: params[:selector_value],
-        link_template: params[:selector_link],
-        xpath: params[:selector_xpath],
-        css: params[:selector_css],
-        attr: params[:selector_attr],
-        delimiter: params[:selector_delimiter],
-        date_format: params[:selector_date_format],
-        js_code: params[:selector_js_code],
-        priority: params[:selector_priority],
-        to_type: params[:selector_to_type]
+    data = {
+      value_type: params[:selector_value].to_sym,
+      link_template: params[:selector_link],
+      xpath: params[:selector_xpath],
+      css: params[:selector_css],
+      attr: params[:selector_attr],
+      delimiter: params[:selector_delimiter],
+      date_format: params[:selector_date_format],
+      js_code: params[:selector_js_code],
+      priority: params[:selector_priority],
+      to_type: params[:selector_to_type].to_sym
     }
     data[:offset] = { start: params[:selector_offset_start].to_i, end: params[:selector_offset_end].to_i }
     data[:regexp] = { mode:params[:selector_mode_reg], pattern: params[:selector_pat_reg]}
     data[:is_active] = params[:selector_activity] == 'active' ? true : false
-    debugger
     data
   end
 
