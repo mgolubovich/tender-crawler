@@ -112,6 +112,8 @@ class Reaper
       end
 
       result[field] = []
+
+      next if data.empty?
       data[master].each_with_index do |v, i|
         result[field] << { master => v, slave => data[slave][i] }
       end
