@@ -126,6 +126,8 @@ namespace :db do
     puts "\n\n################ Download dump ################\n\n"
     system("mongodump --host #{args.host_from} --db #{args.db_name} --out #{full_dump_path}")
 
+    Mongoid::Config.purge!
+
     puts "\n\n################ Update database ################\n\n"
     system("mongorestore --host #{args.host_to} #{full_dump_path}")
 
