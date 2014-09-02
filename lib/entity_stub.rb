@@ -29,7 +29,11 @@ class EntityStub < Hash
 
     best = values_set.first
     values_set.each do |value|
-      best = value unless value.nil? || (value.is_a?(String) && value.empty?)
+      if value.is_a?(Array)
+        best = value if value.all?
+      else
+        best = value unless value.to_s.empty?
+      end
     end
     best
   end

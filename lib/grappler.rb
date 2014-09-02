@@ -1,13 +1,8 @@
 # Grappler is entity used for parsing
 # single or multiple values of same value_type
 class Grappler
-  Capybara.default_driver = :webkit
-  Capybara.run_server = false
-  Capybara.default_wait_time = 5
-
-  def initialize(selector, entity_id = '')
+  def initialize(selector, _entity_id = '')
     @selector = selector
-    @link = selector.link_template.gsub('$entity_id', entity_id.to_s)
   end
 
   def grapple(mode = :single)
