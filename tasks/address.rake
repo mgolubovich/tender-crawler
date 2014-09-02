@@ -1,5 +1,8 @@
 require 'active_record'
 require 'mysql2'
+require 'open-uri'
+require 'net/http'
+
 
 ActiveRecord::Base.establish_connection(
     adapter:  'mysql2',
@@ -98,11 +101,6 @@ namespace :address do
 
   desc "Update postcode collection from http://info.russianpost.ru/database/ops.html"
   task :update_postcode_list do
-    require 'dbf'
-    require 'open-uri'
-    require 'net/http'
-    require 'zip'
-
     zip_name = nil
     last_uri = nil
 
