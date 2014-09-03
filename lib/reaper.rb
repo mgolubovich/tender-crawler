@@ -52,8 +52,8 @@ class Reaper
         tender.id_by_source = entity_id
         tender.source_link = cartridge.base_link_template.gsub('$entity_id', entity_id)
         tender.group = cartridge.tender_type
-        tender.external_work_type = WorkTypeProcessor.new(tender.work_type).process
         tender.update_attributes(emit_complex_selectors(cartridge, entity_id))
+        tender.external_work_type = WorkTypeProcessor.new(tender.work_type).process
 
         unless @params.args[:is_checking]
           tender.update_attributes(tender_stub.attrs)
