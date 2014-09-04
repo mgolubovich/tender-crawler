@@ -22,10 +22,22 @@ every 5.minutes do
   rake 'statistics:update_all'
 end
 
-every :day, at: '12:05am' do
-  rake 'statistics:reset_yandex_counter'
+every 50.minutes do
+  rake 'address:set_region_code_for_tender_reverse'
+end
+
+every 53.minutes do
+  rake 'address:set_region_code_for_tenders_by_postcode'
+end
+
+every 55.minutes do
+  rake 'address:yandex_updater'
 end
 
 every :day, at: '12:10am' do
   rake 'utils:load_proxies'
+end
+
+every :day, at: '12:05am' do
+  rake 'statistics:reset_yandex_counter'
 end

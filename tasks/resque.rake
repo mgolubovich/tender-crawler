@@ -21,12 +21,13 @@ namespace :resque do
 
     Source.where(params).to_a.each do |source|
       config = {
-          every: "#{source.resque_frequency}m",
+          every: ["#{source.resque_frequency}m", {first_in: 10.seconds} ],
           class: "ReapJob",
           args: [source._id, source.deep_level],
           queue: source.priority
       }
 
+      puts config
       Resque.set_schedule("reap_#{source._id}", config)
     end
   end
