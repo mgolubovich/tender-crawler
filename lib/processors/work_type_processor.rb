@@ -54,7 +54,7 @@ class WorkTypeProcessor
     return -1 if Array(@work_type).empty?
 
     Array(@work_type).each do |w|
-      next if w['code'].blank?
+      next if w['code'].blank? || @e_work_type > 0
 
       @e_work_type = search_in_files(w['code'])
       @e_work_type = search_in_exceptions(w['code']) if @e_work_type.zero?
