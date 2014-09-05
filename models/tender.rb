@@ -101,8 +101,12 @@ class Tender
     Digest::MD5.hexdigest(data_attr.to_s)
   end
 
+  def is_valid?
+    self[:title].to_s.empty? ? false : true
+  end
+
   def before_save
-    self.code_by_source = self.id_by_source if self.code_by_source.to_s.empty?
+    self[:code_by_source] = self[:id_by_source] if self[:code_by_source].to_s.empty?
     default_values
   end
 
@@ -123,5 +127,4 @@ class Tender
       self[field.to_sym] = value if attributes[field.to_sym].to_s.empty?
     end
   end
-
 end

@@ -1,5 +1,11 @@
 # Class that handles web-navigation
 class NavigationManager
+  class << self
+    attr_accessor :accepted_codes
+  end
+
+  @accepted_codes = [202]
+
   def initialize
     @proxy_manager = ProxyManager.new
     @is_proxified = false
@@ -12,15 +18,15 @@ class NavigationManager
     @is_started = false
   end
 
-  def go(url)
-    Capybara.visit(url) unless url == location
-  rescue Capybara::Webkit::InvalidResponseError
-    # save_the_day
-    go(url)
-  end
-
-  def location
-    Capybara.current_url
+  def go(url, reload = false)
+    return if (url == location) && !reload
+    Capybara.visit(url)
+    ParserLog.logger.info "[#{Time.now}] - visited #{url}"
+  rescue Capybara::Driver::Webkit::WebkitInvalidResponseError => ex
+    return if status_code?
+    puts ex.message
+    save_the_day
+    go(url, true)
   end
 
   def next_page
@@ -40,6 +46,10 @@ class NavigationManager
 
   private
 
+  def location
+    Capybara.current_url
+  end
+
   def initial_visit
     go(@list_link.gsub('$page_number', @pm.page_number_start_value.to_s))
     @is_started = true
@@ -48,6 +58,10 @@ class NavigationManager
   def next_page_number
     return "0#{@current_page}" if @pm.leading_zero && @current_page < 10
     "#{@current_page}"
+  end
+
+  def status_code?
+    NavigationManager.accepted_codes.include?(Capybara.page.status_code) ? true : false
   end
 
   def save_the_day
