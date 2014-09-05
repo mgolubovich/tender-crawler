@@ -53,18 +53,19 @@ class Reaper
         tender.source_link = cartridge.base_link_template.gsub('$entity_id', entity_id)
         tender.group = cartridge.tender_type
         tender.update_attributes(emit_complex_selectors(cartridge, entity_id))
+        tender.update_attributes(tender_stub.attrs)
+        tender.modified_at = Time.now unless old_md5 == tender.md5
+
         tender.external_work_type = WorkTypeProcessor.new(tender.work_type).process
 
-        unless @params.args[:is_checking]
-          tender.update_attributes(tender_stub.attrs)
-          tender.modified_at = Time.now unless old_md5 == tender.md5
+        tender.delete unless tender.is_valid?
+        if !@params.args[:is_checking] && tender.is_valid?
           tender.save
+          log_tender_saved(tender[:_id])
         end
 
         @params.status[:result] << tender
         @params.status[:reaped_tenders_count] += 1
-
-        log_tender_saved(tender[:_id])
 
         sleep(cartridge.delay_between_tenders) if cartridge.need_to_sleep?
       end
