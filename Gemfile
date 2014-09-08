@@ -40,6 +40,7 @@ group :development do
   gem 'tux'
   gem 'debugger'
   gem 'capistrano'
+  gem 'ruby-prof'
 end
 
 group :test do
