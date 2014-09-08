@@ -42,5 +42,3 @@ Bluepill.application("#{BP.conf.app_name}", :log_file => BP.conf.bp_log) do |app
     end
   end
 end
-
-
