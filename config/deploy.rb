@@ -24,7 +24,7 @@ set :deploy_to, '/home/deployer/tender-crawler'
 # set :pty, true
 
 # Default value for :linked_files is []
-set :linked_files, %w{config/unicorn.rb config/mongoid.yml}
+set :linked_files, %w{config/unicorn.rb config/mongoid.yml config/bluepills/reaper.pill}
 
 # Default value for linked_dirs is []
 set :linked_dirs, %w{log tmp/pids tmp/cache tmp/sockets}

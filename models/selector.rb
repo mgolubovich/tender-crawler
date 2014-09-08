@@ -122,4 +122,8 @@ class Selector
   def value_type?(field)
     self[:value_type] == field ? true : false
   end
+
+  def url(entity_id)
+    self[:link_template].gsub('$entity_id', entity_id.to_s)
+  end
 end
