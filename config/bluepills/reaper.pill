@@ -5,9 +5,9 @@ class BluepillConfig
   attr_accessor :queues
 
   def initialize
-    @app_name = "address_resque"
+    @app_name = "reaper_resque"
     @bp_log = "/var/log/bluepill.log"
-    @process_group = "address_workers"
+    @process_group = "reaper_workers"
     @working_dir = "/home/ikuraev/projects/tender-crawler"
     @queues = {}
   end
