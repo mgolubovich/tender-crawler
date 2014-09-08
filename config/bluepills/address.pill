@@ -1,0 +1,46 @@
+class BluepillConfig
+  include Singleton
+
+  attr_reader :app_name, :bp_log, :process_group, :working_dir
+  attr_accessor :queues
+
+  def initialize
+    @app_name = "address_resque"
+    @bp_log = "/var/log/bluepill.log"
+    @process_group = "address_workers"
+    @working_dir = "/home/ikuraev/projects/tender-crawler"
+    @queues = {}
+  end
+
+  def self.conf
+    self.instance
+  end
+end
+
+BP = BluepillConfig
+
+BP.conf.queues['top'] = 1
+BP.conf.queues['high'] = 3
+BP.conf.queues['normal'] = 2
+BP.conf.queues['low'] = 1
+BP.conf.queues['normal,low'] = 1
+
+Bluepill.application("#{BP.conf.app_name}", :log_file => BP.conf.bp_log) do |app|
+  BP.conf.queues.each do |queue, count|
+    process_name = queue.gsub(/[^\w]/, '_')
+    app.uid = "ikuraev"
+    app.gid = "ikuraev"
+
+    count.times.each do |idx|
+      app.process("resque_worker_#{process_name}_#{idx}") do |process|
+        process.group = "#{BP.conf.process_group}"
+        process.pid_file = "/var/run/bluepill/pids/#{BP.conf.app_name}/worker_#{process_name}_#{idx}.pid"
+        process.working_dir = BP.conf.working_dir
+        process.start_command = ["rake QUEUE=#{queue} resque:work"].join(' ')
+        process.daemonize = true
+      end
+    end
+  end
+end
+
+
