@@ -13,8 +13,9 @@ gem 'capybara-webkit', '1.1.0'
 gem 'headless'
 
 gem 'whenever', :require => false
-gem 'resque'
 gem 'redis'
+
+gem 'resque'
 gem 'resque-scheduler'
 
 gem 'dbf'
