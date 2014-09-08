@@ -51,4 +51,8 @@ class Cartridge
   def need_to_sleep?
     delay_between_tenders > 0
   end
+
+  def tender_url(entity_id)
+    self[:base_link_template].gsub('$entity_id', entity_id.to_s)
+  end
 end

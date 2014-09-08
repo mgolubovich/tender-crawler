@@ -22,7 +22,7 @@ class NavigationManager
     return if (url == location) && !reload
     Capybara.visit(url)
     ParserLog.logger.info "[#{Time.now}] - visited #{url}"
-  rescue Capybara::Driver::Webkit::WebkitInvalidResponseError => ex
+  rescue Capybara::Webkit::InvalidResponseError => ex
     return if status_code?
     puts ex.message
     save_the_day

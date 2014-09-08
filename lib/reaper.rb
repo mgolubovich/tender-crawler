@@ -37,7 +37,8 @@ class Reaper
         cartridge.selectors.data_fields.order_by(priority: :desc).each do |s|
           log_start_grappling(s.value_type)
 
-          @nav_manager.go(s.link_template.gsub('$entity_id', entity_id.to_s))
+          link = s.field_valid?(:link_template) ? s.url(entity_id) : cartridge.tender_url(entity_id)
+          @nav_manager.go(link)
 
           value = Grappler.new(s, entity_id).grapple
           tender_stub.insert(s.value_type.to_sym, value)
@@ -50,13 +51,15 @@ class Reaper
         old_md5 = tender.md5
 
         tender.id_by_source = entity_id
-        tender.source_link = cartridge.base_link_template.gsub('$entity_id', entity_id)
+        tender.source_link = cartridge.tender_url(entity_id)
         tender.group = cartridge.tender_type
         tender.update_attributes(emit_complex_selectors(cartridge, entity_id))
         tender.update_attributes(tender_stub.attrs)
         tender.modified_at = Time.now unless old_md5 == tender.md5
 
-        tender.external_work_type = WorkTypeProcessor.new(tender.work_type).process
+        if tender.external_work_type.nil?
+          tender.external_work_type = WorkTypeProcessor.new(tender.work_type).process
+        end
 
         tender.delete unless tender.is_valid?
         if !@params.args[:is_checking] && tender.is_valid?
