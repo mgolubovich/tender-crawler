@@ -5,9 +5,9 @@ class BluepillConfig
   attr_accessor :queues
 
   def initialize
-    @app_name = "address_resque"
+    @app_name = "reaper_resque"
     @bp_log = "/var/log/bluepill.log"
-    @process_group = "address_workers"
+    @process_group = "reaper_workers"
     @working_dir = "/home/ikuraev/projects/tender-crawler"
     @queues = {}
   end
@@ -36,7 +36,10 @@ Bluepill.application("#{BP.conf.app_name}", :log_file => BP.conf.bp_log) do |app
         process.group = "#{BP.conf.process_group}"
         process.pid_file = "/var/run/bluepill/pids/#{BP.conf.app_name}/worker_#{process_name}_#{idx}.pid"
         process.working_dir = BP.conf.working_dir
-        process.start_command = ["rake QUEUE=#{queue} resque:work"].join(' ')
+
+        queue_word = queue.split(',').count > 1 ? "QUEUES" : "QUEUE"
+        process.start_command = ["rake #{queue_word}=#{queue} resque:work"].join(' ')
+
         process.daemonize = true
       end
     end

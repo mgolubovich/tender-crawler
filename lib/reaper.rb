@@ -2,8 +2,6 @@
 # Parametres for initialization:
 # { :limit => 0, :cartridge_id => nil, :is_checking => false }
 class Reaper
-  attr_reader :result
-
   def initialize(source, args = {})
     @params = ReaperParams.new(source, args)
 
@@ -67,13 +65,11 @@ class Reaper
           log_tender_saved(tender[:_id])
         end
 
-        @params.status[:result] << tender
         @params.status[:reaped_tenders_count] += 1
 
         sleep(cartridge.delay_between_tenders) if cartridge.need_to_sleep?
       end
     end
-    @params.status[:result].first
   end
 
   private
