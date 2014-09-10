@@ -27,6 +27,8 @@ class Grappler
 
   def process(item)
     data = get_raw_data(item)
+    return data if data.nil?
+
     data.strip
 
     return '' if data.empty?
