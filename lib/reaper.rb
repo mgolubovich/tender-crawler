@@ -24,7 +24,9 @@ class Reaper
 
       while @params.args[:limit] > ids_set.count
         @nav_manager.next_page if ids_set.count < @params.args[:limit]
-        ids_set += get_ids(cartridge)
+        ids_slice = get_ids(cartridge)
+        ids_set += ids_slice
+        break if ids_slice.empty?
       end
       log_got_ids_set(ids_set.count)
 
