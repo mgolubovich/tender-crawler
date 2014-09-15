@@ -21,8 +21,7 @@ namespace :dev do
   end
 
   task :test_wt_proc do
-    t = Tender.find('54047cb090c0432d8e00016d')
-    puts WorkTypeProcessor.new(t.work_type).process
+    puts WorkTypeProcessor.new([{:code=>"45.31.41.110", :title=>"45.31.41.110"}]).process
   end
 
   task :measure do
