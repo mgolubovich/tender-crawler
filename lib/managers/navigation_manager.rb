@@ -4,11 +4,12 @@ class NavigationManager
     attr_accessor :accepted_codes
   end
 
-  @accepted_codes = [202]
+  @accepted_codes = %w(202)
 
   def initialize
     @proxy_manager = ProxyManager.new
     @is_proxified = false
+    @attempts_count = 0
   end
 
   def load(pm)
@@ -36,12 +37,12 @@ class NavigationManager
       go(@list_link.gsub('$page_number', next_page_number))
     when :click
       initial_visit unless @is_started
-      Capybara.find(:xpath, @pm.action_value).click
+      click_on(@pm.action_value)
     when :js
       initial_visit unless @is_started
       Capybara.execute_script(@pm.action_value.gsub('$page_number', next_page_number))
     end
-    sleep @pm.delay_between_pages
+    sleep(@pm.delay_between_pages)
   end
 
   private
@@ -62,6 +63,15 @@ class NavigationManager
 
   def status_code?
     NavigationManager.accepted_codes.include?(Capybara.page.status_code) ? true : false
+  end
+
+  def click_on(xpath)
+    Capybara.find(:xpath, xpath).click
+  rescue Capybara::Webkit::InvalidResponseError
+    return if status_code?
+    @attempts_count += 1
+    Capybara.find(:xpath, xpath).click if @attempts_count < 6
+    fail(ConnectionError, 'Problems with remote server', caller) if @attempts_count > 6
   end
 
   def save_the_day
