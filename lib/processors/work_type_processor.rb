@@ -60,7 +60,6 @@ class WorkTypeProcessor
       @e_work_type = search_in_exceptions(w[:code]) if @e_work_type.zero?
     end
 
-    # { external_work_type: @e_work_type }
     @e_work_type
   end
 
