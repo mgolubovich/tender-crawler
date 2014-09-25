@@ -74,6 +74,9 @@ class NavigationManager
     fail(ConnectionError, 'Problems with remote server', caller) if @attempts_count > 6
   end
 
+  def page_ready?
+  end
+
   def save_the_day
     if @proxy_manager.proxies_left?
       @is_proxified = true
