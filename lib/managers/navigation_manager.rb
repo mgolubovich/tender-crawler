@@ -67,6 +67,8 @@ class NavigationManager
 
   def click_on(xpath)
     Capybara.find(:xpath, xpath).click
+  rescue Capybara::ElementNotFound
+    return
   rescue Capybara::Webkit::InvalidResponseError
     return if status_code?
     @attempts_count += 1
