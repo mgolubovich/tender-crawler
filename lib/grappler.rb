@@ -1,8 +1,9 @@
 # Grappler is entity used for parsing
 # single or multiple values of same value_type
 class Grappler
-  def initialize(selector, _entity_id = '')
+  def load(selector)
     @selector = selector
+    self
   end
 
   def grapple(mode = :single)
@@ -48,7 +49,6 @@ class Grappler
   end
 
   def apply_offset(data)
-    return data unless @selector.offset_valid?
     data[@selector.offset['start']..@selector.offset['end']]
   end
 

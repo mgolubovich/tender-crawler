@@ -18,23 +18,24 @@ class ZakupkiProtocolParser
   def initialize(tender_id)
     @tender_id = tender_id
     @data = {}
+    @nm = NavigationManager.new
   end
 
   def parse
-    visit ZakupkiProtocolParser.protocol_link_template.gsub('$tender_id', @tender_id)
-    protocols_buttons = all(:xpath, "")
+    @nm.go(ZakupkiProtocolParser.protocol_link_template.gsub('$tender_id', @tender_id))
+    protocols_buttons = all(:xpath, '')
     # debugger
-    unless protocols_buttons.empty?
-      protocols_buttons.first.click
-    else
+    if protocols_buttons.empty?
       return nil
+    else
+      protocols_buttons.first.click
     end
 
     url = find(:css, '.lastLi a')[:onclick]
     pfid = url.scan(/[0-9]{4,}/).count > 0 ? url.scan(/[0-9]{4,}/).first : nil
 
     if pfid
-      visit @printform_link_template.gsub('$pfid', pfid)
+      @nm.go(@printform_link_template.gsub('$pfid', pfid))
       result_rows = all(:xpath, ZakupkiProtocolParser.pform_xpath)
 
       result_rows.each do |r|
@@ -43,9 +44,7 @@ class ZakupkiProtocolParser
         @data[inn] = r.text.include?('Победитель') ? true : false
       end
     end
-    rescue Capybara::ElementNotFound
-      nil
+  rescue Capybara::ElementNotFound
     @data
   end
-
 end

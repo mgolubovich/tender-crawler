@@ -10,6 +10,8 @@ class Reaper
 
     @nav_manager = NavigationManager.new
 
+    @hook = Grappler.new
+
     log_started_parsing(@params.source.name)
   end
 
@@ -22,6 +24,8 @@ class Reaper
       @params.status[:reaped_tenders_count] = 0
       @nav_manager.load(cartridge.load_pm)
 
+      ReapingStatistics.started_collecting_ids
+
       while @params.args[:limit] > ids_set.count
         @nav_manager.next_page if ids_set.count < @params.args[:limit]
 
@@ -29,11 +33,17 @@ class Reaper
         break if ids_set.contains?(ids_slice)
         ids_set += ids_slice
       end
+
+      ReapingStatistics.finished_collecting_ids
+
       log_got_ids_set(ids_set.count)
 
+      ReapingStatistics.started_collecting_tenders
       ids_set.each do |entity_id|
         break if @params.reaped_enough?
         tender_stub = EntityStub.new
+
+        ReapingStatistics.started_collecting_tender(entity_id)
 
         cartridge.selectors.data_fields.order_by(priority: :desc).each do |s|
           log_start_grappling(s.value_type)
@@ -41,7 +51,7 @@ class Reaper
           link = s.field_valid?(:link_template) ? s.url(entity_id) : cartridge.tender_url(entity_id)
           @nav_manager.go(link)
 
-          value = Grappler.new(s, entity_id).grapple
+          value = @hook.load(s).grapple
           tender_stub.insert(s.value_type.to_sym, value)
 
           log_got_value(s.value_type, value)
@@ -70,9 +80,14 @@ class Reaper
 
         @params.status[:reaped_tenders_count] += 1
 
+        ReapingStatistics.finished_collecting_tender(entity_id)
+
         sleep(cartridge.delay_between_tenders) if cartridge.need_to_sleep?
       end
     end
+    ReapingStatistics.finished_collecting_tenders
+
+    ReapingStatistics.print_stats
   end
 
   private
@@ -89,7 +104,7 @@ class Reaper
   end
 
   def get_ids(cartridge)
-    Grappler.new(cartridge.selectors.active.ids_set.first).grapple_all.uniq
+    @hook.load(cartridge.selectors.active.ids_set.first).grapple_all.uniq
   end
 
   def emit_complex_selectors(cartridge, entity_id)
@@ -108,7 +123,7 @@ class Reaper
 
         selectors.each do |s|
           @nav_manager.go(s.link_template.gsub('$entity_id', entity_id))
-          stub.insert(struct_key, Grappler.new(s, entity_id).grapple_all)
+          stub.insert(struct_key, @hook.load(s).grapple_all)
         end
 
         data[struct_key] = stub.attrs[struct_key]
