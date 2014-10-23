@@ -71,8 +71,6 @@ class NavigationManager
     return
   rescue Capybara::Webkit::InvalidResponseError
     return if status_code?
-    @attempts_count += 1
-    Capybara.find(:xpath, xpath).click if @attempts_count < 6
     fail(ConnectionError, 'Problems with remote server', caller) if @attempts_count > 6
   end
 
