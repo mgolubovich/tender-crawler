@@ -20,6 +20,7 @@ class NavigationManager
   end
 
   def go(url, reload = false)
+    sleep(@pm.delay_between_pages)
     return if (url == location) && !reload
     Capybara.visit(url)
     ParserLog.logger.info "[#{Time.now}] - visited #{url}"
