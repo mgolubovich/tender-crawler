@@ -48,4 +48,20 @@ namespace :statistics do
     stat.reset_yandex_counter
   end
 
+  desc 'Count tenders per city'
+  task :count_tenders_per_city do
+    progress_bar = ProgressBar.create(
+      title: 'Gathering data',
+      format: '%a %B %p%% %t %c/%C',
+      starting_at: 0,
+      total: City.all.count
+    )
+    csv = CSV.open('stat.csv', "w")
+    City.all.to_a.each do |city|
+      counter = Tender.where(city_code: city.city_code).count
+      progress_bar.increment
+      csv << [city.name, counter] if counter > 0
+    end
+  end
+
 end

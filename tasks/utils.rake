@@ -19,10 +19,13 @@ namespace :utils do
   task :load_proxies do
     Proxy.delete_all
 
-    hm_config = YAML.load_file('config/hideme_params.yml')
+    hm_config = YAML.load_file('config/best_proxy_params.yml')
     hm_url = hm_config['base_url'] + hm_config.map { |k, v| "#{k}=#{v}" unless k == 'base_url'}.join('&')
     raw_data = open(hm_url).read
-    data = JSON.parse(raw_data)
+    data = raw_data.split("\n").map do |val|
+      split_adress = val.split(':')
+      { host:split_adress[0], port: split_adress[1], delay:0 }
+    end
 
     progress_bar = ProgressBar.create(
       title: 'Inserting new proxies',
@@ -31,7 +34,7 @@ namespace :utils do
       )
 
     data.each do |p|
-      Proxy.create(address: p['host'], port: p['port'], latency: p['delay'])
+      Proxy.create(address: p[:host], port: p[:port], latency: p[:delay])
       progress_bar.increment
     end
   end

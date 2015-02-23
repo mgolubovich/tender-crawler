@@ -1,48 +1,33 @@
-source 'https://rubygems.org/'
+source 'http://rubygems.org/'
 
-gem 'sinatra'
-gem 'rack-timeout'
-gem 'activesupport', '3.2.17'
+gem 'activesupport'
 
-gem 'mongoid', '3.0.23'
+gem 'mongoid', '~> 4.0'
 gem 'bson_ext'
 gem 'mongoid_auto_increment'
 
-gem 'capybara', '2.2.1'
-gem 'capybara-webkit', '1.1.0'
-gem 'headless'
+gem 'activerecord'
+gem 'mysql2'
+
+gem 'capybara'
+gem 'poltergeist', '1.5.1'
 
 gem 'whenever', :require => false
 gem 'redis'
 
 gem 'resque'
 gem 'resque-scheduler'
+gem 'resque-timeout'
+gem 'resque-queue-lock'
 
 gem 'dbf'
 gem 'zip'
 
-gem 'haml'
-gem 'will_paginate'
-gem 'will_paginate_mongoid'
-gem 'will_paginate-bootstrap'
-
-gem 'activerecord'
-gem 'mysql2'
-
 gem 'ruby-progressbar'
 
-platforms :ruby do # linux
-  gem 'unicorn'
-end
+gem 'byebug'
+gem 'capistrano'
+gem 'capistrano-rvm'
+gem 'capistrano-bundler'
 
-group :development do
-  gem 'shotgun'
-  gem 'tux'
-  gem 'debugger'
-  gem 'capistrano'
-  gem 'ruby-prof'
-end
-
-group :test do
-  gem 'rspec'
-end
+gem 'awesome_print'

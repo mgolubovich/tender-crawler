@@ -171,24 +171,24 @@ namespace :address do
 
       #Some exceptions
       case region
-        when "северная осетия-алания республика"
-          region = "республика северная осетия - алания"
+      when "северная осетия-алания республика"
+        region = "республика северная осетия - алания"
 
-        when "чувашская республика"
-          region = "чувашская республика - чувашия"
+      when "чувашская республика"
+        region = "чувашская республика - чувашия"
 
-        when "саха (якутия) республика"
-          region = "республика саха /якутия/"
+      when "саха (якутия) республика"
+        region = "республика саха /якутия/"
 
-        when "ханты-мансийский-югра автономный округ"
-          region = "ханты-мансийский автономный округ - югра"
+      when "ханты-мансийский-югра автономный округ"
+        region = "ханты-мансийский автономный округ - югра"
 
-        else
-          #Если регион не находится и содержит слово "республика", перемещаем слово в начало
-          if regions[region].nil? && region.include?("республика")
-            region = region.split(" ")
-            region = region.unshift(region.pop).join(" ")
-          end
+      else
+        #Если регион не находится и содержит слово "республика", перемещаем слово в начало
+        if regions[region].nil? && region.include?("республика")
+          region = region.split(" ")
+          region = region.unshift(region.pop).join(" ")
+        end
       end
 
       if regions[region].nil?
@@ -233,12 +233,12 @@ namespace :address do
     tenders = tenders.where(source_id: args.source_id) unless args.source_id.to_sym == :none
 
     case args.mode.to_sym
-      when :indefinite
-        tenders = tenders.where(region_code: -1).to_a
-      when :all
-        tenders = tenders.all.to_a
-      else
-        tenders = tenders.where(region_code: nil).to_a
+    when :indefinite
+      tenders = tenders.where(region_code: -1).to_a
+    when :all
+      tenders = tenders.all.to_a
+    else
+      tenders = tenders.where(region_code: nil).to_a
     end
 
     cities = {}
@@ -289,12 +289,12 @@ namespace :address do
       tenders = tenders.where(source_id: args.source_id) unless args.source_id == :none
       tenders = tenders.any_of({:customer_address => /(^|.*[^а-я])#{region.name}([^а-я].*|$)/i})
       case args.mode.to_sym
-        when :indefinite
-          tenders = tenders.where(region_code: -1).to_a
-        when :all
-          tenders = tenders.to_a
-        else
-          tenders = tenders.where(region_code: nil).to_a
+      when :indefinite
+        tenders = tenders.where(region_code: -1).to_a
+      when :all
+        tenders = tenders.to_a
+      else
+        tenders = tenders.where(region_code: nil).to_a
       end
 
       tenders.each do |tender|
@@ -333,12 +333,12 @@ namespace :address do
       tenders = tenders.any_of({:customer_address => /(^|.*[^а-я])#{city.name}([^а-я].*|$)/i})
 
       case args.mode.to_sym
-        when :indefinite
-          tenders = tenders.where(city_code: -1).to_a
-        when :all
-          tenders = tenders.to_a
-        else
-          tenders = tenders.where(city_code: nil).to_a
+      when :indefinite
+        tenders = tenders.where(city_code: -1).to_a
+      when :all
+        tenders = tenders.to_a
+      else
+        tenders = tenders.where(city_code: nil).to_a
       end
 
       tenders.each do |tender|
@@ -354,7 +354,13 @@ namespace :address do
 
   desc "Set cities and regions for tenders by yandex"
   task :yandex_updater do
-    tenders = Tender.where(:external_work_type.gt => 0, region_code: nil).order_by(created_at: :desc).to_a
+    params = {
+        :external_work_type.gte => 0,
+        :customer_address.nin => ['', nil],
+        region_code: nil
+    }
+
+    tenders = Tender.where(params).order_by(created_at: :desc).limit(1000).to_a
     progressbar = ProgressBar.create(:format => '%a %B %p%% %t %c/%C', :starting_at => 0, :total => tenders.count)
     tenders.each do |t|
       address_processor = AddressProcessor.new(t.customer_address)
@@ -379,12 +385,12 @@ namespace :address do
       tenders = tenders.any_of({:customer_address => /(^|.*[^а-я])#{region.name}([^а-я].*|$)/i})
 
       case args.mode.to_sym
-        when :indefinite
-          tenders = tenders.where(region_code: -1).to_a
-        when :all
-          tenders = tenders.to_a
-        else
-          tenders = tenders.where(region_code: nil).to_a
+      when :indefinite
+        tenders = tenders.where(region_code: -1).to_a
+      when :all
+        tenders = tenders.to_a
+      else
+        tenders = tenders.where(region_code: nil).to_a
       end
 
       cities = City.where(region_code: region.region_code).to_a

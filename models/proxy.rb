@@ -7,4 +7,5 @@ class Proxy
   field :address, type: String
   field :port, type: String
   field :latency, type: Integer
+  field :rejected_sources, type: Array
 end

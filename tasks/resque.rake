@@ -1,5 +1,5 @@
 require 'resque/tasks'
-require 'resque_scheduler/tasks'
+require 'resque/scheduler/tasks'
 
 task "resque/setup" => :environment do
   Resque::Scheduler.dynamic = true
@@ -34,6 +34,6 @@ namespace :resque do
 
 
   task :manual_reap, :source_id, :deep_level do |t, args|
-    Resque.enqueue(ReapJob, args.source_id, args.deep_level)
+    Resque.enqueue(ReapJob, BSON::ObjectId.from_string(args.source_id), args.deep_level)
   end
 end

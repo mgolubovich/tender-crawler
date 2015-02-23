@@ -19,7 +19,8 @@ class Selector
     :doc_title,
     :doc_link,
     :work_type_code,
-    :work_type_title
+    :work_type_title,
+    :availability_check
   ]
 
   @complex_fields = {
@@ -92,9 +93,9 @@ class Selector
   # Can be :single or :multiple
   field :grapple_mode, type: Symbol, default: :single
 
-  scope :ids_set, where(value_type: :ids_set)
-  scope :data_fields, not_in(value_type: Selector.data_fields_list)
-  scope :active, where(is_active: true)
+  scope :ids_set, -> { where(value_type: :ids_set) }
+  scope :data_fields, -> { not_in(value_type: Selector.data_fields_list) }
+  scope :active, -> { where(is_active: true) }
 
   def got_rule?
     rules.count.zero? ? false : true
@@ -111,7 +112,7 @@ class Selector
 
   # Offset methods
   def offset_valid?
-    offset['start'].zero? && offset['end'].zero? ? false : true
+    offset['start'].to_i.zero? && offset['end'].to_i.zero? ? false : true
   end
 
   # General methods
@@ -121,6 +122,18 @@ class Selector
 
   def value_type?(field)
     self[:value_type] == field ? true : false
+  end
+
+  def path_type
+    self.field_valid?(:xpath) ? :xpath : :css
+  end
+
+  def can_be_empty?
+    [:work_type_code, :work_type_title].include?(self.value_type)
+  end
+
+  def path
+    self[path_type]
   end
 
   def url(entity_id)

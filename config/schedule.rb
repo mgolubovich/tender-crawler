@@ -34,10 +34,14 @@ every 55.minutes do
   rake 'address:yandex_updater'
 end
 
-every :day, at: '12:10am' do
+every 12.hours do
   rake 'utils:load_proxies'
 end
 
 every :day, at: '12:05am' do
   rake 'statistics:reset_yandex_counter'
+end
+
+every 56.minutes do
+  rake 'parsing:protocols:zakupki[500]'
 end

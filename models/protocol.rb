@@ -8,9 +8,13 @@ class Protocol
   belongs_to :tender
 
   # Temporal field
-  field :data, type: Hash
+  field :inn, type: String
 
-  def winner
-    # method for determing winner by protocol
-  end
+  index({ inn: 1 })
+
+  # field for PHP post parser
+  field :is_winner, type: Boolean
+
+  field :tender_data, type: Hash
+
 end

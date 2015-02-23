@@ -1,8 +1,8 @@
 # config valid only for Capistrano 3.1
-lock '3.2.1'
+lock '3.3.5'
 
 set :application, 'tender-crawler'
-set :repo_url, 'git@github.com:mgolubovich/tender-crawler.git'
+set :repo_url, 'git@10.0.104.206:tender.crawler'
 set :branch, 'production'
 
 # Default branch is :master
@@ -18,7 +18,7 @@ set :deploy_to, '/home/deployer/tender-crawler'
 # set :format, :pretty
 
 # Default value for :log_level is :debug
-# set :log_level, :debug
+set :log_level, :debug
 
 # Default value for :pty is false
 # set :pty, true
@@ -28,6 +28,13 @@ set :linked_files, %w{config/unicorn.rb config/mongoid.yml config/bluepills/reap
 
 # Default value for linked_dirs is []
 set :linked_dirs, %w{log tmp/pids tmp/cache tmp/sockets}
+
+set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
+set :whenever_roles,        ->{ :app }
+
+set :bundle_flags, ''
+set :bundle_gemfile, -> { release_path.join('Gemfile') }
+set :bundle_jobs, 6
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
@@ -42,6 +49,9 @@ namespace :deploy do
     on roles(:app), in: :sequence, wait: 5 do
       # Your restart mechanism here, for example:
       # execute :touch, release_path.join('tmp/restart.txt')
+      within release_path do
+        execute :rake, 'resque:auto_reap'
+      end
     end
   end
 

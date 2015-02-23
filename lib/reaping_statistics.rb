@@ -44,7 +44,7 @@ class ReapingStatistics
   end
 
   def self.print_stats
-    puts ReapingStatistics.time_store
-    puts ReapingStatistics.general_store
+    log = ParserLog.new.logger
+    log.info 'finish', time: ReapingStatistics.time_store, tenders: ReapingStatistics.general_store[:tenders].size
   end
 end

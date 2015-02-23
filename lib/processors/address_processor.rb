@@ -19,7 +19,7 @@ class AddressProcessor
   @yandex_queries = YAML.load_file(@query_fpath).symbolize_keys!
 
   def initialize(address = nil)
-    @address = address
+    @address = address[0..150]
     @statistics = Statistics.last
 
     @yandex_requests_counter = 0
@@ -28,7 +28,7 @@ class AddressProcessor
 
   def process
     @result = { region_code: nil, city_code: nil }
-    yandex_process if able_to_proceed?
+    able_to_proceed? ? yandex_process : @result = { region_code: -1, city_code: -1 }
     @result
   end
 
@@ -40,19 +40,20 @@ class AddressProcessor
 
   def yandex_process
     area_name, subarea_name, city_name = yandex_json_parse
-    #puts @address
-    #puts "#{area_name}, #{subarea_name}, #{city_name}"
 
-    return -1 if area_name.to_s.empty?
+    return { region_code: -1, city_code: -1 } if area_name.to_s.empty?
 
-    region = Region.or({:name => area_name.mb_chars.downcase}, {:alt_name => area_name.mb_chars.downcase},).first
-    region = Region.or({:name => subarea_name.mb_chars.downcase},{:alt_name => subarea_name.mb_chars.downcase}).first if region.nil? && !subarea_name.to_s.empty?
+    region = Region.or({ name: area_name.mb_chars.downcase },
+                       { alt_name: area_name.mb_chars.downcase }).first
+    region = Region.or({ name: subarea_name.mb_chars.downcase },
+                       { alt_name: subarea_name.mb_chars.downcase }).first if region.nil? && !subarea_name.to_s.empty?
 
     unless region.nil?
       @result[:region_code] = region.region_code
       return 0 if city_name.to_s.empty?
 
-      city = City.where(region_code: region.region_code, name: city_name.mb_chars.downcase).first
+      city = City.where(region_code: region.region_code,
+                        name: city_name.mb_chars.downcase).first
       @result[:city_code] = city.city_code unless city.nil?
     end
   end

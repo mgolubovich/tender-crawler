@@ -1,10 +1,13 @@
 # Class for applying rules on values and setting correct status
 class Arbiter
+
   def initialize(selector_value, rule)
     @value = selector_value
     @rule = rule
     @status = :valid
     @arbitrage = {}
+    @log = ParserLog.new
+    @log.set_source(selector_value.source_id)
   end
 
   def judge
@@ -15,7 +18,8 @@ class Arbiter
     @arbitrage.each_pair do |rule, result|
       next unless result == :failed
       @status = @rule.failed_status
-      log_rule_failed(rule, @value)
+
+      @log.info 'rule failed', rule:rule, value:@value
     end
 
     @status

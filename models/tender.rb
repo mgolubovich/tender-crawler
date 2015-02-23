@@ -5,6 +5,7 @@ class Tender
   include ActiveSupport::Callbacks
 
   belongs_to :source
+  belongs_to :cartridge
   has_many :protocols
 
   set_callback :save, :before, :before_save
@@ -15,27 +16,27 @@ class Tender
   end
 
   @data_fields_list = [
-    :id_by_source,
-    :code_by_source,
-    :title,
-    :start_price,
-    :tender_form,
-    :customer_name,
-    :customer_inn,
-    :customer_address,
-    :work_type,
-    :documents
+      :id_by_source,
+      :code_by_source,
+      :title,
+      :start_price,
+      :tender_form,
+      :customer_name,
+      :customer_inn,
+      :customer_address,
+      :work_type,
+      :documents
   ]
 
   @default_values_fields_list = [
-    :title,
-    :start_price,
-    :tender_form,
-    :customer_name,
-    :customer_inn,
-    :customer_address,
-    :external_work_type,
-    :group
+      :title,
+      :start_price,
+      :tender_form,
+      :customer_name,
+      :customer_inn,
+      :customer_address,
+      :external_work_type,
+      :group
   ]
 
 
@@ -55,7 +56,7 @@ class Tender
   # Original link
   field :source_link, type: String
 
-  # Group of tender (44, 223)
+  # Group of tender (44, 223, bankrupt)
   field :group, type: Symbol
 
   # Actual tender info
@@ -67,6 +68,7 @@ class Tender
   field :customer_inn, type: String
   field :work_type, type: Array
   field :documents, type: Array
+  field :has_winner, type: Boolean
 
   # Fields for MySQL integration
   # Category of tender 0-5. Magic numbers. 0 - not needed. -1 - failed
@@ -89,6 +91,7 @@ class Tender
 
   index({ source_id: 1, code_by_source: 1 }, { unique: true })
   index({ external_db_id: 1 }, { unique: true })
+  index({ has_winner: 1 }, { sparse: true })
 
   def data_attr
     attrs = attributes.symbolize_keys
@@ -127,4 +130,6 @@ class Tender
       self[field.to_sym] = value if attributes[field.to_sym].to_s.empty?
     end
   end
+
+
 end

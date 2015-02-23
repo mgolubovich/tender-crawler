@@ -1,6 +1,9 @@
 # Class used for processing work_type and
 # setting external_work_type
 class WorkTypeProcessor
+
+  BANKRUPT_WORK_TYPE = 6
+
   class << self
     attr_accessor :construct_fpath, :construct_okpd_fpath
     attr_accessor :project_fpath, :project_okpd_fpath
